@@ -1,5 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const featuredProjects = [
+  {
+    title: "Signal Desk",
+    description: "A quiet command center for collecting product signals, release notes, and decision logs in one searchable place.",
+  },
+  {
+    title: "Type Trail",
+    description: "A developer note system that turns small implementation discoveries into durable Markdown references.",
+  },
+  {
+    title: "Launch Lens",
+    description: "A lightweight dashboard for tracking personal experiments from idea to shipped result.",
+  },
+];
 ---
 
 <BaseLayout
@@ -8,38 +23,42 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 >
   <section class="mx-auto grid max-w-5xl gap-12 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
     <div>
-      <p class="mb-4 text-sm font-medium uppercase text-accent">Personal website</p>
-      <h1 class="text-5xl font-semibold leading-tight sm:text-6xl">Peterclaw</h1>
+      <p class="mb-4 font-mono text-sm font-medium uppercase text-accent">Personal website</p>
+      <h1 class="text-5xl font-semibold leading-tight text-white sm:text-6xl">Peterclaw</h1>
       <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
-        A focused home for personal writing, project notes, and selected work.
-        Final copy and visual direction will be integrated in the next iteration.
+        I build small, sharp web tools and write about the decisions behind them.
+        This site collects selected projects, technical notes, and the occasional
+        field report from learning in public.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a class="border border-ink px-5 py-3 text-sm font-medium transition hover:bg-ink hover:text-paper" href="/projects">
+        <a class="border border-accent bg-accent px-5 py-3 text-sm font-medium text-paper transition duration-300 hover:bg-transparent hover:text-accent" href="/projects">
           View projects
         </a>
-        <a class="border border-line px-5 py-3 text-sm font-medium text-muted transition hover:border-ink hover:text-ink" href="/blog">
+        <a class="border border-line px-5 py-3 text-sm font-medium text-muted transition duration-300 hover:border-accent hover:text-accent" href="/blog">
           Read blog
         </a>
       </div>
     </div>
-    <div class="aspect-[4/3] border border-line bg-[linear-gradient(135deg,#f7f6f2_0%,#e7e2d7_48%,#0f766e_49%,#0f766e_52%,#f7f6f2_53%)]" aria-hidden="true"></div>
+    <div class="aspect-[4/3] border border-line bg-surface/70 p-6 shadow-2xl shadow-cyan-950/30" aria-hidden="true">
+      <div class="h-full border border-accent/30 bg-[linear-gradient(135deg,rgba(34,211,238,0.18)_0%,rgba(15,23,42,0.95)_44%,rgba(99,102,241,0.2)_100%)] p-5">
+        <div class="font-mono text-sm text-accent">~/peterclaw</div>
+        <div class="mt-8 space-y-3 font-mono text-sm text-muted">
+          <p><span class="text-white">status</span>: shipping notes</p>
+          <p><span class="text-white">stack</span>: astro / tailwind / ts</p>
+          <p><span class="text-white">focus</span>: tools, writing, systems</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="border-t border-line">
     <div class="mx-auto grid max-w-5xl gap-6 px-6 py-12 sm:grid-cols-3">
-      <div>
-        <h2 class="text-base font-semibold">Writing</h2>
-        <p class="mt-2 text-sm leading-6 text-muted">Essays, technical notes, and longer-form thinking.</p>
-      </div>
-      <div>
-        <h2 class="text-base font-semibold">Projects</h2>
-        <p class="mt-2 text-sm leading-6 text-muted">A curated index of work and experiments.</p>
-      </div>
-      <div>
-        <h2 class="text-base font-semibold">About</h2>
-        <p class="mt-2 text-sm leading-6 text-muted">Background, interests, and contact details.</p>
-      </div>
+      {featuredProjects.map((project) => (
+        <article class="border border-line bg-surface/60 p-5 transition duration-300 hover:border-accent/70">
+          <h2 class="text-base font-semibold text-white">{project.title}</h2>
+          <p class="mt-2 text-sm leading-6 text-muted">{project.description}</p>
+        </article>
+      ))}
     </div>
   </section>
 </BaseLayout>

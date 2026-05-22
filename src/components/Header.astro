@@ -7,12 +7,12 @@ const navItems = [
 ];
 ---
 
-<header class="border-b border-line bg-paper/90">
+<header class="border-b border-line bg-paper/90 text-ink backdrop-blur">
   <div class="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-    <a href="/" class="text-lg font-semibold tracking-normal">Peterclaw</a>
+    <a href="/" class="font-mono text-lg font-semibold text-white transition hover:text-accent">Peterclaw</a>
     <nav aria-label="Primary navigation" class="flex flex-wrap gap-4 text-sm text-muted">
       {navItems.map((item) => (
-        <a class="transition hover:text-ink" href={item.href}>{item.label}</a>
+        <a class="transition duration-300 hover:text-accent" href={item.href}>{item.label}</a>
       ))}
     </nav>
   </div>

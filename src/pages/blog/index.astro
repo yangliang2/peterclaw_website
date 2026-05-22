@@ -11,9 +11,9 @@ const posts = (await getCollection("blog"))
   {posts.length > 0 ? (
     <div class="grid gap-4">
       {posts.map((post) => (
-        <article class="border border-line bg-white/45 p-5">
-          <p class="text-sm text-muted">{post.data.pubDate.toLocaleDateString("en")}</p>
-          <h2 class="mt-2 text-xl font-semibold">{post.data.title}</h2>
+        <article class="border border-line bg-surface/60 p-5 transition duration-300 hover:border-accent/70">
+          <p class="font-mono text-sm text-accent">{post.data.pubDate.toLocaleDateString("en")}</p>
+          <h2 class="mt-2 text-xl font-semibold text-white">{post.data.title}</h2>
           <p class="mt-2 text-sm leading-6 text-muted">{post.data.description}</p>
         </article>
       ))}

@@ -1,0 +1,6 @@
+{
+  "title": "Type Trail",
+  "description": "A developer note system that turns small implementation discoveries into durable Markdown references.",
+  "tags": ["writing", "typescript", "knowledge-base"],
+  "draft": false
+}
