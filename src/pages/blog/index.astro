@@ -9,14 +9,14 @@ const posts = (await getCollection("blog"))
 
 <ContentLayout title="Blog" description="技术笔记、文章与项目更新。">
   {posts.length > 0 ? (
-    <div class="grid gap-4">
+    <div class="grid w-full max-w-[calc(100vw-3rem)] min-w-0 gap-4 sm:max-w-none">
       {posts.map((post) => (
-        <article class="border border-line bg-surface/60 p-5 transition duration-300 hover:border-accent/70">
+        <article class="w-full min-w-0 overflow-hidden border border-line bg-surface/60 p-5 transition duration-300 hover:border-accent/70">
           <p class="font-mono text-sm text-accent">{post.data.pubDate.toLocaleDateString("zh-CN")}</p>
-          <h2 class="mt-2 text-xl font-semibold text-white">
+          <h2 class="mt-2 text-xl font-semibold text-white [line-break:anywhere]">
             <a class="transition hover:text-accent" href={`/blog/${post.slug}/`}>{post.data.title}</a>
           </h2>
-          <p class="mt-2 text-sm leading-6 text-muted">{post.data.description}</p>
+          <p class="mt-2 text-sm leading-6 text-muted [line-break:anywhere]">{post.data.description}</p>
         </article>
       ))}
     </div>

@@ -21,11 +21,11 @@ const featuredProjects = [
   title="Peterclaw"
   description="Peterclaw 的个人网站，记录项目作品、技术思考与创作。"
 >
-  <section class="mx-auto grid max-w-5xl gap-12 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-    <div>
+  <section class="copy-fit mx-auto grid max-w-5xl gap-12 overflow-hidden px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+    <div class="min-w-0">
       <p class="mb-4 font-mono text-sm font-medium uppercase text-accent">Personal website</p>
       <h1 class="text-5xl font-semibold leading-tight text-white sm:text-6xl">Peterclaw</h1>
-      <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
+      <p class="mt-6 max-w-2xl text-lg leading-8 text-muted [line-break:anywhere]">
         你好，我是 Peter —— 一名全栈开发者与产品设计师。我热衷于将复杂的问题转化为简洁、优雅的解决方案。在这里，你会看到我的作品、思考，以及我对技术世界的探索。
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
@@ -37,7 +37,7 @@ const featuredProjects = [
         </a>
       </div>
     </div>
-    <div class="aspect-[4/3] border border-line bg-surface/70 p-6 shadow-2xl shadow-cyan-950/30" aria-hidden="true">
+    <div class="min-w-0 overflow-hidden border border-line bg-surface/70 p-6 shadow-2xl shadow-cyan-950/30 sm:aspect-[4/3]" aria-hidden="true">
       <div class="h-full border border-accent/30 bg-[linear-gradient(135deg,rgba(34,211,238,0.18)_0%,rgba(15,23,42,0.95)_44%,rgba(99,102,241,0.2)_100%)] p-5">
         <div class="font-mono text-sm text-accent">~/peterclaw</div>
         <div class="mt-8 space-y-3 font-mono text-sm text-muted">
