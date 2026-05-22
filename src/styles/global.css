@@ -29,3 +29,56 @@ body {
 a {
   color: inherit;
 }
+
+:where(h1, h2, h3, p, li, a, span) {
+  overflow-wrap: anywhere;
+}
+
+.prose-content {
+  max-width: 48rem;
+  color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.prose-content > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose-content h2 {
+  margin-top: 2.5rem;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.prose-content a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.prose-content blockquote {
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-ink);
+  padding-left: 1rem;
+}
+
+.prose-content ul,
+.prose-content ol {
+  padding-left: 1.5rem;
+}
+
+.prose-content ul {
+  list-style: disc;
+}
+
+.prose-content ol {
+  list-style: decimal;
+}
+
+.prose-content strong {
+  color: #fff;
+  font-weight: 650;
+}

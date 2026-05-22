@@ -7,13 +7,15 @@ const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<ContentLayout title="Blog" description="Notes, essays, and project updates.">
+<ContentLayout title="Blog" description="技术笔记、文章与项目更新。">
   {posts.length > 0 ? (
     <div class="grid gap-4">
       {posts.map((post) => (
         <article class="border border-line bg-surface/60 p-5 transition duration-300 hover:border-accent/70">
-          <p class="font-mono text-sm text-accent">{post.data.pubDate.toLocaleDateString("en")}</p>
-          <h2 class="mt-2 text-xl font-semibold text-white">{post.data.title}</h2>
+          <p class="font-mono text-sm text-accent">{post.data.pubDate.toLocaleDateString("zh-CN")}</p>
+          <h2 class="mt-2 text-xl font-semibold text-white">
+            <a class="transition hover:text-accent" href={`/blog/${post.slug}/`}>{post.data.title}</a>
+          </h2>
           <p class="mt-2 text-sm leading-6 text-muted">{post.data.description}</p>
         </article>
       ))}
