@@ -1,0 +1,7 @@
+{
+  "title": "AstroPress",
+  "description": "基于 Astro 与 Markdown 的高性能静态博客系统，支持主题定制、自动部署与 SEO 优化，探索现代前端架构的最佳实践。",
+  "href": "https://github.com/yangliang2/astropress",
+  "tags": ["Astro", "Markdown", "SSG", "Open Source"],
+  "draft": false
+}

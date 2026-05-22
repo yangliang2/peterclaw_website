@@ -1,0 +1,7 @@
+{
+  "title": "DevSync",
+  "description": "一款面向开发者的实时协作工具，支持代码评审、任务追踪与团队知识库管理，帮助分布式团队提升沟通效率与交付质量。",
+  "href": "https://github.com/yangliang2/devsync",
+  "tags": ["React", "TypeScript", "WebSocket", "SaaS"],
+  "draft": false
+}

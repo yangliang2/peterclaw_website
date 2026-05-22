@@ -1,0 +1,7 @@
+{
+  "title": "SaaS Dashboard",
+  "description": "企业级 SaaS 管理后台，集成实时数据可视化、用户权限管理与多租户架构，服务数千名用户的日常运营与决策需求。",
+  "href": "https://github.com/yangliang2/saas-dashboard",
+  "tags": ["Vue", "Node.js", "PostgreSQL", "Data Viz"],
+  "draft": false
+}

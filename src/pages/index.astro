@@ -3,39 +3,37 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 const featuredProjects = [
   {
-    title: "Signal Desk",
-    description: "A quiet command center for collecting product signals, release notes, and decision logs in one searchable place.",
+    title: "DevSync",
+    description: "一款面向开发者的实时协作工具，支持代码评审、任务追踪与团队知识库管理。",
   },
   {
-    title: "Type Trail",
-    description: "A developer note system that turns small implementation discoveries into durable Markdown references.",
+    title: "AstroPress",
+    description: "基于 Astro 与 Markdown 的高性能静态博客系统，探索现代前端架构的最佳实践。",
   },
   {
-    title: "Launch Lens",
-    description: "A lightweight dashboard for tracking personal experiments from idea to shipped result.",
+    title: "SaaS Dashboard",
+    description: "企业级 SaaS 管理后台，集成实时数据可视化、用户权限管理与多租户架构。",
   },
 ];
 ---
 
 <BaseLayout
   title="Peterclaw"
-  description="Personal website for Peterclaw's writing, projects, and notes."
+  description="Peterclaw 的个人网站，记录项目作品、技术思考与创作。"
 >
   <section class="mx-auto grid max-w-5xl gap-12 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
     <div>
       <p class="mb-4 font-mono text-sm font-medium uppercase text-accent">Personal website</p>
       <h1 class="text-5xl font-semibold leading-tight text-white sm:text-6xl">Peterclaw</h1>
       <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
-        I build small, sharp web tools and write about the decisions behind them.
-        This site collects selected projects, technical notes, and the occasional
-        field report from learning in public.
+        你好，我是 Peter —— 一名全栈开发者与产品设计师。我热衷于将复杂的问题转化为简洁、优雅的解决方案。在这里，你会看到我的作品、思考，以及我对技术世界的探索。
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a class="border border-accent bg-accent px-5 py-3 text-sm font-medium text-paper transition duration-300 hover:bg-transparent hover:text-accent" href="/projects">
-          View projects
+          查看作品
         </a>
         <a class="border border-line px-5 py-3 text-sm font-medium text-muted transition duration-300 hover:border-accent hover:text-accent" href="/blog">
-          Read blog
+          阅读博客
         </a>
       </div>
     </div>
