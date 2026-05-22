@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import ContentLayout from "../../layouts/ContentLayout.astro";
+
+const projects = (await getCollection("projects")).filter((project) => !project.data.draft);
+---
+
+<ContentLayout title="Projects" description="Selected work, experiments, and case notes.">
+  {projects.length > 0 ? (
+    <div class="grid gap-4 sm:grid-cols-2">
+      {projects.map((project) => (
+        <article class="border border-line bg-white/45 p-5">
+          <h2 class="text-xl font-semibold">{project.data.title}</h2>
+          <p class="mt-2 text-sm leading-6 text-muted">{project.data.description}</p>
+          {project.data.tags.length > 0 && (
+            <div class="mt-4 flex flex-wrap gap-2">
+              {project.data.tags.map((tag) => (
+                <span class="border border-line px-2 py-1 text-xs text-muted">{tag}</span>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  ) : (
+    <p class="max-w-2xl text-base leading-8 text-muted">
+      Project entries will be added as the portfolio content is finalized.
+    </p>
+  )}
+</ContentLayout>
