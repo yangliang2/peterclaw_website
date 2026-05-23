@@ -6,7 +6,7 @@
 
 - `src/content/blog/<locale>/*.md`
 - `src/content/knowledge/<locale>/*.md`
-- Frontmatter 字段：`title`、`description`、`publishedAt`、`tags`、`draft`；locale 从内容路径前缀推导
+- Frontmatter 字段：`title`、`description`、`publishedAt`、`tags`、`draft`、可选 `ogImage`（站内绝对路径，如 `/og-default.png`）；locale 从内容路径前缀推导
 
 ## 流程
 

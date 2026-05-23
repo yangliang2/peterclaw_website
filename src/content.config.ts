@@ -7,7 +7,9 @@ const sharedContentSchema = z.object({
   publishedAt: z.date(),
   updatedAt: z.date().optional(),
   tags: z.array(z.string()).default([]),
-  draft: z.boolean().default(false)
+  draft: z.boolean().default(false),
+  /** Absolute path from site root, e.g. /og-default.png or /images/post-cover.png */
+  ogImage: z.string().optional(),
 });
 
 const blog = defineCollection({
