@@ -1,0 +1,62 @@
+---
+const navItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Projects', href: '/projects' },
+  { name: 'About', href: '/about' },
+];
+---
+
+<nav class="navbar">
+  <div class="container">
+    <a href="/" class="logo">
+      <span class="gradient-text">PeterClaw</span>
+    </a>
+    <ul class="nav-links">
+      {navItems.map(item => (
+        <li><a href={item.href}>{item.name}</a></li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    padding: var(--space-md) 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: var(--border-glass);
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .gradient-text {
+    background: var(--gradient-ai);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: var(--space-lg);
+  }
+  .nav-links a {
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+  .nav-links a:hover {
+    color: var(--color-text);
+  }
+</style>

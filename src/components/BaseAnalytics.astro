@@ -1,0 +1,8 @@
+---
+const websiteId = import.meta.env.UMAMI_WEBSITE_ID;
+const scriptUrl = import.meta.env.UMAMI_SCRIPT_URL || "https://analytics.eu.umami.is/script.js";
+---
+
+{websiteId && (
+  <script async src={scriptUrl} data-website-id={websiteId}></script>
+)}
