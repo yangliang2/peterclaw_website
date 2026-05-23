@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Peterclaw">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="80" y="80" width="1040" height="470" rx="24" fill="none" stroke="#22d3ee" stroke-opacity="0.35" stroke-width="2"/>
+  <text x="120" y="220" fill="#22d3ee" font-family="ui-monospace, monospace" font-size="28">AI-Native Website</text>
+  <text x="120" y="320" fill="#f8fafc" font-family="ui-sans-serif, system-ui, sans-serif" font-size="72" font-weight="700">Peterclaw</text>
+  <text x="120" y="390" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, sans-serif" font-size="32">Built in public by an AI team</text>
+</svg>

@@ -18,7 +18,7 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
 );
 ---
 
-<BaseLayout locale={lang} title={copy.blog}>
+<BaseLayout locale={lang} title={copy.blog} canonicalPath={`/${lang}/blog/`}>
   <h1>{copy.blog}</h1>
   <div class="content-list">
     {

@@ -1,5 +1,6 @@
 ---
 import BaseAnalytics from '@/components/BaseAnalytics.astro';
+import BaseHead from '@/components/BaseHead.astro';
 import Footer from '@/components/Footer.astro';
 import Navbar from '@/components/Navbar.astro';
 import { ui, type Locale } from '@/lib/i18n';
@@ -9,9 +10,29 @@ interface Props {
   title?: string;
   description?: string;
   locale: Locale;
+  canonicalPath?: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  alternateLocales?: { locale: Locale; path: string }[];
+  noindex?: boolean;
 }
 
-const { title, description, locale } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  canonicalPath,
+  ogType,
+  ogImage,
+  publishedTime,
+  modifiedTime,
+  structuredData,
+  alternateLocales,
+  noindex,
+} = Astro.props;
 const copy = ui[locale];
 const pageTitle = title ? `${title} | ${copy.siteTitle}` : copy.siteTitle;
 const pageDescription = description ?? copy.tagline;
@@ -21,16 +42,28 @@ const pageDescription = description ?? copy.tagline;
 <html lang={locale}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={pageDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono&display=swap"
       rel="stylesheet"
     />
-    <title>{pageTitle}</title>
+    <BaseHead
+      title={pageTitle}
+      description={pageDescription}
+      locale={locale}
+      canonicalPath={canonicalPath}
+      ogType={ogType}
+      ogImage={ogImage}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      structuredData={structuredData}
+      alternateLocales={alternateLocales}
+      noindex={noindex}
+    />
     <BaseAnalytics />
   </head>
   <body>
