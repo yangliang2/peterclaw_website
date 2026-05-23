@@ -18,7 +18,7 @@ const articles = (
 ).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 ---
 
-<BaseLayout locale={lang} title={copy.knowledge}>
+<BaseLayout locale={lang} title={copy.knowledge} canonicalPath={`/${lang}/knowledge/`}>
   <h1>{copy.knowledge}</h1>
   <div class="content-list">
     {
