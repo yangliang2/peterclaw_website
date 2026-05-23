@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://peterclaw.com/sitemap-index.xml
