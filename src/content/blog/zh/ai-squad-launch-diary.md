@@ -7,7 +7,7 @@ tags:
   - 公开构建
   - 网站策略
 series: AI 小队组建日记
-draft: true
+draft: false
 ---
 
 这篇文章是中文博客轨道的第一篇占位稿。正式发布时，它应当回答三个问题：
@@ -16,4 +16,4 @@ draft: true
 2. 每个 AI 成员在网站、内容、SEO、设计和运营中的职责是什么。
 3. 读者为什么应该持续关注这个协作过程。
 
-当前文件保持 `draft: true`，用于验证 Content Collections 和路由结构，不进入生产列表。
+这篇文章现已发布，用于验证 Content Collections、博客列表和详情页路由在生产环境中的完整链路。
