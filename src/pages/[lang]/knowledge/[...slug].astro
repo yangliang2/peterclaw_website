@@ -1,7 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { isLocale, localeFromId, stripLocaleFromId } from '@/lib/i18n';
+import { collectionPath, isLocale, localeFromId, stripLocaleFromId } from '@/lib/i18n';
+import { buildArticleSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
   const articles = await getCollection('knowledge', ({ data }) => !data.draft);
@@ -26,9 +27,28 @@ if (!isLocale(lang)) {
 }
 
 const { Content } = await render(article);
+const canonicalPath = collectionPath(lang, 'knowledge', article.id);
+const publishedTime = article.data.publishedAt.toISOString();
+const modifiedTime = (article.data.updatedAt ?? article.data.publishedAt).toISOString();
 ---
 
-<BaseLayout locale={lang} title={article.data.title} description={article.data.description}>
+<BaseLayout
+  locale={lang}
+  title={article.data.title}
+  description={article.data.description}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
+  structuredData={buildArticleSchema({
+    title: article.data.title,
+    description: article.data.description,
+    path: canonicalPath,
+    locale: lang,
+    publishedTime: article.data.publishedAt,
+    modifiedTime: article.data.updatedAt,
+  })}
+>
   <article>
     <p class="meta">{article.data.area}</p>
     <h1>{article.data.title}</h1>
