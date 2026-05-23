@@ -1,7 +1,7 @@
 ---
 import { siteConfig } from '@/config/site';
 import { absoluteUrl } from '@/utils/seo';
-import type { Locale } from '@/lib/i18n';
+import { buildHreflangAlternates, defaultLocale, localePath, type Locale } from '@/lib/i18n';
 
 interface Props {
   title: string;
@@ -34,6 +34,9 @@ const {
 const canonicalUrl = absoluteUrl(canonicalPath);
 const imageUrl = absoluteUrl(ogImage);
 const ogLocale = siteConfig.ogLocale[locale];
+const hreflangAlternates =
+  alternateLocales.length > 0 ? alternateLocales : buildHreflangAlternates(canonicalPath);
+const xDefaultUrl = absoluteUrl(localePath(canonicalPath, defaultLocale));
 const schemas = structuredData
   ? Array.isArray(structuredData)
     ? structuredData
@@ -45,15 +48,11 @@ const schemas = structuredData
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalUrl} />
 {
-  alternateLocales.map(({ locale: altLocale, path }) => (
+  hreflangAlternates.map(({ locale: altLocale, path }) => (
     <link rel="alternate" hreflang={altLocale} href={absoluteUrl(path)} />
   ))
 }
-{
-  alternateLocales.length > 0 && (
-    <link rel="alternate" hreflang="x-default" href={absoluteUrl(`/${alternateLocales[0]?.locale ?? 'zh'}/`)} />
-  )
-}
+<link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
 <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
 
 <meta property="og:type" content={ogType} />

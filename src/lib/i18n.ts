@@ -24,6 +24,45 @@ export function collectionPath(locale: Locale, collection: 'blog' | 'knowledge',
   return `/${locale}/${collection}/${stripLocaleFromId(id, locale)}/`;
 }
 
+/** Swap the locale prefix on a canonical path (e.g. `/zh/blog/` → `/en/blog/`). */
+export function localePath(path: string, locale: Locale): string {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const match = normalized.match(/^\/(zh|en)(?=\/|$)(\/.*)?$/);
+
+  if (!match) {
+    return `/${locale}${normalized === '/' ? '/' : normalized}`;
+  }
+
+  const suffix = match[2] ?? '/';
+  return `/${locale}${suffix}`;
+}
+
+/** Hreflang alternates for every locale that shares this URL shape. */
+export function buildHreflangAlternates(canonicalPath: string): { locale: Locale; path: string }[] {
+  return locales.map((locale) => ({
+    locale,
+    path: localePath(canonicalPath, locale),
+  }));
+}
+
+/** Hreflang alternates limited to locales where matching content exists. */
+export function buildContentAlternateLocales(
+  collection: 'blog' | 'knowledge',
+  entryId: string,
+  entryIds: Iterable<string>
+): { locale: Locale; path: string }[] {
+  const locale = localeFromId(entryId);
+  const slug = stripLocaleFromId(entryId, locale);
+  const idSet = new Set(entryIds);
+
+  return locales
+    .filter((targetLocale) => idSet.has(`${targetLocale}/${slug}`))
+    .map((targetLocale) => ({
+      locale: targetLocale,
+      path: collectionPath(targetLocale, collection, `${targetLocale}/${slug}`),
+    }));
+}
+
 export const ui = {
   zh: {
     siteTitle: 'PeterClaw',
