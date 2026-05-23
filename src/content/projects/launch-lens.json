@@ -1,6 +1,6 @@
 {
   "title": "Launch Lens",
-  "description": "A lightweight dashboard for tracking personal experiments from idea to shipped result.",
+  "description": "用于追踪个人实验从创意到上线全过程的轻量级仪表盘。",
   "tags": ["experiments", "analytics", "workflow"],
   "draft": false
 }

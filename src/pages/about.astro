@@ -1,17 +1,66 @@
 ---
 import ContentLayout from "../layouts/ContentLayout.astro";
+
+const skills = [
+  "React", "TypeScript", "Node.js", "Astro",
+  "Next.js", "Tailwind CSS", "PostgreSQL", "Docker",
+  "Vercel", "GitHub Actions",
+];
 ---
 
 <ContentLayout title="About" description="关于 Peterclaw 的背景、兴趣与联系方式。">
-  <div class="max-w-3xl space-y-5 text-base leading-8 text-muted">
-    <p>
-      你好，我是 Peter，一名全栈开发者与产品设计师。过去五年里，我专注于构建高性能、用户友好的数字产品，从前端交互到后端架构，从视觉设计到生产部署，我相信好的技术产品源于对每一个细节的执着追求。
-    </p>
-    <p>
-      我的工作围绕现代 Web 技术栈展开，包括 React、TypeScript、Node.js 与各种云平台。除了写代码，我也热衷于开源社区贡献与技术写作，喜欢把复杂的技术概念用简单的方式解释清楚。
-    </p>
-    <p>
-      在这个网站里，我会分享项目经验、技术思考，以及我在探索新技术时的点滴收获。如果你对我的工作感兴趣，欢迎通过邮件或社交媒体与我联系。
-    </p>
+  <div class="max-w-3xl space-y-8 text-base leading-8 text-muted">
+    <div class="space-y-5">
+      <p>
+        你好，我是 Peter，一名全栈开发者与产品设计师。过去五年里，我专注于构建高性能、用户友好的数字产品，从前端交互到后端架构，从视觉设计到生产部署，我相信好的技术产品源于对每一个细节的执着追求。
+      </p>
+      <p>
+        我的工作围绕现代 Web 技术栈展开，包括 React、TypeScript、Node.js 与各种云平台。除了写代码，我也热衷于开源社区贡献与技术写作，喜欢把复杂的技术概念用简单的方式解释清楚。
+      </p>
+      <p>
+        在这个网站里，我会分享项目经验、技术思考，以及我在探索新技术时的点滴收获。
+      </p>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-sm font-semibold uppercase tracking-widest text-white/50">技能栈</h2>
+      <div class="flex flex-wrap gap-2">
+        {skills.map((skill) => (
+          <span class="border border-accent-soft bg-accent-soft/20 px-3 py-1 font-mono text-xs text-accent">
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-sm font-semibold uppercase tracking-widest text-white/50">联系方式</h2>
+      <ul class="space-y-2">
+        <li>
+          <a
+            href="mailto:littlekyang@gmail.com"
+            class="inline-flex items-center gap-2 transition hover:text-accent"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            littlekyang@gmail.com
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://github.com/yangliang2"
+            target="_blank"
+            rel="noreferrer"
+            class="inline-flex items-center gap-2 transition hover:text-accent"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            github.com/yangliang2
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </ContentLayout>

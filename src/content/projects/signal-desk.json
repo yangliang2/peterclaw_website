@@ -1,6 +1,6 @@
 {
   "title": "Signal Desk",
-  "description": "A quiet command center for collecting product signals, release notes, and decision logs in one searchable place.",
+  "description": "将产品信号、发布说明和决策日志集中到一个可搜索空间的轻量指挥台。",
   "tags": ["product", "notes", "dashboard"],
   "draft": false
 }

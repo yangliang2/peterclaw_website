@@ -1,6 +1,6 @@
 {
   "title": "Type Trail",
-  "description": "A developer note system that turns small implementation discoveries into durable Markdown references.",
+  "description": "将开发过程中的细小发现转化为可持久检索的 Markdown 笔记系统。",
   "tags": ["writing", "typescript", "knowledge-base"],
   "draft": false
 }
