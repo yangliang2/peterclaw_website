@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-05-23T13:50:36.429Z",
+  "baseUrl": "http://127.0.0.1:4321",
+  "viewports": [
+    {
+      "name": "375-iphone-se",
+      "width": 375,
+      "height": 667
+    },
+    {
+      "name": "768-ipad",
+      "width": 768,
+      "height": 1024
+    }
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "path": "/zh/"
+    },
+    {
+      "slug": "blog-list",
+      "path": "/zh/blog/"
+    },
+    {
+      "slug": "article-detail",
+      "path": "/zh/knowledge/content-architecture/"
+    }
+  ],
+  "blockerCount": 0,
+  "nitCount": 0,
+  "issues": []
+}

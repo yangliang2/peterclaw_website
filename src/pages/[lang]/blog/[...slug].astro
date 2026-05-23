@@ -1,11 +1,18 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { collectionPath, isLocale, localeFromId, stripLocaleFromId } from '@/lib/i18n';
+import {
+  buildContentAlternateLocales,
+  collectionPath,
+  isLocale,
+  localeFromId,
+  stripLocaleFromId
+} from '@/lib/i18n';
 import { buildArticleSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const postIds = posts.map((entry) => entry.id);
 
   return posts.map((post) => {
     const lang = localeFromId(post.id);
@@ -15,12 +22,15 @@ export async function getStaticPaths() {
         lang,
         slug: stripLocaleFromId(post.id, lang)
       },
-      props: { post }
+      props: {
+        post,
+        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds)
+      }
     };
   });
 }
 
-const { post } = Astro.props;
+const { post, alternateLocales } = Astro.props;
 const { lang } = Astro.params;
 if (!isLocale(lang)) {
   return Astro.redirect('/zh/blog/');
@@ -48,6 +58,7 @@ const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString(
     publishedTime: post.data.publishedAt,
     modifiedTime: post.data.updatedAt,
   })}
+  alternateLocales={alternateLocales}
 >
   <article>
     <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
