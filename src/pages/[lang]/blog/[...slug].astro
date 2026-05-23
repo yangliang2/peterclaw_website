@@ -1,0 +1,34 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { isLocale, stripLocaleFromId } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: {
+      lang: post.data.locale,
+      slug: stripLocaleFromId(post.id, post.data.locale)
+    },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const { Content } = await render(post);
+---
+
+<BaseLayout locale={lang} title={post.data.title} description={post.data.description}>
+  <article>
+    <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
+    <h1>{post.data.title}</h1>
+    <p class="lede">{post.data.description}</p>
+    <Content />
+  </article>
+</BaseLayout>

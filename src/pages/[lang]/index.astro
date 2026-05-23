@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collectionPath, isLocale, ui } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/');
+}
+
+const copy = ui[lang];
+const [blog, knowledge] = await Promise.all([
+  getCollection('blog', ({ data }) => data.locale === lang && !data.draft),
+  getCollection('knowledge', ({ data }) => data.locale === lang && !data.draft)
+]);
+
+const latest = [...blog, ...knowledge]
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 6);
+---
+
+<BaseLayout locale={lang} title={copy.siteTitle} description={copy.tagline}>
+  <section class="hero">
+    <h1>{copy.siteTitle}</h1>
+    <p class="lede">{copy.tagline}</p>
+  </section>
+
+  <section>
+    <h2>{copy.latest}</h2>
+    <div class="content-list">
+      {
+        latest.map((entry) => (
+          <a class="content-item" href={collectionPath(lang, entry.collection, entry.id)}>
+            <span class="meta">{entry.collection}</span>
+            <h3>{entry.data.title}</h3>
+            <p>{entry.data.description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

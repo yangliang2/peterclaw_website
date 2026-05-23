@@ -1,0 +1,105 @@
+---
+import BaseAnalytics from '@/components/BaseAnalytics.astro';
+import Footer from '@/components/Footer.astro';
+import Navbar from '@/components/Navbar.astro';
+import { ui, type Locale } from '@/lib/i18n';
+import '@/styles/theme.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  locale: Locale;
+}
+
+const { title, description, locale } = Astro.props;
+const copy = ui[locale];
+const pageTitle = title ? `${title} | ${copy.siteTitle}` : copy.siteTitle;
+const pageDescription = description ?? copy.tagline;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={pageDescription} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <title>{pageTitle}</title>
+    <BaseAnalytics />
+  </head>
+  <body>
+    <Navbar locale={locale} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  main {
+    width: min(100%, 960px);
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  .hero {
+    padding: 4rem 0 3rem;
+    border-top: var(--border-glass);
+    border-bottom: var(--border-glass);
+  }
+
+  h1 {
+    max-width: 780px;
+    margin: 0 0 1rem;
+    font-size: clamp(2.5rem, 7vw, 5.25rem);
+  }
+
+  .lede {
+    max-width: 680px;
+    color: var(--color-text-muted);
+    font-size: 1.2rem;
+  }
+
+  .content-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .content-item {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem;
+    color: inherit;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+
+  .content-item h2,
+  .content-item h3 {
+    margin: 0;
+  }
+
+  .meta {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+
+  article {
+    max-width: 760px;
+  }
+
+  article img {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

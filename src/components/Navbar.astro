@@ -1,0 +1,74 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale];
+const prefix = `/${locale}`;
+const navItems = [
+  { name: copy.blog, href: `${prefix}/blog/` },
+  { name: copy.knowledge, href: `${prefix}/knowledge/` }
+];
+---
+
+<nav class="navbar" aria-label="Primary">
+  <div class="container">
+    <a href={`${prefix}/`} class="logo">
+      <span class="gradient-text">{copy.siteTitle}</span>
+    </a>
+    <ul class="nav-links">
+      {navItems.map((item) => <li><a href={item.href}>{item.name}</a></li>)}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: var(--space-md) 0;
+    background: rgba(5, 5, 5, 0.78);
+    border-bottom: var(--border-glass);
+    backdrop-filter: blur(12px);
+  }
+
+  .navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: var(--space-lg);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .nav-links a:hover {
+    color: var(--color-text);
+  }
+
+  @media (max-width: 640px) {
+    .navbar .container {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
