@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const copy = ui[lang];
+const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+---
+
+<BaseLayout locale={lang} title={copy.blog}>
+  <h1>{copy.blog}</h1>
+  <div class="content-list">
+    {
+      posts.map((post) => (
+        <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+          <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>
