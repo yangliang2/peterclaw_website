@@ -6,7 +6,7 @@
 
 - `src/content/blog/<locale>/*.md`
 - `src/content/knowledge/<locale>/*.md`
-- Frontmatter 字段：`title`、`description`、`locale`、`publishedAt`、`tags`、`draft`
+- Frontmatter 字段：`title`、`description`、`publishedAt`、`tags`、`draft`；locale 从内容路径前缀推导
 
 ## 流程
 

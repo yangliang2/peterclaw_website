@@ -7,6 +7,15 @@ export function isLocale(value: string | undefined): value is Locale {
   return locales.includes(value as Locale);
 }
 
+export function localeFromId(id: string): Locale {
+  const [prefix] = id.split('/');
+  if (!isLocale(prefix)) {
+    throw new Error(`Content id "${id}" must start with a supported locale.`);
+  }
+
+  return prefix;
+}
+
 export function stripLocaleFromId(id: string, locale: Locale) {
   return id.replace(new RegExp(`^${locale}/`), '').replace(/\/index$/, '');
 }

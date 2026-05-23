@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { collectionPath, isLocale, ui } from '@/lib/i18n';
+import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -14,8 +14,8 @@ if (!isLocale(lang)) {
 
 const copy = ui[lang];
 const [blog, knowledge] = await Promise.all([
-  getCollection('blog', ({ data }) => data.locale === lang && !data.draft),
-  getCollection('knowledge', ({ data }) => data.locale === lang && !data.draft)
+  getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft),
+  getCollection('knowledge', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)
 ]);
 
 const latest = [...blog, ...knowledge]

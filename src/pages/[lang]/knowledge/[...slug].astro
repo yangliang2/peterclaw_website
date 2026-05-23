@@ -1,18 +1,22 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { isLocale, stripLocaleFromId } from '@/lib/i18n';
+import { isLocale, localeFromId, stripLocaleFromId } from '@/lib/i18n';
 
 export async function getStaticPaths() {
   const articles = await getCollection('knowledge', ({ data }) => !data.draft);
 
-  return articles.map((article) => ({
-    params: {
-      lang: article.data.locale,
-      slug: stripLocaleFromId(article.id, article.data.locale)
-    },
-    props: { article }
-  }));
+  return articles.map((article) => {
+    const lang = localeFromId(article.id);
+
+    return {
+      params: {
+        lang,
+        slug: stripLocaleFromId(article.id, lang)
+      },
+      props: { article }
+    };
+  });
 }
 
 const { article } = Astro.props;
