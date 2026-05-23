@@ -1,10 +1,19 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import { siteConfig } from "../config/site";
+import { buildOrganizationSchema, buildWebSiteSchema } from "../utils/seo";
+
+const pageTitle = `${siteConfig.name} | AI-Native Digital Hub`;
 ---
 
-<BaseLayout title="PeterClaw | AI-Native Digital Hub">
+<BaseLayout
+  title={pageTitle}
+  description={siteConfig.description}
+  canonicalPath="/"
+  structuredData={[buildWebSiteSchema(), buildOrganizationSchema()]}
+>
 	<Navbar />
 	<main class="container">
 		<header class="hero">

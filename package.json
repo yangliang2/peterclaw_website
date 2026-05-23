@@ -2,14 +2,21 @@
   "name": "peterclaw-website",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "measure:cwv": "node scripts/measure-cwv.mjs"
   },
   "dependencies": {
-    "astro": "^4.0.0"
+    "@astrojs/sitemap": "^3.4.1",
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "chrome-launcher": "^1.1.2",
+    "lighthouse": "^12.6.0"
   }
 }

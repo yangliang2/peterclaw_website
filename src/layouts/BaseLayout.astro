@@ -1,46 +1,80 @@
 ---
+import BaseAnalytics from "../components/BaseAnalytics.astro";
+import Seo from "../components/Seo.astro";
+import { siteConfig } from "../config/site";
+import "../styles/theme.css";
+
 interface Props {
-	title: string;
-	description?: string;
+  title: string;
+  description?: string;
+  canonicalPath?: string;
+  ogType?: "website" | "article";
+  ogImage?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  alternateLocales?: { locale: string; path: string }[];
+  noindex?: boolean;
 }
 
-const { title, description = "PeterClaw - AI-Native Digital Hub" } = Astro.props;
-import '../styles/theme.css';
-import BaseAnalytics from '../components/BaseAnalytics.astro';
+const {
+  title,
+  description = siteConfig.description,
+  canonicalPath,
+  ogType,
+  ogImage,
+  publishedTime,
+  modifiedTime,
+  structuredData,
+  alternateLocales,
+  noindex,
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		<meta name="description" content={description} />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-		<BaseAnalytics />
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang={siteConfig.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+    <Seo
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      ogType={ogType}
+      ogImage={ogImage}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      structuredData={structuredData}
+      alternateLocales={alternateLocales}
+      noindex={noindex}
+    />
+    <BaseAnalytics />
+  </head>
+  <body>
+    <slot />
+  </body>
 </html>
 
 <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		background: #13151a;
-	}
+  html {
+    background: #13151a;
+  }
 </style>
