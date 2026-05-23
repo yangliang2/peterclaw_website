@@ -4,6 +4,8 @@ import BaseHead from '@/components/BaseHead.astro';
 import Footer from '@/components/Footer.astro';
 import Navbar from '@/components/Navbar.astro';
 import { ui, type Locale } from '@/lib/i18n';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
 import '@/styles/theme.css';
 
 interface Props {
@@ -45,12 +47,6 @@ const pageDescription = description ?? copy.tagline;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono&display=swap"
-      rel="stylesheet"
-    />
     <BaseHead
       title={pageTitle}
       description={pageDescription}
