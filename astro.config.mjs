@@ -7,8 +7,9 @@ export default defineConfig({
   output: 'static',
   integrations: [sitemap()],
   adapter: vercel({
+    // Umami handles analytics; inline Vercel Insights hurts Lighthouse on static HTML.
     webAnalytics: {
-      enabled: true,
+      enabled: false,
     },
   }),
   i18n: {
