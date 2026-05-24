@@ -5,7 +5,7 @@ export const siteConfig = {
   twitterHandle: '@peterclaw',
   defaultOgImage: '/og-default.png',
   author: {
-    name: 'Peter',
+    name: 'PeterClaw',
     url: 'https://github.com/yangliang2',
   },
   ogLocale: {
