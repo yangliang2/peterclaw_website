@@ -14,6 +14,7 @@ export type ArticleSchemaInput = {
   publishedTime: Date;
   modifiedTime?: Date;
   imagePath?: string;
+  type?: 'Article' | 'BlogPosting';
 };
 
 export function absoluteUrl(path = '/'): string {
@@ -98,7 +99,7 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': input.type ?? 'Article',
     headline: input.title,
     description: input.description,
     url,
