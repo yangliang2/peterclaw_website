@@ -72,7 +72,11 @@ export const ui = {
     knowledge: '知识库',
     latest: '最新内容',
     back: '返回',
-    comments: '评论'
+    comments: '评论',
+    search: '搜索',
+    searchTitle: '全文搜索',
+    searchDescription: '搜索博客与知识库文章。',
+    searchPlaceholder: '输入关键词…'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -82,6 +86,10 @@ export const ui = {
     knowledge: 'Knowledge Base',
     latest: 'Latest',
     back: 'Back',
-    comments: 'Comments'
+    comments: 'Comments',
+    search: 'Search',
+    searchTitle: 'Site search',
+    searchDescription: 'Search blog posts and knowledge base articles.',
+    searchPlaceholder: 'Search keywords…'
   }
 } satisfies Record<Locale, Record<string, string>>;
