@@ -1,0 +1,274 @@
+---
+interface TocHeading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  metaItems: string[];
+  readingMinutes: number;
+  headings: TocHeading[];
+}
+
+const { title, description, metaItems, readingMinutes, headings } = Astro.props;
+const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const hasToc = tocHeadings.length > 0;
+const readingLabel = `约 ${readingMinutes} 分钟`;
+const articleMeta = [...metaItems, readingLabel];
+---
+
+<div class="article-reader">
+  <article class="article-content">
+    <p class="meta">
+      {articleMeta.map((item, index) => (
+        <>
+          {index > 0 && <span aria-hidden="true"> · </span>}
+          <span>{item}</span>
+        </>
+      ))}
+    </p>
+    <h1>{title}</h1>
+    <p class="lede">{description}</p>
+    <slot />
+  </article>
+
+  {hasToc && (
+    <aside class="article-toc" aria-label="文章目录">
+      <details class="toc-mobile">
+        <summary>目录</summary>
+        <nav>
+          {tocHeadings.map((heading) => (
+            <a class={`toc-link depth-${heading.depth}`} href={`#${heading.slug}`}>{heading.text}</a>
+          ))}
+        </nav>
+      </details>
+
+      <nav class="toc-desktop" aria-label="文章目录">
+        <p>目录</p>
+        {tocHeadings.map((heading) => (
+          <a class={`toc-link depth-${heading.depth}`} href={`#${heading.slug}`}>{heading.text}</a>
+        ))}
+      </nav>
+    </aside>
+  )}
+</div>
+
+<script>
+  const article = document.querySelector('.article-content');
+  const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc-link'));
+
+  const setActiveToc = (id: string) => {
+    tocLinks.forEach((link) => {
+      link.toggleAttribute('aria-current', link.hash === `#${id}`);
+    });
+  };
+
+  const observedHeadings = tocLinks
+    .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+    .filter((heading): heading is HTMLElement => Boolean(heading));
+
+  if (observedHeadings.length > 0) {
+    setActiveToc(observedHeadings[0].id);
+
+    const headingObserver = new IntersectionObserver(
+      (entries) => {
+        const visibleHeading = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]?.target;
+
+        if (visibleHeading instanceof HTMLElement) {
+          setActiveToc(visibleHeading.id);
+        }
+      },
+      { rootMargin: '-20% 0px -65% 0px', threshold: 0.01 }
+    );
+
+    observedHeadings.forEach((heading) => headingObserver.observe(heading));
+  }
+
+  const copyText = async (text: string) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    document.body.append(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+  };
+
+  article?.querySelectorAll('pre').forEach((block) => {
+    if (block.querySelector('.code-copy')) {
+      return;
+    }
+
+    const code = block.querySelector('code');
+    if (!code?.textContent?.trim()) {
+      return;
+    }
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'code-copy';
+    button.textContent = '复制';
+    button.setAttribute('aria-label', '复制代码');
+    block.append(button);
+
+    button.addEventListener('click', async () => {
+      try {
+        await copyText(code.textContent ?? '');
+        button.textContent = '已复制';
+        button.dataset.copied = 'true';
+        window.setTimeout(() => {
+          button.textContent = '复制';
+          delete button.dataset.copied;
+        }, 1800);
+      } catch {
+        button.textContent = '失败';
+        window.setTimeout(() => {
+          button.textContent = '复制';
+        }, 1800);
+      }
+    });
+  });
+</script>
+
+<style>
+  .article-reader {
+    display: grid;
+    grid-template-columns: minmax(0, 720px) 200px;
+    gap: 2.5rem;
+    align-items: start;
+    justify-content: center;
+  }
+
+  .article-content {
+    min-width: 0;
+  }
+
+  .article-toc {
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6rem);
+    overflow: auto;
+  }
+
+  .toc-desktop {
+    display: grid;
+    gap: 0.15rem;
+    padding: 1rem 0 1rem 1rem;
+    border-left: 1px solid var(--color-line);
+  }
+
+  .toc-desktop p {
+    margin: 0 0 0.5rem;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .toc-mobile {
+    display: none;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 0.35rem 0;
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .toc-link:hover,
+  .toc-link[aria-current='true'] {
+    color: var(--color-primary);
+  }
+
+  .toc-link.depth-3 {
+    padding-left: 0.85rem;
+  }
+
+  :global(.article-content h2),
+  :global(.article-content h3) {
+    scroll-margin-top: 5rem;
+  }
+
+  :global(.article-content pre) {
+    position: relative;
+    padding-top: 3.25rem;
+  }
+
+  :global(.article-content .code-copy) {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1;
+    min-width: 4rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+    font: 600 0.75rem var(--font-sans);
+    cursor: pointer;
+  }
+
+  :global(.article-content .code-copy:hover),
+  :global(.article-content .code-copy[data-copied='true']) {
+    border-color: var(--color-primary);
+    color: #fff;
+    background: rgba(59, 130, 246, 0.22);
+  }
+
+  @media (max-width: 920px) {
+    .article-reader {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .article-content {
+      width: 100%;
+      order: 2;
+    }
+
+    .article-toc {
+      position: static;
+      order: 1;
+      width: 100%;
+      max-height: none;
+    }
+
+    .toc-desktop {
+      display: none;
+    }
+
+    .toc-mobile {
+      display: block;
+      border: var(--border-glass);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .toc-mobile summary {
+      padding: 0.8rem 1rem;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .toc-mobile nav {
+      display: grid;
+      padding: 0 1rem 1rem;
+    }
+  }
+</style>

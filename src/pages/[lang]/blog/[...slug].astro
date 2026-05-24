@@ -9,6 +9,8 @@ import {
   stripLocaleFromId
 } from '@/lib/i18n';
 import { buildArticleSchema } from '@/utils/seo';
+import ArticleReader from '@/components/ArticleReader.astro';
+import { estimateReadingMinutes } from '@/utils/reading';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -36,11 +38,13 @@ if (!isLocale(lang)) {
   return Astro.redirect('/zh/blog/');
 }
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
+const publishedDate = post.data.publishedAt.toISOString().slice(0, 10);
+const readingMinutes = estimateReadingMinutes(post.body);
 ---
 
 <BaseLayout
@@ -63,10 +67,13 @@ const ogImage = post.data.ogImage;
   })}
   alternateLocales={alternateLocales}
 >
-  <article>
-    <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
-    <h1>{post.data.title}</h1>
-    <p class="lede">{post.data.description}</p>
+  <ArticleReader
+    title={post.data.title}
+    description={post.data.description}
+    metaItems={[publishedDate]}
+    readingMinutes={readingMinutes}
+    headings={headings}
+  >
     <Content />
-  </article>
+  </ArticleReader>
 </BaseLayout>
