@@ -85,6 +85,17 @@
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease !important;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

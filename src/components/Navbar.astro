@@ -110,6 +110,7 @@ const navItems = [
 <script>
   (() => {
     const storageKey = 'peterclaw-theme';
+    const root = document.documentElement;
     const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
 
     function hasStoredPreference() {
@@ -119,6 +120,11 @@ const navItems = [
       } catch {
         return false;
       }
+    }
+
+    function enableTransition() {
+      root.classList.add('theme-transition');
+      window.setTimeout(() => root.classList.remove('theme-transition'), 300);
     }
 
     function syncToggleState(theme: 'light' | 'dark') {
@@ -134,7 +140,7 @@ const navItems = [
     }
 
     function applyTheme(theme: 'light' | 'dark', persist = false) {
-      document.documentElement.dataset.theme = theme;
+      root.dataset.theme = theme;
       if (persist) {
         try {
           localStorage.setItem(storageKey, theme);
@@ -146,15 +152,15 @@ const navItems = [
     }
 
     requestAnimationFrame(() => {
-      document.documentElement.classList.add('theme-transition');
+      root.classList.add('theme-transition');
     });
 
-
     if (toggle) {
-      const currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      const currentTheme = root.dataset.theme === 'dark' ? 'dark' : 'light';
       syncToggleState(currentTheme);
       toggle.addEventListener('click', () => {
-        const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        enableTransition();
         applyTheme(nextTheme, true);
       });
     }
