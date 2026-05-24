@@ -4,13 +4,36 @@ const currentYear = new Date().getFullYear();
 
 <footer class="footer" data-pagefind-ignore="all">
   <div class="container footer-content">
-    <p>&copy; {currentYear} PeterClaw. Built by AI Squad.</p>
-    <div class="social-links">
-      <a href="https://github.com/yangliang2" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="/rss.xml">RSS</a>
+    <div class="footer-info">
+      <p>&copy; {currentYear} PeterClaw. Built by AI Squad.</p>
+      <div class="social-links">
+        <a href="https://github.com/yangliang2" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="/rss.xml">RSS</a>
+      </div>
+    </div>
+    
+    <div class="newsletter-box">
+      <form class="newsletter-form" id="newsletter-footer">
+        <input type="email" placeholder="Email for updates..." required aria-label="Email for newsletter" />
+        <button type="submit" class="btn-subscribe">Subscribe</button>
+      </form>
     </div>
   </div>
 </footer>
+
+<script>
+  const form = document.getElementById('newsletter-footer') as HTMLFormElement;
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (form.querySelector('input[type="email"]') as HTMLInputElement).value;
+      if (email) {
+        window.trackEvent('newsletter_subscribe', { location: 'footer' });
+        form.innerHTML = '<p class="success">Thanks for subscribing!</p>';
+      }
+    });
+  }
+</script>
 
 <style>
   .footer {
@@ -23,9 +46,15 @@ const currentYear = new Date().getFullYear();
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--space-md);
+    gap: var(--space-xl);
     color: var(--color-text-muted);
     font-size: 0.875rem;
+  }
+
+  .footer-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
   }
 
   .footer p {
@@ -37,10 +66,53 @@ const currentYear = new Date().getFullYear();
     gap: var(--space-md);
   }
 
-  @media (max-width: 640px) {
+  .newsletter-box {
+    flex-shrink: 0;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .newsletter-form input {
+    background: rgba(255, 255, 255, 0.05);
+    border: var(--border-glass);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    width: 200px;
+  }
+
+  .btn-subscribe {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-subscribe:hover {
+    opacity: 0.9;
+  }
+
+  .success {
+    color: var(--color-secondary);
+    margin: 0;
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
     .footer-content {
       align-items: flex-start;
       flex-direction: column;
+    }
+    .newsletter-form input {
+      width: 100%;
     }
   }
 </style>

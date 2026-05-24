@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   buildContentAlternateLocales,
@@ -68,5 +69,6 @@ const ogImage = article.data.ogImage;
     <h1>{article.data.title}</h1>
     <p class="lede">{article.data.description}</p>
     <Content />
+    <SocialShare title={article.data.title} url={Astro.url.href} />
   </article>
 </BaseLayout>

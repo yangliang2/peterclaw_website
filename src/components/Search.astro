@@ -23,6 +23,49 @@ const initialQuery = Astro.url.searchParams.get('q') ?? '';
   />
 </div>
 
+<script>
+  function initSearchTracking() {
+    const searchRoot = document.querySelector('.search-root');
+    if (!searchRoot) return;
+
+    let searchTimeout: ReturnType<typeof setTimeout>;
+
+    // Track search input with debouncing
+    searchRoot.addEventListener('input', (event) => {
+      const input = event.target as HTMLInputElement;
+      if (!input.classList.contains('pagefind-ui__search-input')) return;
+
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const query = input.value.trim();
+        if (query.length > 2) {
+          window.trackEvent('search', { query });
+        }
+      }, 1000);
+    });
+
+    // Track result clicks
+    searchRoot.addEventListener('click', (event) => {
+      const resultLink = (event.target as HTMLElement).closest('.pagefind-ui__result-link') as HTMLAnchorElement;
+      if (!resultLink) return;
+
+      const queryInput = searchRoot.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+      const title = resultLink.innerText;
+      const url = resultLink.getAttribute('href');
+
+      window.trackEvent('search_result_click', {
+        query: queryInput?.value || '',
+        title,
+        url
+      });
+    });
+  }
+
+  // Initialize on load and on view transitions (if used)
+  initSearchTracking();
+  document.addEventListener('astro:after-swap', initSearchTracking);
+</script>
+
 <style>
   .search-root {
     --pagefind-ui-scale: 1;
