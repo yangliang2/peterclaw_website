@@ -9,6 +9,12 @@ npm install
 npm run dev
 ```
 
+Run the content quality gate before publishing content changes:
+
+```sh
+npm run quality:content
+```
+
 ## Content Architecture
 
 Content is stored in Astro Content Collections:
@@ -18,7 +24,7 @@ Content is stored in Astro Content Collections:
 
 Locale routes are scaffolded under `src/pages/[lang]/` with `zh` and `en` enabled.
 
-The publishing automation draft lives in `docs/content-publishing-pipeline.md`.
+The publishing automation draft lives in `docs/content-publishing-pipeline.md`. The release checklist lives in `docs/content-quality-checklist.md`.
 
 ## Comments (Giscus)
 
