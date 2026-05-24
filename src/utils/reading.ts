@@ -29,7 +29,7 @@ export function estimateReadingMinutes(body: string): number {
   const content = stripFrontmatter(body);
   const chinese = countChineseCharacters(content);
   const english = countEnglishWords(content);
-  const minutes = chinese / 300 + english / 200;
+  const minutes = chinese / 400 + english / 200;
   return Math.max(1, Math.ceil(minutes));
 }
 
