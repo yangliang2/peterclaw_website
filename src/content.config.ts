@@ -11,7 +11,7 @@ const sharedContentSchema = z.object({
   updatedAt: z.date().optional(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
-  /** Absolute path from site root, e.g. /og-default.png or /images/post-cover.png */
+  /** Optional custom cover. Omit or use /og-default.png to auto-generate /og/{collection}/{locale}/{slug}.png */
   ogImage: z.string().optional(),
   /** Filename under src/assets/blog/covers/, e.g. journal.svg */
   cover: z.string().optional(),
