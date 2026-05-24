@@ -23,7 +23,7 @@ const navItems = [
     <ul class="nav-links">
       {navItems.map((item) => <li><a href={item.href}>{item.name}</a></li>)}
       <li>
-        <a href={`${prefix}/search/`} class="search-link" aria-label={copy.search}>
+        <a href={`${prefix}/search/`} class="search-link" aria-label={copy.search} data-track="Search Link Click">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"

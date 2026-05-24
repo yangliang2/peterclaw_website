@@ -14,6 +14,7 @@ export type ArticleSchemaInput = {
   publishedTime: Date;
   modifiedTime?: Date;
   imagePath?: string;
+  tags?: string[];
 };
 
 export function absoluteUrl(path = '/'): string {
@@ -52,6 +53,23 @@ export function buildOrganizationSchema() {
   };
 }
 
+export function buildPersonSchema() {
+  const siteUrl = getSiteUrl().href;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: siteConfig.author.name,
+    url: siteConfig.author.url,
+    sameAs: [siteConfig.author.url], // Can be expanded with social links
+    jobTitle: 'Software Engineer',
+    worksFor: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+    },
+  };
+}
+
 export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
   return {
     '@context': 'https://schema.org',
@@ -71,7 +89,7 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: input.title,
     description: input.description,
     url,
@@ -97,5 +115,7 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
     },
     image: [image],
     inLanguage: input.locale,
+    copyrightYear: input.publishedTime.getFullYear(),
+    keywords: input.tags?.length ? input.tags : [input.title, siteConfig.name],
   };
 }

@@ -62,6 +62,10 @@ const pageDescription = description ?? copy.tagline;
       noindex={noindex}
     />
     <BaseAnalytics />
+    <script>
+      import { initAutoTracking } from '@/utils/analytics';
+      initAutoTracking();
+    </script>
   </head>
   <body>
     <Navbar locale={locale} />

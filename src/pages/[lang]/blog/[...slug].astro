@@ -60,7 +60,8 @@ const ogImage = post.data.ogImage;
     locale: lang,
     publishedTime: post.data.publishedAt,
     modifiedTime: post.data.updatedAt,
-    imagePath: ogImage,
+    imagePath: post.data.ogImage,
+    tags: post.data.tags,
   })}
   alternateLocales={alternateLocales}
 >

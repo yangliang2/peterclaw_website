@@ -59,7 +59,8 @@ const ogImage = article.data.ogImage;
     locale: lang,
     publishedTime: article.data.publishedAt,
     modifiedTime: article.data.updatedAt,
-    imagePath: ogImage,
+    imagePath: article.data.ogImage,
+    tags: article.data.tags,
   })}
   alternateLocales={alternateLocales}
 >
