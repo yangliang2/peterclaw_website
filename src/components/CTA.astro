@@ -1,0 +1,105 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+import { siteConfig } from '@/config/site';
+
+interface Props {
+  locale: Locale;
+  variant?: 'compact' | 'full';
+}
+
+const { locale, variant = 'full' } = Astro.props;
+const copy = ui[locale];
+---
+
+<div class={`cta-container glass-card ${variant}`}>
+  {variant === 'full' && (
+    <div class="cta-header">
+      <h3>{copy.ctaTitle}</h3>
+      <p>{copy.ctaDescription}</p>
+    </div>
+  )}
+  
+  <div class="cta-actions">
+    <a href={siteConfig.newsletterUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+      {copy.ctaNewsletter}
+    </a>
+    <div class="cta-secondary-actions">
+      <a href="/rss.xml" class="btn btn-secondary">
+        {copy.ctaRSS}
+      </a>
+      <a href={siteConfig.twitterUrl} class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+        {copy.ctaFollow}
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cta-container {
+    padding: 2.5rem;
+    margin: 4rem 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .cta-container.compact {
+    padding: 1.5rem;
+    margin: 2rem 0;
+    gap: 1.25rem;
+  }
+
+  .cta-header h3 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+    background: var(--gradient-ai);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .cta-header p {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .cta-secondary-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .cta-actions .btn {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .compact .cta-actions .btn {
+    max-width: none;
+  }
+
+  @media (min-width: 640px) {
+    .cta-actions {
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .cta-secondary-actions {
+      width: auto;
+    }
+
+    .cta-actions .btn {
+      width: auto;
+    }
+  }
+</style>

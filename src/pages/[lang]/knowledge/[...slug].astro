@@ -4,6 +4,7 @@ import ArticleChat from '@/components/ArticleChat.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import RelatedPosts from '@/components/RelatedPosts.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleFooter from '@/components/ArticleFooter.astro';
 import {
   buildContentAlternateLocales,
   collectionPath,
@@ -113,6 +114,7 @@ const structuredData = [
       <Content />
       <RelatedPosts locale={lang} posts={relatedPosts} />
       <SocialShare title={article.data.title} url={Astro.url.href} />
+      <ArticleFooter locale={lang} />
     </article>
   </div>
   <ArticleChat locale={lang} articleContent={article.body ?? ''} />

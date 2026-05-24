@@ -119,7 +119,12 @@ export const ui = {
     chatErrorGeneric: '出了点问题，请稍后再试。',
     tocTitle: '目录',
     tocToggle: '展开文章目录',
-    popular: '热门文章'
+    popular: '热门文章',
+    ctaTitle: '喜欢这篇内容吗？',
+    ctaDescription: '订阅以获取最新的 AI 团队协作协议与实践。',
+    ctaNewsletter: '订阅 Newsletter',
+    ctaRSS: '订阅 RSS',
+    ctaFollow: '关注 Twitter'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -176,6 +181,11 @@ export const ui = {
     chatErrorGeneric: 'Something went wrong. Please try again.',
     tocTitle: 'On this page',
     tocToggle: 'Show table of contents',
-    popular: 'Popular'
+    popular: 'Popular',
+    ctaTitle: 'Enjoyed this content?',
+    ctaDescription: 'Subscribe for the latest AI team collaboration protocols and practices.',
+    ctaNewsletter: 'Subscribe to Newsletter',
+    ctaRSS: 'Subscribe via RSS',
+    ctaFollow: 'Follow on Twitter'
   }
 } satisfies Record<Locale, Record<string, string>>;
