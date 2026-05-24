@@ -119,7 +119,8 @@ export const ui = {
     chatErrorGeneric: '出了点问题，请稍后再试。',
     tocTitle: '目录',
     tocToggle: '展开文章目录',
-    popular: '热门文章'
+    popular: '热门文章',
+    relatedPosts: '相关文章'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -176,6 +177,7 @@ export const ui = {
     chatErrorGeneric: 'Something went wrong. Please try again.',
     tocTitle: 'On this page',
     tocToggle: 'Show table of contents',
-    popular: 'Popular'
+    popular: 'Popular',
+    relatedPosts: 'Related posts'
   }
 } satisfies Record<Locale, Record<string, string>>;

@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { collectionPath, type Locale } from '@/lib/i18n';
+import { collectionPath, type Locale, ui } from '@/lib/i18n';
 
 type AnyCollectionEntry = CollectionEntry<'blog'> | CollectionEntry<'knowledge'> | CollectionEntry<'product'>;
 
@@ -11,57 +11,45 @@ interface Props {
 }
 
 const { locale, posts, collection = 'blog' } = Astro.props;
-const heading = locale === 'zh' ? '相关文章' : 'Related posts';
+if (posts.length === 0) {
+  return;
+}
+
+const { relatedPosts: heading } = ui[locale];
 ---
 
-{
-  posts.length > 0 && (
-    <aside class="related-posts" aria-label={heading}>
-      <h2>{heading}</h2>
-      <div class="related-list">
-        {posts.map((post) => (
-          <a href={collectionPath(locale, collection, post.id)}>
-            <span class="meta">{'publishedAt' in post.data && post.data.publishedAt ? post.data.publishedAt.toISOString().slice(0, 10) : ''}</span>
-            <strong>{post.data.title}</strong>
-          </a>
-        ))}
-      </div>
-    </aside>
-  )
-}
+<section class="related-posts" aria-labelledby="related-posts-heading">
+  <h2 id="related-posts-heading">{heading}</h2>
+  <div class="content-list">
+    {
+      posts.map((post) => (
+        <a class="content-item" href={collectionPath(locale, collection, post.id)}>
+          <span class="meta">
+            {'publishedAt' in post.data && post.data.publishedAt
+              ? post.data.publishedAt.toISOString().slice(0, 10)
+              : ''}
+          </span>
+          <h3>{post.data.title}</h3>
+          {'description' in post.data && post.data.description ? <p>{post.data.description}</p> : null}
+        </a>
+      ))
+    }
+  </div>
+</section>
 
 <style>
   .related-posts {
-    margin-top: 3.5rem;
-    padding-top: 0.5rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: var(--border-glass);
   }
 
   .related-posts h2 {
-    margin: 0 0 1.25rem;
+    margin: 0 0 0.5rem;
+    font-size: 1.75rem;
   }
 
-  .related-list {
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .related-list a {
-    display: grid;
-    gap: 0.35rem;
-    padding: 1rem 1.25rem;
-    border: var(--border-glass);
-    border-radius: var(--radius-md);
-    background: var(--gradient-glass);
-  }
-
-  .related-list a:hover {
-    border-color: var(--color-primary);
-    background: var(--color-surface-hover);
-  }
-
-  .related-list strong {
-    color: var(--color-heading);
-    font-size: 1rem;
-    line-height: 1.45;
+  .related-posts .content-list {
+    margin-top: 1.5rem;
   }
 </style>
