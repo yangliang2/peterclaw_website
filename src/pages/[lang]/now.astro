@@ -1,0 +1,197 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { nowCopy } from '@/config/now';
+import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/now/');
+}
+
+const copy = nowCopy[lang];
+const prefix = `/${lang}`;
+
+const updatedAt = new Date().toLocaleDateString(
+  lang === 'zh' ? 'zh-CN' : 'en-US',
+  { year: 'numeric', month: 'long', day: 'numeric' }
+);
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.pageTitle}
+  description={copy.metaDescription}
+  canonicalPath={`${prefix}/now/`}
+  alternateLocales={buildHreflangAlternates('/now/')}
+>
+  <section class="hero">
+    <h1>{copy.heroTitle}</h1>
+    <p class="lede">{copy.heroLede}</p>
+    <p class="updated-at">
+      <span class="updated-label">{copy.updatedLabel}</span>
+      <time datetime={new Date().toISOString()}>{updatedAt}</time>
+    </p>
+  </section>
+
+  {
+    copy.sections.map((section) => (
+      <section class="now-section">
+        <h2>{section.heading}</h2>
+        <div class="now-grid">
+          {section.items.map((item) => (
+            <article class="now-card glass-card">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              {item.link && (
+                <a class="now-link" href={item.link.href}>
+                  {item.link.text}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <p class="nownownow-cta">
+    <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer">
+      {copy.nownownowCta}
+    </a>
+  </p>
+</BaseLayout>
+
+<style>
+  .updated-at {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .updated-label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+  }
+
+  .now-section {
+    margin-top: var(--space-xl);
+  }
+
+  .now-section h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .now-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 640px) {
+    .now-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 960px) {
+    .now-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .now-card {
+    padding: var(--space-lg);
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .now-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .now-card h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.3;
+  }
+
+  .now-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .now-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: var(--space-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .now-link:hover {
+    color: var(--color-secondary);
+  }
+
+  .now-link svg {
+    transition: transform 0.2s ease;
+  }
+
+  .now-link:hover svg {
+    transform: translateX(3px);
+  }
+
+  .nownownow-cta {
+    margin-top: var(--space-xl);
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .nownownow-cta a {
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .nownownow-cta a:hover {
+    color: var(--color-primary);
+  }
+</style>
