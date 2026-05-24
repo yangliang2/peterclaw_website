@@ -89,6 +89,7 @@ if (!isLocale(lang)) {
 }
 
 const { Content } = await render(post);
+const allPosts = await getCollection('blog');
 const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
