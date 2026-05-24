@@ -1,0 +1,301 @@
+---
+import type { Locale } from '@/lib/i18n';
+
+type Heading = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+interface Props {
+  locale: Locale;
+  meta: string;
+  title: string;
+  description: string;
+  body: string;
+  headings: Heading[];
+}
+
+const { locale, meta, title, description, body, headings } = Astro.props;
+const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+const plainText = body
+  .replace(/```[\s\S]*?```/g, ' ')
+  .replace(/`[^`]*`/g, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/[#>*_[\]()~|:-]/g, ' ')
+  .replace(/\s+/g, '');
+const readingMinutes = Math.max(1, Math.ceil(plainText.length / 200));
+const copy = locale === 'zh'
+  ? {
+      contents: '目录',
+      readTime: `约 ${readingMinutes} 分钟`,
+      copyCode: '复制',
+      copied: '已复制',
+      failed: '复制失败',
+    }
+  : {
+      contents: 'Contents',
+      readTime: `${readingMinutes} min read`,
+      copyCode: 'Copy',
+      copied: 'Copied',
+      failed: 'Failed',
+    };
+---
+
+<div class="article-shell" data-article-experience data-copy-label={copy.copyCode} data-copied-label={copy.copied} data-copy-failed-label={copy.failed}>
+  <article class="reading-article">
+    <header class="article-header">
+      <p class="meta article-meta">
+        <span>{meta}</span>
+        <span>{copy.readTime}</span>
+      </p>
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+    </header>
+    <div class="article-body">
+      <slot />
+    </div>
+  </article>
+
+  {tocHeadings.length > 0 && (
+    <aside class="article-toc" aria-label={copy.contents}>
+      <details class="article-toc-panel" open>
+        <summary>{copy.contents}</summary>
+        <nav>
+          {tocHeadings.map((heading) => (
+            <a class={`toc-link depth-${heading.depth}`} href={`#${heading.slug}`}>
+              {heading.text}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </aside>
+  )}
+</div>
+
+<script>
+  const initArticleExperience = () => {
+    document.querySelectorAll<HTMLElement>('[data-article-experience]').forEach((root) => {
+      const copyLabel = root.dataset.copyLabel ?? 'Copy';
+      const copiedLabel = root.dataset.copiedLabel ?? 'Copied';
+      const failedLabel = root.dataset.copyFailedLabel ?? 'Failed';
+
+      root.querySelectorAll('pre').forEach((pre) => {
+        if (pre.parentElement?.classList.contains('code-block-shell')) return;
+
+        const shell = document.createElement('div');
+        shell.className = 'code-block-shell';
+        const button = document.createElement('button');
+        button.className = 'code-copy-button';
+        button.type = 'button';
+        button.textContent = copyLabel;
+        button.setAttribute('aria-label', copyLabel);
+
+        pre.parentNode?.insertBefore(shell, pre);
+        shell.append(pre, button);
+
+        button.addEventListener('click', async () => {
+          try {
+            const code = pre.textContent ?? '';
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(code);
+            } else {
+              const textarea = document.createElement('textarea');
+              textarea.value = code;
+              textarea.setAttribute('readonly', '');
+              textarea.style.position = 'fixed';
+              textarea.style.opacity = '0';
+              document.body.append(textarea);
+              textarea.select();
+              document.execCommand('copy');
+              textarea.remove();
+            }
+            button.textContent = copiedLabel;
+            button.classList.add('is-copied');
+          } catch {
+            button.textContent = failedLabel;
+          }
+
+          window.setTimeout(() => {
+            button.textContent = copyLabel;
+            button.classList.remove('is-copied');
+          }, 1600);
+        });
+      });
+
+      const tocLinks = Array.from(root.querySelectorAll<HTMLAnchorElement>('.toc-link'));
+      const sections = tocLinks
+        .map((link) => {
+          const id = decodeURIComponent(link.hash.slice(1));
+          return { link, section: document.getElementById(id) };
+        })
+        .filter((item): item is { link: HTMLAnchorElement; section: HTMLElement } => item.section !== null);
+
+      if (sections.length === 0) return;
+
+      const setActiveLink = (id: string) => {
+        tocLinks.forEach((link) => {
+          link.classList.toggle('is-active', decodeURIComponent(link.hash.slice(1)) === id);
+        });
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const activeEntry = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+          if (activeEntry?.target.id) {
+            setActiveLink(activeEntry.target.id);
+          }
+        },
+        { rootMargin: '-20% 0px -65% 0px', threshold: 0 }
+      );
+
+      sections.forEach(({ section }) => observer.observe(section));
+      setActiveLink(sections[0].section.id);
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initArticleExperience, { once: true });
+  } else {
+    initArticleExperience();
+  }
+</script>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .article-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 720px) minmax(12rem, 16rem);
+    gap: 2.5rem;
+    align-items: start;
+    justify-content: center;
+  }
+
+  .reading-article {
+    min-width: 0;
+  }
+
+  .article-header {
+    margin-bottom: 1rem;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+  }
+
+  .article-meta span + span::before {
+    content: '/';
+    margin-right: 1rem;
+    color: var(--color-line);
+  }
+
+  .article-body h2,
+  .article-body h3 {
+    scroll-margin-top: 5rem;
+  }
+
+  .article-toc {
+    position: sticky;
+    top: 6rem;
+    max-height: calc(100vh - 8rem);
+    overflow: auto;
+    font-size: 0.9rem;
+  }
+
+  .article-toc-panel {
+    border-left: 1px solid var(--color-line);
+    padding-left: 1rem;
+  }
+
+  .article-toc-panel summary {
+    margin-bottom: 0.75rem;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .article-toc nav {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .toc-link {
+    display: block;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .toc-link.depth-3 {
+    padding-left: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .toc-link.is-active {
+    color: var(--color-accent);
+  }
+
+  .code-block-shell {
+    position: relative;
+    margin: 2.5rem 0;
+  }
+
+  .code-block-shell pre {
+    margin: 0;
+    padding-top: 3rem;
+  }
+
+  .code-copy-button {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    min-width: 4.25rem;
+    min-height: 2rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .code-copy-button:hover,
+  .code-copy-button.is-copied {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 900px) {
+    .article-shell {
+      grid-template-columns: minmax(0, 720px);
+    }
+
+    .article-toc {
+      position: static;
+      grid-row: 1;
+      max-height: none;
+      margin-bottom: 2rem;
+      overflow: visible;
+    }
+
+    .article-toc-panel {
+      border: var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      background: var(--gradient-glass);
+    }
+
+    .article-toc-panel:not([open]) summary {
+      margin-bottom: 0;
+    }
+  }
+</style>

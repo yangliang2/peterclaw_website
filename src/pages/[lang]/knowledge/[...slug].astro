@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import ArticleExperience from '@/components/ArticleExperience.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   buildContentAlternateLocales,
@@ -36,7 +37,7 @@ if (!isLocale(lang)) {
   return Astro.redirect('/zh/knowledge/');
 }
 
-const { Content } = await render(article);
+const { Content, headings } = await render(article);
 const canonicalPath = collectionPath(lang, 'knowledge', article.id);
 const publishedTime = article.data.publishedAt.toISOString();
 const modifiedTime = (article.data.updatedAt ?? article.data.publishedAt).toISOString();
@@ -63,10 +64,14 @@ const ogImage = article.data.ogImage;
   })}
   alternateLocales={alternateLocales}
 >
-  <article>
-    <p class="meta">{article.data.area}</p>
-    <h1>{article.data.title}</h1>
-    <p class="lede">{article.data.description}</p>
+  <ArticleExperience
+    locale={lang}
+    meta={article.data.area}
+    title={article.data.title}
+    description={article.data.description}
+    body={article.body ?? ''}
+    headings={headings}
+  >
     <Content />
-  </article>
+  </ArticleExperience>
 </BaseLayout>
