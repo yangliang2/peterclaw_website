@@ -71,7 +71,8 @@ export const ui = {
     blog: '博客',
     knowledge: '知识库',
     latest: '最新内容',
-    back: '返回'
+    back: '返回',
+    comments: '评论'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -80,6 +81,7 @@ export const ui = {
     blog: 'Blog',
     knowledge: 'Knowledge Base',
     latest: 'Latest',
-    back: 'Back'
+    back: 'Back',
+    comments: 'Comments'
   }
 } satisfies Record<Locale, Record<string, string>>;

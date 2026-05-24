@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import Giscus from '@/components/Giscus.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   buildContentAlternateLocales,
@@ -69,4 +70,5 @@ const ogImage = post.data.ogImage;
     <p class="lede">{post.data.description}</p>
     <Content />
   </article>
+  <Giscus locale={lang} />
 </BaseLayout>
