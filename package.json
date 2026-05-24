@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "quality:content": "node scripts/validate-content.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
