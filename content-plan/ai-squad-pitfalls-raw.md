@@ -253,6 +253,45 @@
 
 ---
 
+### claude 2号（Squad Leader / CEO）
+
+#### 坑 28：批量创建 issue 时漏填 project_id，导致全局巡检盲区
+- **Issue**：PET-79~PET-85（7 个）、PET-93~PET-117（25 个）、PET-78
+- **现象**：Backlog 扫描和 Brainstorming 后批量创建的 30+ 个 issue 全部未带 `--project` 参数，没有 project_id。multica `issue list --project` 和定时巡检 autopilot 扫描项目范围 issue 时，这些任务被完全遗漏。
+- **根因**：`multica issue create` 时未强制带 `--project` 参数，且批量创建后未做校验。
+- **后果**：用户发现"所有 agent 都空闲但大量任务没有推进"，实际上 task pool 里有几十个 issue 等着，但巡检系统看不见。延误整体进度数小时。
+- **修正**：逐一为 32 个 issue 补上 project_id；今后创建 issue 时强制带 `--project` 参数并写入 autopilot 规则。
+- **教训**：**issue 不带 project = 对项目巡检不可见。批量创建时一个参数的遗漏会造成全局盲区。**
+
+#### 坑 29：改 backlog 为 todo 后不发 @mention，agent 收不到触发信号
+- **Issue**：PET-79~PET-85 等
+- **现象**：将 7 个 backlog issue 状态改为 `todo`，但没有在对应 issue 上发 comment 并 @mention 负责 agent。任务在 todo 状态停留 30+ 分钟，无任何 agent 响应。用户质问"7条待办仍然纹丝不动"。
+- **根因**：Agent 误以为"改状态为 todo"会自动触发对应 agent（类似新建 issue 时的自动触发机制），实际上两者是独立系统。
+- **后果**：任务池虚满——看起来有 7 个活跃任务，实际没有任何 agent 在执行，全队空转。
+- **修正**：用户指出"改状态为 todo ≠ 触发 agent"，补发 @mention 后 agent 才开始工作；autopilot 规则已固化：每次提升状态后必须立即用完整 mention markdown `[@Name](mention://agent/<uuid>)` @mention 对应 agent。
+- **教训**：**状态变更和触发信号是两个独立系统。只改状态不发 mention = 对 agent 而言什么都没发生。**
+
+#### 坑 30：用户指定平台却被 agent 用其他平台替代
+- **Issue**：PET-30
+- **现象**：用户明确要求"创建一个 **multica** 的定时任务"，claude 2号 却创建了一个 **claude.ai** 的 routine（`trig_01QtukErF66YkRvvyHwx6zaW`），并回复"最小调度间隔是1小时……已按最小间隔创建为每小时整点运行"。
+- **根因**：Agent 混淆了平台能力边界，没有先确认 multica 是否支持定时任务（实际上支持 autopilot），就用了自己熟悉但错误的工具。
+- **后果**：创建的定时任务不在 multica 平台，无法被项目统一管理；用户发现后质问"你创建在哪里了？我是要你创建 multica 的定时任务！！不是 claude 的！！！"，需推倒重建。
+- **修正**：道歉后在 multica 平台重新创建正确的 autopilot 任务。
+- **教训**：**用户指定了平台就必须用该平台，不能用"类似功能"替代。** "我以为你要的是这个"是高频错误模式。
+
+### codex 1号 / cursor 1号（工程实现 Agent）
+
+#### 坑 31：完成代码/PR 后未更新 issue 状态，触发重复催动与重复 PR
+- **Issue**：PET-93、PET-94、PET-95、PET-96、PET-97
+- **Agent**：codex 1号、cursor 1号
+- **现象**：Agent 完成代码实现、推送分支、提交 PR 后，issue 状态仍停留在 `todo`，未改为 `in_review`。Squad Status Scan 每 10 分钟检测一次，判定为 stalled，反复 @mention 催动。被催动的 agent 每次又创建新的 PR（如 PET-96 产生 #38/#41/#43/#45，PET-93 产生 #40/#46）。
+- **根因**：Agent 的"完工"定义只包含"代码提交/推分支/建 PR"，未将"更新 issue 状态为 in_review"纳入 checklist。Squad Status Scan 的 stalled 判定只依赖 `updated_at` 时间戳，不区分"真正未完成"和"已完成但未标记状态"。
+- **后果**：同一任务被重复执行 3-4 轮，产生多个冗余 PR，浪费 agent 运行资源和代码 review 成本。
+- **修正**：用户明确要求"完成后必须更新 issue 状态为 in_review 并附上 PR 链接"；autopilot 指令中强制追加此要求；agent 交付 checklist 新增状态更新步骤。
+- **教训**：**代码提交 ≠ 任务完成。对自动化巡检系统而言，issue 状态未更新 = 进度为零。**
+
+---
+
 ## 素材使用建议
 
 | 坑编号 | 适合文章主题 | 已使用状态 |
@@ -269,6 +308,9 @@
 | 22, 27 | 待写：自动化工具的误判与反噬 | ⬜ 未使用 |
 | 24 | 待写：能力边界与任务评估 | ⬜ 未使用 |
 | 25, 26 | 待写：交付后的交接与细节校验 | ⬜ 未使用 |
+| 28 | 待写：批量操作时的参数遗漏与全局影响 | ⬜ 未使用 |
+| 29, 30 | 待写：状态管理与触发机制的断裂 | ⬜ 未使用 |
+| 31 | 待写：Agent 的"完工"定义与系统认知偏差 | ⬜ 未使用 |
 
 ---
 
@@ -276,3 +318,5 @@
 *来源：全项目真实讨论记录（PET-30 及所有子 issue）*
 *整理日期：2026-05-24*
 *更新说明：扩展为全项目持续记录，新增 Kimi 1号 / gemini 1号 / cursor 1号 跨 issue 失误*
+*更新日期：2026-05-25*
+*更新说明：新增 claude 2号 / codex 1号 / cursor 1号 跨 issue 失误（坑 28~31）—— 批量创建遗漏 project_id、状态变更与触发信号断裂、平台混淆、完工未更新 issue 状态导致重复 PR*
