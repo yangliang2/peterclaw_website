@@ -6,8 +6,10 @@ import {
   collectionPath,
   isLocale,
   localeFromId,
-  stripLocaleFromId
+  stripLocaleFromId,
+  ui
 } from '@/lib/i18n';
+import { blogPostPath, relatedSeriesPosts, seriesPath, seriesSlug } from '@/lib/series';
 import { buildArticleSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
@@ -24,13 +26,14 @@ export async function getStaticPaths() {
       },
       props: {
         post,
-        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds)
+        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds),
+        posts
       }
     };
   });
 }
 
-const { post, alternateLocales } = Astro.props;
+const { post, alternateLocales, posts } = Astro.props;
 const { lang } = Astro.params;
 if (!isLocale(lang)) {
   return Astro.redirect('/zh/blog/');
@@ -41,6 +44,8 @@ const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
+const seriesPosts = relatedSeriesPosts(post, posts);
+const currentSeriesPath = post.data.series ? seriesPath(lang, seriesSlug(post.data.series)) : undefined;
 ---
 
 <BaseLayout
@@ -68,5 +73,33 @@ const ogImage = post.data.ogImage;
     <h1>{post.data.title}</h1>
     <p class="lede">{post.data.description}</p>
     <Content />
+    {
+      post.data.series && seriesPosts.length > 0 && (
+        <nav class="series-nav" aria-label={ui[lang].seriesMore}>
+          <a class="meta" href={currentSeriesPath}>{post.data.series}</a>
+          <h2>{ui[lang].seriesMore}</h2>
+          <div class="content-list">
+            {seriesPosts.map((entry) => (
+              <a class="content-item" href={blogPostPath(entry)}>
+                <span class="meta">
+                  {entry.data.seriesOrder ? `${entry.data.seriesOrder} · ` : ''}
+                  {entry.data.publishedAt.toISOString().slice(0, 10)}
+                </span>
+                <h3>{entry.data.title}</h3>
+                <p>{entry.data.description}</p>
+              </a>
+            ))}
+          </div>
+        </nav>
+      )
+    }
   </article>
 </BaseLayout>
+
+<style>
+  .series-nav {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-line);
+  }
+</style>

@@ -9,6 +9,7 @@ tags:
   - 自动化
   - 工作流设计
 series: AI 小队组建日记
+seriesOrder: 4
 draft: false
 ---
 

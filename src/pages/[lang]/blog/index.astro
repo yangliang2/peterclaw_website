@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { buildBlogSeries, seriesPath } from '@/lib/series';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -16,10 +17,30 @@ const copy = ui[lang];
 const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
+const series = buildBlogSeries(posts);
 ---
 
 <BaseLayout locale={lang} title={copy.blog} canonicalPath={`/${lang}/blog/`}>
   <h1>{copy.blog}</h1>
+  {
+    series.length > 0 && (
+      <section>
+        <h2>{copy.seriesIndex}</h2>
+        <div class="content-list">
+          {series.map((item) => (
+            <a class="content-item" href={seriesPath(lang, item.slug)}>
+              <span class="meta">
+                {item.posts.length} {copy.seriesArticles}
+              </span>
+              <h3>{item.title}</h3>
+              <p>{copy.seriesIntro.replace('{count}', String(item.posts.length))}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
   <div class="content-list">
     {
       posts.map((post) => (

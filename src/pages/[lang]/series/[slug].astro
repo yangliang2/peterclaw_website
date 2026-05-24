@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { isLocale, ui } from '@/lib/i18n';
+import { blogPostPath, buildBlogSeries, seriesPath } from '@/lib/series';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const series = buildBlogSeries(posts);
+
+  return series.map((item) => ({
+    params: {
+      lang: item.locale,
+      slug: item.slug,
+    },
+    props: {
+      series: item,
+    },
+  }));
+}
+
+const { series } = Astro.props;
+const { lang, slug } = Astro.params;
+if (!isLocale(lang) || series.locale !== lang || series.slug !== slug) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const copy = ui[lang];
+const canonicalPath = seriesPath(lang, series.slug);
+const latestPost = [...series.posts].sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+)[0];
+---
+
+<BaseLayout
+  locale={lang}
+  title={series.title}
+  description={`${series.title}: ${series.posts.length} ${copy.seriesArticles}`}
+  canonicalPath={canonicalPath}
+>
+  <p class="meta">{copy.series}</p>
+  <h1>{series.title}</h1>
+  <p class="lede">
+    {copy.seriesIntro.replace('{count}', String(series.posts.length))}
+    {latestPost ? ` ${copy.latest}: ${latestPost.data.publishedAt.toISOString().slice(0, 10)}` : ''}
+  </p>
+
+  <div class="content-list series-list">
+    {
+      series.posts.map((post, index) => (
+        <a class="content-item series-item" href={blogPostPath(post)}>
+          <span class="meta">
+            {(post.data.seriesOrder ?? index + 1).toString().padStart(2, '0')} ·{' '}
+            {post.data.publishedAt.toISOString().slice(0, 10)}
+          </span>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

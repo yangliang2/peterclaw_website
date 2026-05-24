@@ -8,6 +8,7 @@ tags:
   - 工作流设计
   - 定时任务
 series: AI 小队组建日记
+seriesOrder: 3
 draft: false
 ---
 
