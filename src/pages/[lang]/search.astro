@@ -1,0 +1,41 @@
+---
+import Search from '@/components/Search.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { buildHreflangAlternates, isLocale, ui } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/search/');
+}
+
+const copy = ui[lang];
+const prefix = `/${lang}`;
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.searchTitle}
+  description={copy.searchDescription}
+  canonicalPath={`${prefix}/search/`}
+  alternateLocales={buildHreflangAlternates('/search/')}
+>
+  <section class="hero">
+    <h1>{copy.searchTitle}</h1>
+    <p class="lede">{copy.searchDescription}</p>
+  </section>
+
+  <section class="search-section" data-pagefind-ignore="all">
+    <Search locale={lang} />
+  </section>
+</BaseLayout>
+
+<style>
+  .search-section {
+    margin-top: var(--space-lg);
+    max-width: 720px;
+  }
+</style>

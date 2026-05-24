@@ -64,7 +64,7 @@ const ogImage = post.data.ogImage;
   })}
   alternateLocales={alternateLocales}
 >
-  <article>
+  <article data-pagefind-body>
     <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
     <h1>{post.data.title}</h1>
     <p class="lede">{post.data.description}</p>
