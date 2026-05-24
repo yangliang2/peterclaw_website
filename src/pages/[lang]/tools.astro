@@ -1,0 +1,156 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { toolsCopy } from '@/config/tools';
+import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/tools/');
+}
+
+const copy = toolsCopy[lang];
+const prefix = `/${lang}`;
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.pageTitle}
+  description={copy.metaDescription}
+  canonicalPath={`${prefix}/tools/`}
+  alternateLocales={buildHreflangAlternates('/tools/')}
+>
+  <section class="hero">
+    <h1>{copy.heroTitle}</h1>
+    <p class="lede">{copy.heroLede}</p>
+  </section>
+
+  {
+    copy.categories.map((category) => (
+      <section class="tools-category">
+        <h2>{category.title}</h2>
+        <div class="tools-grid">
+          {category.items.map((tool) => (
+            <article class="tool-card glass-card">
+              <div class="tool-header">
+                <h3>
+                  <a href={tool.url} target="_blank" rel="noopener noreferrer">
+                    {tool.name}
+                  </a>
+                </h3>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </div>
+              <p class="tool-description">{tool.description}</p>
+              <p class="tool-review">{tool.review}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <p class="disclaimer">{copy.disclaimer}</p>
+</BaseLayout>
+
+<style>
+  .tools-category {
+    margin-top: var(--space-xl);
+  }
+
+  .tools-category h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .tools-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 640px) {
+    .tools-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .tool-card {
+    padding: var(--space-lg);
+    display: grid;
+    gap: var(--space-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tool-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .tool-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .tool-header h3 a {
+    color: #fff;
+  }
+
+  .tool-header h3 a:hover {
+    color: var(--color-primary);
+  }
+
+  .tool-header svg {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+  }
+
+  .tool-description {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .tool-review {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .disclaimer {
+    margin-top: var(--space-xl);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+</style>
