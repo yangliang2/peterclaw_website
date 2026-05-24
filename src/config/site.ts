@@ -7,6 +7,10 @@ export const siteConfig = {
   author: {
     name: 'Peter',
     url: 'https://github.com/yangliang2',
+    social: {
+      github: 'https://github.com/yangliang2',
+      twitter: 'https://twitter.com/peterclaw',
+    },
   },
   ogLocale: {
     zh: 'zh_CN',

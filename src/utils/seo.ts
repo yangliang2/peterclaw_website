@@ -50,7 +50,7 @@ export function buildOrganizationSchema() {
       '@type': 'ImageObject',
       url: absoluteUrl('/favicon.svg'),
     },
-    sameAs: [siteConfig.author.url],
+    sameAs: Object.values(siteConfig.author.social),
   };
 }
 
@@ -63,7 +63,7 @@ export function buildPersonSchema() {
     '@id': absoluteUrl('/#person'),
     name: siteConfig.author.name,
     url: siteUrl,
-    sameAs: [siteConfig.author.url],
+    sameAs: Object.values(siteConfig.author.social),
     image: {
       '@type': 'ImageObject',
       url: absoluteUrl('/favicon.svg'), // Use favicon as default person image if none other
@@ -104,6 +104,7 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
       '@type': 'Person',
       name: siteConfig.author.name,
       url: siteConfig.author.url,
+      sameAs: Object.values(siteConfig.author.social),
     },
     publisher: {
       '@type': 'Organization',
