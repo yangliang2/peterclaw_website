@@ -1,8 +1,21 @@
 ---
-const websiteId = import.meta.env.UMAMI_WEBSITE_ID;
-const scriptUrl = import.meta.env.UMAMI_SCRIPT_URL || "https://analytics.eu.umami.is/script.js";
+const plausibleDomain = import.meta.env.PLAUSIBLE_DOMAIN;
+const plausibleScriptUrl = import.meta.env.PLAUSIBLE_SCRIPT_URL || 'https://plausible.io/js/script.js';
+
+const umamiWebsiteId = import.meta.env.UMAMI_WEBSITE_ID;
+const umamiScriptUrl = import.meta.env.UMAMI_SCRIPT_URL || 'https://analytics.eu.umami.is/script.js';
+
+const isProd = import.meta.env.PROD;
 ---
 
-{websiteId && (
-  <script async src={scriptUrl} data-website-id={websiteId}></script>
+{isProd && (
+  <>
+    {plausibleDomain && (
+      <script defer data-domain={plausibleDomain} src={plausibleScriptUrl}></script>
+    )}
+    
+    {umamiWebsiteId && (
+      <script async data-website-id={umamiWebsiteId} src={umamiScriptUrl}></script>
+    )}
+  </>
 )}
