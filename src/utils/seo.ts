@@ -32,9 +32,7 @@ export function buildWebSiteSchema(locale: Locale, description: string) {
     url: siteUrl,
     inLanguage: locale,
     publisher: {
-      '@type': 'Organization',
-      name: siteConfig.name,
-      url: siteUrl,
+      '@id': absoluteUrl('/#organization'),
     },
   };
 }
@@ -45,10 +43,31 @@ export function buildOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': absoluteUrl('/#organization'),
     name: siteConfig.name,
     url: siteUrl,
-    logo: absoluteUrl('/favicon.svg'),
+    logo: {
+      '@type': 'ImageObject',
+      url: absoluteUrl('/favicon.svg'),
+    },
     sameAs: [siteConfig.author.url],
+  };
+}
+
+export function buildPersonSchema() {
+  const siteUrl = getSiteUrl().href;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': absoluteUrl('/#person'),
+    name: siteConfig.author.name,
+    url: siteUrl,
+    sameAs: [siteConfig.author.url],
+    image: {
+      '@type': 'ImageObject',
+      url: absoluteUrl('/favicon.svg'), // Use favicon as default person image if none other
+    },
   };
 }
 
@@ -71,7 +90,7 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: input.title,
     description: input.description,
     url,

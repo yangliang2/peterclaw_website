@@ -24,6 +24,8 @@ jobs:
         run: npm run quality:content
       - name: Build
         run: npm run build
+      - name: Validate JSON-LD Schema
+        run: npm run validate-schema
 
   lighthouse:
     name: Lighthouse Audit
