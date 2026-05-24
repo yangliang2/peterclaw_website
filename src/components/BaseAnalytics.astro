@@ -23,3 +23,81 @@ const isProd = import.meta.env.PROD;
 {isProd && umamiWebsiteId && (
   <script is:inline async src={umamiScriptUrl} data-website-id={umamiWebsiteId}></script>
 )}
+
+<script>
+  declare global {
+    interface Window {
+      umami: any;
+      plausible: any;
+      trackEvent: (name: string, props?: Record<string, any>) => void;
+    }
+  }
+
+  window.trackEvent = (name, props = {}) => {
+    // Umami
+    if (window.umami && typeof window.umami.track === 'function') {
+      window.umami.track(name, props);
+    }
+    
+    // Plausible
+    if (window.plausible && typeof window.plausible === 'function') {
+      window.plausible(name, { props });
+    }
+
+    // Development logging
+    if (import.meta.env.DEV) {
+      console.log(`[Analytics] ${name}`, props);
+    }
+  };
+
+  // Global Click Listeners for External Links and RSS
+  document.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement).closest('a');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    // RSS Tracking
+    if (href.endsWith('rss.xml')) {
+      window.trackEvent('rss_click', {
+        location: link.closest('footer') ? 'footer' : 'navbar',
+        url: href
+      });
+      return;
+    }
+
+    // External Link Tracking
+    if (href.startsWith('http') && !href.includes(window.location.hostname)) {
+      window.trackEvent('external_link_click', {
+        url: href,
+        text: link.innerText.trim().substring(0, 100)
+      });
+    }
+  });
+
+  // Code Block Copy Tracking
+  document.addEventListener('copy', () => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed) return;
+    
+    // Check if the selection is within a code block
+    try {
+      const range = selection.getRangeAt(0);
+      const container = range.commonAncestorContainer;
+      const element = container.nodeType === 1 ? (container as HTMLElement) : container.parentElement;
+      const pre = element?.closest('pre');
+      
+      if (pre) {
+        const code = pre.querySelector('code');
+        const language = code ? Array.from(code.classList).find(c => c.startsWith('language-'))?.replace('language-', '') : 'unknown';
+        
+        window.trackEvent('code_copy', {
+          language
+        });
+      }
+    } catch (e) {
+      // Ignore errors in range selection
+    }
+  });
+</script>

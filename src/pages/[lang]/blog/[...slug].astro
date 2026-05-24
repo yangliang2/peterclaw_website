@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Giscus from '@/components/Giscus.astro';
+import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   buildContentAlternateLocales,
@@ -69,6 +70,7 @@ const ogImage = post.data.ogImage;
     <h1>{post.data.title}</h1>
     <p class="lede">{post.data.description}</p>
     <Content />
+    <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
   <Giscus locale={lang} />
 </BaseLayout>
