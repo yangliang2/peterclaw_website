@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { aboutCopy } from '@/config/about';
 import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+import { buildOrganizationSchema, buildPersonSchema } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -22,6 +23,7 @@ const prefix = `/${lang}`;
   description={copy.metaDescription}
   canonicalPath={`${prefix}/about/`}
   alternateLocales={buildHreflangAlternates('/about/')}
+  structuredData={[buildOrganizationSchema(), buildPersonSchema()]}
 >
   <section class="hero">
     <h1>{copy.heroTitle}</h1>

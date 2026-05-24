@@ -39,6 +39,7 @@ export function buildWebSiteSchema(locale: Locale, description: string) {
 
 export function buildOrganizationSchema() {
   const siteUrl = getSiteUrl().href;
+  const twitterUrl = `https://x.com/${siteConfig.twitterHandle.replace('@', '')}`;
 
   return {
     '@context': 'https://schema.org',
@@ -50,12 +51,13 @@ export function buildOrganizationSchema() {
       '@type': 'ImageObject',
       url: absoluteUrl('/favicon.svg'),
     },
-    sameAs: [siteConfig.author.url],
+    sameAs: [siteConfig.author.url, twitterUrl],
   };
 }
 
 export function buildPersonSchema() {
   const siteUrl = getSiteUrl().href;
+  const twitterUrl = `https://x.com/${siteConfig.twitterHandle.replace('@', '')}`;
 
   return {
     '@context': 'https://schema.org',
@@ -63,7 +65,7 @@ export function buildPersonSchema() {
     '@id': absoluteUrl('/#person'),
     name: siteConfig.author.name,
     url: siteUrl,
-    sameAs: [siteConfig.author.url],
+    sameAs: [siteConfig.author.url, twitterUrl],
     image: {
       '@type': 'ImageObject',
       url: absoluteUrl('/favicon.svg'), // Use favicon as default person image if none other
