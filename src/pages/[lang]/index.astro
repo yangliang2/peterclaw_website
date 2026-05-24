@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import EmailSignup from '@/components/EmailSignup.astro';
 import { buildOrganizationSchema, buildPersonSchema, buildWebSiteSchema } from '@/utils/seo';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
 
@@ -48,4 +49,6 @@ const latest = [...blog, ...knowledge]
       }
     </div>
   </section>
+
+  <EmailSignup locale={lang} />
 </BaseLayout>

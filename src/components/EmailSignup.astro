@@ -1,0 +1,166 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale];
+---
+
+<section class="email-signup glass-card" aria-labelledby="newsletter-title">
+  <div class="email-signup-copy">
+    <h2 id="newsletter-title">{copy.newsletterTitle}</h2>
+    <p>{copy.newsletterDescription}</p>
+  </div>
+  <form class="email-signup-form" novalidate>
+    <label class="sr-only" for="newsletter-email">{copy.newsletterPlaceholder}</label>
+    <input
+      id="newsletter-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      placeholder={copy.newsletterPlaceholder}
+    />
+    <button class="btn btn-primary" type="submit" data-default-label={copy.newsletterSubmit}>
+      {copy.newsletterSubmit}
+    </button>
+  </form>
+  <p class="email-signup-status" role="status" aria-live="polite" hidden></p>
+</section>
+
+<script define:vars={{ messages: {
+  submitting: copy.newsletterSubmitting,
+  success: copy.newsletterSuccess,
+  invalid: copy.newsletterErrorInvalid,
+  generic: copy.newsletterErrorGeneric,
+  defaultLabel: copy.newsletterSubmit,
+} }}>
+  const form = document.querySelector('.email-signup-form');
+  const status = document.querySelector('.email-signup-status');
+  const submitButton = form?.querySelector('button[type="submit"]');
+  const emailInput = form?.querySelector('input[name="email"]');
+
+  if (form instanceof HTMLFormElement && status instanceof HTMLParagraphElement && submitButton instanceof HTMLButtonElement && emailInput instanceof HTMLInputElement) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+      status.hidden = true;
+      status.className = 'email-signup-status';
+
+      if (!emailInput.checkValidity()) {
+        status.textContent = messages.invalid;
+        status.classList.add('is-error');
+        status.hidden = false;
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = messages.submitting;
+
+      try {
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+
+        const payload = await response.json().catch(() => ({}));
+
+        if (response.ok && payload.ok) {
+          status.textContent = messages.success;
+          status.classList.add('is-success');
+          form.reset();
+        } else if (response.status === 400 && payload.error === 'invalid_email') {
+          status.textContent = messages.invalid;
+          status.classList.add('is-error');
+        } else {
+          status.textContent = messages.generic;
+          status.classList.add('is-error');
+        }
+      } catch {
+        status.textContent = messages.generic;
+        status.classList.add('is-error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = messages.defaultLabel;
+        status.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .email-signup {
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .email-signup-copy h2 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1.5rem;
+  }
+
+  .email-signup-copy p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .email-signup-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .email-signup-form input {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text);
+    font: inherit;
+  }
+
+  .email-signup-form input:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .email-signup-form button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .email-signup-status {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .email-signup-status.is-success {
+    color: var(--color-accent);
+  }
+
+  .email-signup-status.is-error {
+    color: #f87171;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
