@@ -40,6 +40,7 @@ const { Content } = await render(article);
 const canonicalPath = collectionPath(lang, 'knowledge', article.id);
 const publishedTime = article.data.publishedAt.toISOString();
 const modifiedTime = (article.data.updatedAt ?? article.data.publishedAt).toISOString();
+const ogImage = article.data.ogImage;
 ---
 
 <BaseLayout
@@ -48,6 +49,7 @@ const modifiedTime = (article.data.updatedAt ?? article.data.publishedAt).toISOS
   description={article.data.description}
   canonicalPath={canonicalPath}
   ogType="article"
+  ogImage={ogImage}
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
   structuredData={buildArticleSchema({
@@ -57,6 +59,7 @@ const modifiedTime = (article.data.updatedAt ?? article.data.publishedAt).toISOS
     locale: lang,
     publishedTime: article.data.publishedAt,
     modifiedTime: article.data.updatedAt,
+    imagePath: ogImage,
   })}
   alternateLocales={alternateLocales}
 >

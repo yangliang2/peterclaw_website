@@ -3,7 +3,7 @@ import type { Locale } from '@/lib/i18n';
 export const siteConfig = {
   name: 'PeterClaw',
   twitterHandle: '@peterclaw',
-  defaultOgImage: '/og-default.svg',
+  defaultOgImage: '/og-default.png',
   author: {
     name: 'Peter',
     url: 'https://github.com/yangliang2',
