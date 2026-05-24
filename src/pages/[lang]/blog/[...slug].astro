@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ArticleChat from '@/components/ArticleChat.astro';
+import BlogTags from '@/components/BlogTags.astro';
 import Giscus from '@/components/Giscus.astro';
 import SeriesNav from '@/components/SeriesNav.astro';
 import SocialShare from '@/components/SocialShare.astro';
@@ -137,6 +138,7 @@ if (
       <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
       <h1>{post.data.title}</h1>
       <p class="reading-time">{readingTimeLabel}</p>
+      <BlogTags locale={lang} tags={post.data.tags} />
       <p class="lede">{post.data.description}</p>
       <Content />
     {

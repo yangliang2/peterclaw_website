@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BlogTags from '@/components/BlogTags.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collectionPath, isLocale, locales, ui } from '@/lib/i18n';
+import { collectTagsByLocale, postsForTag } from '@/lib/tags';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tagsByLocale = collectTagsByLocale(posts);
+
+  return locales.flatMap((lang) => {
+    const tags = tagsByLocale.get(lang);
+    if (!tags) return [];
+
+    return [...tags.entries()].map(([tagSlug, tagLabel]) => ({
+      params: { lang, tag: tagSlug },
+      props: {
+        tagLabel,
+        posts: postsForTag(posts, lang, tagSlug)
+      }
+    }));
+  });
+}
+
+const { tagLabel, posts } = Astro.props;
+const { lang } = Astro.params;
+
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const copy = ui[lang];
+const canonicalPath = `/${lang}/blog/tags/${Astro.params.tag}/`;
+const pageTitle = copy.tagPageTitle(tagLabel);
+---
+
+<BaseLayout locale={lang} title={pageTitle} description={copy.tagPageDescription(tagLabel)} canonicalPath={canonicalPath}>
+  <p class="meta">
+    <a href={`/${lang}/blog/`}>{copy.blog}</a>
+  </p>
+  <h1>{pageTitle}</h1>
+  <p class="lede">{copy.tagPageDescription(tagLabel)}</p>
+
+  {
+    posts.length === 0 ? (
+      <p>{copy.noPostsForTag}</p>
+    ) : (
+      <div class="content-list">
+        {posts.map((post) => (
+          <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+            <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            <BlogTags locale={lang} tags={post.data.tags} />
+          </a>
+        ))}
+      </div>
+    )
+  }
+</BaseLayout>

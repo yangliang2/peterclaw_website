@@ -242,6 +242,58 @@ function validateInternalLink(link, file, relativePath) {
   }
 }
 
+function slugifyTag(tag) {
+  const slug = tag
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\u4e00-\u9fff-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  return slug || encodeURIComponent(tag.trim());
+}
+
+function extractBlogMeta(source) {
+  if (!source.startsWith('---\n')) return null;
+
+  const endIndex = source.indexOf('\n---', 4);
+  if (endIndex === -1) return null;
+
+  const block = source.slice(4, endIndex);
+  const tags = [];
+  let inTags = false;
+  let isDraft = false;
+
+  for (const line of block.split('\n')) {
+    if (line.trim() === '') continue;
+
+    if (/^draft:\s*true\s*$/.test(line)) {
+      isDraft = true;
+      continue;
+    }
+
+    if (/^tags:\s*$/.test(line)) {
+      inTags = true;
+      continue;
+    }
+
+    if (inTags) {
+      const match = line.match(/^\s+-\s+(.*)$/);
+      if (match) {
+        tags.push(match[1].trim().replace(/^['"]|['"]$/g, ''));
+        continue;
+      }
+
+      if (/^[A-Za-z]/.test(line)) {
+        inTags = false;
+      }
+    }
+  }
+
+  return { tags, isDraft };
+}
+
 function buildContentRoutes(files) {
   const routes = new Set();
 
@@ -252,6 +304,19 @@ function buildContentRoutes(files) {
     const slug = pathParts.slice(1).join('/').replace(/\.(md|mdx)$/i, '');
     routes.add(`/${locale}/${collection}/${slug}`);
     routes.add(`/${locale}/${collection}/${slug}/`);
+
+    if (collection === 'blog') {
+      const source = readFileSync(file, 'utf8');
+      const meta = extractBlogMeta(source);
+
+      if (meta && !meta.isDraft) {
+        for (const tag of meta.tags) {
+          const tagSlug = slugifyTag(tag);
+          routes.add(`/${locale}/blog/tags/${tagSlug}`);
+          routes.add(`/${locale}/blog/tags/${tagSlug}/`);
+        }
+      }
+    }
   }
 
   routes.add('/zh/blog');

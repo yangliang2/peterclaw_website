@@ -63,6 +63,35 @@ export function buildContentAlternateLocales(
     }));
 }
 
+type UiCopy = {
+  siteTitle: string;
+  tagline: string;
+  about: string;
+  now: string;
+  projects: string;
+  blog: string;
+  knowledge: string;
+  tools: string;
+  latest: string;
+  back: string;
+  comments: string;
+  search: string;
+  searchTitle: string;
+  searchDescription: string;
+  searchPlaceholder: string;
+  newsletterTitle: string;
+  newsletterDescription: string;
+  newsletterPlaceholder: string;
+  newsletterSubmit: string;
+  newsletterSubmitting: string;
+  newsletterSuccess: string;
+  newsletterErrorInvalid: string;
+  newsletterErrorGeneric: string;
+  noPostsForTag: string;
+  tagPageTitle: (tag: string) => string;
+  tagPageDescription: (tag: string) => string;
+};
+
 export const ui = {
   zh: {
     siteTitle: 'PeterClaw',
@@ -119,7 +148,10 @@ export const ui = {
     chatErrorGeneric: '出了点问题，请稍后再试。',
     tocTitle: '目录',
     tocToggle: '展开文章目录',
-    popular: '热门文章'
+    popular: '热门文章',
+    noPostsForTag: '暂无文章。',
+    tagPageTitle: (tag: string) => `标签：${tag}`,
+    tagPageDescription: (tag: string) => `浏览标签「${tag}」下的博客文章。`
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -176,6 +208,9 @@ export const ui = {
     chatErrorGeneric: 'Something went wrong. Please try again.',
     tocTitle: 'On this page',
     tocToggle: 'Show table of contents',
-    popular: 'Popular'
+    popular: 'Popular',
+    noPostsForTag: 'No posts yet.',
+    tagPageTitle: (tag: string) => `Tag: ${tag}`,
+    tagPageDescription: (tag: string) => `Blog posts tagged “${tag}”.`
   }
-} satisfies Record<Locale, Record<string, string>>;
+} satisfies Record<Locale, UiCopy>;

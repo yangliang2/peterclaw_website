@@ -1,0 +1,54 @@
+---
+import { tagPath } from '@/lib/tags';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  tags: string[];
+}
+
+const { locale, tags } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <ul class="tag-list">
+      {tags.map((tag) => (
+        <li>
+          <a class="tag" href={tagPath(locale, tag)}>
+            {tag}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+  }
+
+  .tag:hover {
+    color: var(--color-text);
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  }
+</style>
