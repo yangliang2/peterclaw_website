@@ -1,0 +1,131 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { aboutCopy } from '@/config/about';
+import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/about/');
+}
+
+const copy = aboutCopy[lang];
+const prefix = `/${lang}`;
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.pageTitle}
+  description={copy.metaDescription}
+  canonicalPath={`${prefix}/about/`}
+  alternateLocales={buildHreflangAlternates('/about/')}
+>
+  <section class="hero">
+    <h1>{copy.heroTitle}</h1>
+    <p class="lede">{copy.heroLede}</p>
+  </section>
+
+  <section class="about-section">
+    <h2>{copy.introHeading}</h2>
+    {copy.introParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </section>
+
+  <section class="about-section">
+    <h2>{copy.squadHeading}</h2>
+    <p class="section-lede">{copy.squadLede}</p>
+    <div class="squad-grid">
+      {
+        copy.members.map((member) => (
+          <article class="squad-card glass-card">
+            <h3>{member.name}</h3>
+            <p class="role">{member.title}</p>
+            <p>{member.summary}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="about-section experiment">
+    <h2>{copy.experimentHeading}</h2>
+    <p>{copy.experimentParagraph}</p>
+    <a class="btn btn-primary" href={copy.diaryHref}>
+      {copy.diaryCta}
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-section {
+    margin-top: var(--space-xl);
+    max-width: 720px;
+  }
+
+  .about-section h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .about-section p {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+
+  .section-lede {
+    margin-bottom: var(--space-lg);
+  }
+
+  .squad-grid {
+    display: grid;
+    gap: var(--space-md);
+    max-width: none;
+    margin-top: var(--space-lg);
+  }
+
+  @media (min-width: 640px) {
+    .squad-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .squad-card {
+    padding: var(--space-lg);
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .squad-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .squad-card .role {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--color-secondary);
+  }
+
+  .squad-card p:last-child {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .experiment {
+    padding: var(--space-lg);
+    border: var(--border-glass);
+    border-radius: var(--radius-lg);
+    background: var(--gradient-glass);
+    max-width: none;
+  }
+
+  .experiment .btn {
+    margin-top: var(--space-lg);
+  }
+</style>

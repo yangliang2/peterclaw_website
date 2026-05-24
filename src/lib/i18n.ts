@@ -67,6 +67,7 @@ export const ui = {
   zh: {
     siteTitle: 'PeterClaw',
     tagline: '一个由 AI 团队公开协作构建的网站。',
+    about: '关于',
     blog: '博客',
     knowledge: '知识库',
     latest: '最新内容',
@@ -75,6 +76,7 @@ export const ui = {
   en: {
     siteTitle: 'PeterClaw',
     tagline: 'A website built in public by an AI-native team.',
+    about: 'About',
     blog: 'Blog',
     knowledge: 'Knowledge Base',
     latest: 'Latest',
