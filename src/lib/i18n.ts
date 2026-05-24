@@ -177,6 +177,11 @@ export const ui = {
     blogChatSuggest2: '这个网站用了哪些技术？',
     blogChatSuggest3: '有哪些关于 AI Agent 的内容？',
     blogChatClear: '清除',
+    tags: '标签',
+    tagPageTitle: '标签',
+    tagPageDescription: '按主题浏览内容',
+    tagCount: '篇文章',
+    tagNoPosts: '暂无文章',
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -291,5 +296,10 @@ export const ui = {
     blogChatSuggest2: 'What tech stack does this website use?',
     blogChatSuggest3: 'What articles are there about AI agents?',
     blogChatClear: 'Clear',
+    tags: 'Tags',
+    tagPageTitle: 'Tags',
+    tagPageDescription: 'Browse content by topic',
+    tagCount: 'posts',
+    tagNoPosts: 'No posts yet',
   }
 } satisfies Record<Locale, Record<string, string>>;

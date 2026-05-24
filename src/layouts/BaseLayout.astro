@@ -263,4 +263,30 @@ const pageDescription = description ?? copy.tagline;
   article strong {
     color: var(--color-heading);
   }
+
+  /* Tag links */
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .tag-link {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+    transition: all 0.2s ease;
+  }
+
+  .tag-link:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.08);
+  }
 </style>
