@@ -51,6 +51,19 @@ export const projects: Project[] = [
     demo: 'https://peterclaw.com'
   },
   {
+    name: 'PeterClaw AI Squad',
+    description: {
+      zh: '基于 Multica 的多 Agent 协作工作流：Issue 驱动任务分发、角色分工、PR 评审与跨 Agent 交接协议。',
+      en: 'A Multica-powered multi-agent workflow with issue-driven delegation, role boundaries, PR review, and cross-agent handoff protocols.'
+    },
+    tags: ['AI', 'Tool'],
+    stack: ['Multica', 'AI Agents', 'Git Worktrees', 'GitHub PRs'],
+    demo: {
+      zh: '/zh/about/',
+      en: '/en/about/'
+    }
+  },
+  {
     name: 'AI Squad Launch Diary',
     description: {
       zh: '记录 AI 团队角色分工、协作协议和建站过程的系列内容实验。',
