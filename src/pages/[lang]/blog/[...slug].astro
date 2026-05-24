@@ -82,6 +82,8 @@ const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);
 const tocEntries = extractTocFromMarkdown(post.body ?? '');
+const copyLabel = lang === 'zh' ? '复制' : 'Copy';
+const copiedLabel = lang === 'zh' ? '已复制' : 'Copied';
 const structuredData: JsonLdSchema[] = [
   buildArticleSchema({
     title: post.data.title,
@@ -131,7 +133,7 @@ if (
   alternateLocales={alternateLocales}
 >
   <ReadingProgress />
-  <div class="article-layout">
+  <div class="article-layout" data-copy-label={copyLabel} data-copied-label={copiedLabel}>
     <ArticleToc locale={lang} entries={tocEntries} />
     <article class="article-main" data-pagefind-body>
       <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
@@ -164,6 +166,37 @@ if (
   <EmailSignup locale={lang} />
   <Giscus locale={lang} />
 </BaseLayout>
+
+<script>
+  const articleLayout = document.querySelector<HTMLElement>('.article-layout');
+  const article = articleLayout?.querySelector('article[data-pagefind-body]');
+
+  article?.querySelectorAll('pre').forEach((pre) => {
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.append(pre);
+
+    const button = document.createElement('button');
+    button.className = 'copy-code';
+    button.type = 'button';
+    button.textContent = articleLayout?.dataset.copyLabel ?? 'Copy';
+    wrapper.append(button);
+
+    button.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(code.textContent ?? '');
+      button.textContent = articleLayout?.dataset.copiedLabel ?? 'Copied';
+      button.dataset.copied = 'true';
+      window.setTimeout(() => {
+        button.textContent = articleLayout?.dataset.copyLabel ?? 'Copy';
+        delete button.dataset.copied;
+      }, 1600);
+    });
+  });
+</script>
 
 <style>
   .article-layout {
@@ -219,5 +252,35 @@ if (
   .faq dd {
     color: var(--color-article);
     line-height: 1.7;
+  }
+
+  :global(.code-block) {
+    position: relative;
+    margin: 2.5rem 0;
+  }
+
+  :global(article .code-block pre) {
+    margin: 0;
+    padding-top: 3rem;
+  }
+
+  :global(.copy-code) {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+    font: 600 0.78rem var(--font-sans);
+    cursor: pointer;
+  }
+
+  :global(.copy-code:hover),
+  :global(.copy-code[data-copied='true']) {
+    border-color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.2);
   }
 </style>
