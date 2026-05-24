@@ -70,6 +70,10 @@ export const ui = {
     about: '关于',
     blog: '博客',
     knowledge: '知识库',
+    series: '系列专题',
+    posts: '篇文章',
+    seriesOtherPosts: '本系列其他文章',
+    seriesViewAll: '查看完整系列',
     latest: '最新内容',
     back: '返回'
   },
@@ -79,6 +83,10 @@ export const ui = {
     about: 'About',
     blog: 'Blog',
     knowledge: 'Knowledge Base',
+    series: 'Series',
+    posts: 'posts',
+    seriesOtherPosts: 'More in this series',
+    seriesViewAll: 'View full series',
     latest: 'Latest',
     back: 'Back'
   }

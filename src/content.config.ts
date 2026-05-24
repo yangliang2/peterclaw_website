@@ -15,7 +15,8 @@ const sharedContentSchema = z.object({
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: sharedContentSchema.extend({
-    series: z.string().optional()
+    series: z.string().optional(),
+    seriesOrder: z.number().int().positive().optional()
   })
 });
 

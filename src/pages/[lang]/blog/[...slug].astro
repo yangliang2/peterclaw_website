@@ -6,8 +6,10 @@ import {
   collectionPath,
   isLocale,
   localeFromId,
-  stripLocaleFromId
+  stripLocaleFromId,
+  ui
 } from '@/lib/i18n';
+import { blogPostPath, findSeriesForPost, seriesPath } from '@/lib/series';
 import { buildArticleSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
@@ -41,6 +43,9 @@ const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const currentSeries = findSeriesForPost(post, allPosts);
+const otherSeriesPosts = currentSeries?.posts.filter((item) => item.id !== post.id) ?? [];
 ---
 
 <BaseLayout
@@ -69,4 +74,46 @@ const ogImage = post.data.ogImage;
     <p class="lede">{post.data.description}</p>
     <Content />
   </article>
+
+  {
+    currentSeries && otherSeriesPosts.length > 0 && (
+      <nav class="series-nav" aria-labelledby="series-nav-title">
+        <p class="meta">{currentSeries.title}</p>
+        <h2 id="series-nav-title">{ui[lang].seriesOtherPosts}</h2>
+        <div class="content-list">
+          {otherSeriesPosts.map((item) => (
+            <a class="content-item" href={blogPostPath(item)}>
+              <span class="meta">
+                {item.data.seriesOrder ? `#${item.data.seriesOrder}` : item.data.publishedAt.toISOString().slice(0, 10)}
+              </span>
+              <h3>{item.data.title}</h3>
+            </a>
+          ))}
+        </div>
+        <a class="series-link" href={seriesPath(lang, currentSeries.slug)}>
+          {ui[lang].seriesViewAll}
+        </a>
+      </nav>
+    )
+  }
 </BaseLayout>
+
+<style>
+  .series-nav {
+    max-width: 720px;
+    margin: 4rem auto 0;
+    padding-top: 2rem;
+    border-top: var(--border-glass);
+  }
+
+  .series-nav h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .series-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-weight: 700;
+  }
+</style>

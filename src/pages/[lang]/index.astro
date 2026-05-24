@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { buildOrganizationSchema, buildWebSiteSchema } from '@/utils/seo';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { buildSeries, seriesPath } from '@/lib/series';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -22,6 +23,7 @@ const [blog, knowledge] = await Promise.all([
 const latest = [...blog, ...knowledge]
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
   .slice(0, 6);
+const series = buildSeries(blog).slice(0, 3);
 ---
 
 <BaseLayout
@@ -48,4 +50,23 @@ const latest = [...blog, ...knowledge]
       }
     </div>
   </section>
+
+  {
+    series.length > 0 && (
+      <section>
+        <h2>{copy.series}</h2>
+        <div class="content-list">
+          {series.map((item) => (
+            <a class="content-item" href={seriesPath(lang, item.slug)}>
+              <span class="meta">
+                {item.posts.length} {copy.posts}
+              </span>
+              <h3>{item.title}</h3>
+              <p>{item.latestPost.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
