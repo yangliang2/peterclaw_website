@@ -1,0 +1,234 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { projects, projectsCopy, projectTags } from '@/config/projects';
+import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/projects/');
+}
+
+const copy = projectsCopy[lang];
+const prefix = `/${lang}`;
+
+const getDemoHref = (demo: (typeof projects)[number]['demo']) => {
+  if (!demo) {
+    return undefined;
+  }
+
+  return typeof demo === 'string' ? demo : demo[lang];
+};
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.pageTitle}
+  description={copy.metaDescription}
+  canonicalPath={`${prefix}/projects/`}
+  alternateLocales={buildHreflangAlternates('/projects/')}
+>
+  <section class="hero">
+    <h1>{copy.heroTitle}</h1>
+    <p class="lede">{copy.heroLede}</p>
+  </section>
+
+  <section class="projects-section" aria-labelledby="projects-heading">
+    <div class="section-header">
+      <h2 id="projects-heading">{copy.pageTitle}</h2>
+      <div class="filters" aria-label={copy.filtersLabel}>
+        <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">{copy.all}</button>
+        {projectTags.map((tag) => <button class="filter" type="button" data-filter={tag} aria-pressed="false">{tag}</button>)}
+      </div>
+    </div>
+
+    <div class="projects-grid">
+      {
+        projects.map((project) => (
+          <article class="project-card glass-card" data-tags={project.tags.join(' ')}>
+            <div class="project-main">
+              <div>
+                <p class="project-tags">{project.tags.join(' / ')}</p>
+                <h3>{project.name}</h3>
+              </div>
+              <p>{project.description[lang]}</p>
+            </div>
+
+            <div class="stack">
+              <span>{copy.stack}</span>
+              <ul>
+                {project.stack.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+
+            <div class="project-links">
+              {project.github && <a class="btn btn-secondary" href={project.github}>{copy.github}</a>}
+              {getDemoHref(project.demo) && <a class="btn btn-primary" href={getDemoHref(project.demo)}>{copy.demo}</a>}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <script>
+    const filters = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-tags]'));
+
+    filters.forEach((filter) => {
+      filter.addEventListener('click', () => {
+        const selected = filter.dataset.filter ?? 'all';
+
+        filters.forEach((item) => {
+          const active = item === filter;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+
+        cards.forEach((card) => {
+          const tags = card.dataset.tags?.split(' ') ?? [];
+          card.hidden = selected !== 'all' && !tags.includes(selected);
+        });
+      });
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .projects-section {
+    margin-top: var(--space-xl);
+  }
+
+  .section-header {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .section-header h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .filter {
+    min-height: 2.5rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter:hover,
+  .filter.is-active {
+    border-color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.14);
+    color: var(--color-text);
+  }
+
+  .projects-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .project-card {
+    display: grid;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+  }
+
+  .project-main {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .project-main h3 {
+    margin: 0;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+  }
+
+  .project-main p:last-child {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .project-tags {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .stack span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+
+  .stack ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.9rem;
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .project-links .btn {
+    min-width: 7rem;
+  }
+
+  @media (min-width: 760px) {
+    .section-header {
+      align-items: center;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .projects-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-card {
+      min-height: 24rem;
+      align-content: space-between;
+    }
+  }
+</style>
