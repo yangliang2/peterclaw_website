@@ -9,6 +9,7 @@ tags:
   - 多智能体协作
   - 工作流自动化
 series: AI 小队组建日记
+seriesOrder: 6
 draft: false
 ---
 

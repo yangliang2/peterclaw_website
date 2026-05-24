@@ -6,8 +6,10 @@ import {
   collectionPath,
   isLocale,
   localeFromId,
-  stripLocaleFromId
+  stripLocaleFromId,
+  ui
 } from '@/lib/i18n';
+import { findPostSeries, postPath, seriesPath } from '@/lib/series';
 import { buildArticleSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
@@ -41,6 +43,9 @@ const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
+const allPosts = await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft);
+const currentSeries = findPostSeries(post, allPosts);
+const otherSeriesPosts = currentSeries?.posts.filter((seriesPost) => seriesPost.id !== post.id) ?? [];
 ---
 
 <BaseLayout
@@ -69,4 +74,56 @@ const ogImage = post.data.ogImage;
     <p class="lede">{post.data.description}</p>
     <Content />
   </article>
+  {
+    currentSeries && otherSeriesPosts.length > 0 && (
+      <nav class="series-nav" aria-labelledby="series-nav-heading">
+        <a class="series-link" href={seriesPath(lang, currentSeries.slug)}>{currentSeries.title}</a>
+        <h2 id="series-nav-heading">{ui[lang].otherSeriesPosts}</h2>
+        <div class="series-nav-list">
+          {otherSeriesPosts.map((seriesPost) => (
+            <a href={postPath(lang, seriesPost)}>
+              <span class="meta">{seriesPost.data.publishedAt.toISOString().slice(0, 10)}</span>
+              <strong>{seriesPost.data.title}</strong>
+            </a>
+          ))}
+        </div>
+      </nav>
+    )
+  }
 </BaseLayout>
+
+<style>
+  .series-nav {
+    max-width: 720px;
+    margin: 4rem auto 0;
+    padding-top: 2rem;
+    border-top: var(--border-glass);
+  }
+
+  .series-link {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .series-nav h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+  }
+
+  .series-nav-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .series-nav-list a {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem;
+    color: inherit;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+</style>

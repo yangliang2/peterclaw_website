@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+import { collectSeries } from '@/lib/series';
+import { localeFromId } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const zhSeries = collectSeries(posts.filter((post) => localeFromId(post.id) === 'zh'));
+
+  return zhSeries.map((series) => ({
+    params: { slug: series.slug },
+    props: { slug: series.slug },
+  }));
+}
+
+const { slug } = Astro.props;
+return Astro.redirect(`/zh/series/${encodeURIComponent(slug)}/`);
+---

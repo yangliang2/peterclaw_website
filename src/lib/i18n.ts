@@ -70,6 +70,10 @@ export const ui = {
     about: '关于',
     blog: '博客',
     knowledge: '知识库',
+    series: '系列',
+    seriesEntry: '专题系列',
+    seriesDescription: '这个系列目前收录 {count} 篇文章，按发布顺序排列。',
+    otherSeriesPosts: '本系列其他文章',
     latest: '最新内容',
     back: '返回'
   },
@@ -79,6 +83,10 @@ export const ui = {
     about: 'About',
     blog: 'Blog',
     knowledge: 'Knowledge Base',
+    series: 'Series',
+    seriesEntry: 'Series',
+    seriesDescription: 'This series has {count} posts, listed in publishing order.',
+    otherSeriesPosts: 'More in this series',
     latest: 'Latest',
     back: 'Back'
   }

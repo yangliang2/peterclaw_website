@@ -8,6 +8,7 @@ tags:
   - Code Review
   - 协作协议
 series: AI 小队组建日记
+seriesOrder: 4
 draft: false
 ---
 

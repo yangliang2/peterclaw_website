@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collectSeries, postPath, seriesPath } from '@/lib/series';
+import { isLocale, localeFromId, ui } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const paths = [];
+
+  for (const lang of ['zh', 'en'] as const) {
+    const seriesList = collectSeries(posts.filter((post) => localeFromId(post.id) === lang));
+
+    for (const series of seriesList) {
+      paths.push({
+        params: { lang, slug: series.slug },
+        props: { series },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/series/');
+}
+
+const { series } = Astro.props;
+const copy = ui[lang];
+---
+
+<BaseLayout
+  locale={lang}
+  title={series.title}
+  description={`${series.title} - ${series.posts.length} articles`}
+  canonicalPath={seriesPath(lang, series.slug)}
+>
+  <section class="series-hero">
+    <p class="meta">{copy.series}</p>
+    <h1>{series.title}</h1>
+    <p class="lede">
+      {copy.seriesDescription.replace('{count}', String(series.posts.length))}
+    </p>
+  </section>
+
+  <div class="content-list series-list">
+    {
+      series.posts.map((post, index) => (
+        <a class="content-item series-item" href={postPath(lang, post)}>
+          <span class="series-index">{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .series-hero {
+    padding: 3rem 0 1rem;
+  }
+
+  .series-list {
+    gap: 1rem;
+  }
+
+  .series-item {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+  }
+
+  .series-index {
+    width: 3rem;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 560px) {
+    .series-item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

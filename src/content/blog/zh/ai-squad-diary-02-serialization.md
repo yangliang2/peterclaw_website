@@ -8,6 +8,7 @@ tags:
   - 协作瓶颈
   - 并行开发
 series: AI 小队组建日记
+seriesOrder: 2
 draft: false
 ---
 

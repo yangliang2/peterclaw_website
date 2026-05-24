@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { collectSeries, seriesPath } from '@/lib/series';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -16,10 +17,27 @@ const copy = ui[lang];
 const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
+const seriesList = collectSeries(posts);
 ---
 
 <BaseLayout locale={lang} title={copy.blog} canonicalPath={`/${lang}/blog/`}>
   <h1>{copy.blog}</h1>
+  {
+    seriesList.length > 0 && (
+      <section class="series-strip" aria-labelledby="series-heading">
+        <h2 id="series-heading">{copy.seriesEntry}</h2>
+        <div class="series-grid">
+          {seriesList.map((series) => (
+            <a class="series-card" href={seriesPath(lang, series.slug)}>
+              <span class="meta">{series.posts.length} posts</span>
+              <h3>{series.title}</h3>
+              <p>{series.latestPost.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
   <div class="content-list">
     {
       posts.map((post) => (
@@ -32,3 +50,38 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
     }
   </div>
 </BaseLayout>
+
+<style>
+  .series-strip {
+    margin: 2rem 0 3rem;
+  }
+
+  .series-strip h2 {
+    margin-bottom: 1rem;
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .series-card {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    color: inherit;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+
+  .series-card h3,
+  .series-card p {
+    margin: 0;
+  }
+
+  .series-card p {
+    color: var(--color-text-muted);
+  }
+</style>
