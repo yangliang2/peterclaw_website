@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import BlogTags from '@/components/BlogTags.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
 
@@ -27,6 +28,7 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
           <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
           <h2>{post.data.title}</h2>
           <p>{post.data.description}</p>
+          <BlogTags locale={lang} tags={post.data.tags} />
         </a>
       ))
     }

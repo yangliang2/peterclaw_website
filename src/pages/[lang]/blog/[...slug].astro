@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import BlogTags from '@/components/BlogTags.astro';
 import Giscus from '@/components/Giscus.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -69,6 +70,7 @@ const ogImage = post.data.ogImage;
   <article data-pagefind-body>
     <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
     <h1>{post.data.title}</h1>
+    <BlogTags locale={lang} tags={post.data.tags} />
     <p class="lede">{post.data.description}</p>
     <Content />
     <SocialShare title={post.data.title} url={Astro.url.href} />

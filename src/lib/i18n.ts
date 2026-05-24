@@ -63,6 +63,35 @@ export function buildContentAlternateLocales(
     }));
 }
 
+type UiCopy = {
+  siteTitle: string;
+  tagline: string;
+  about: string;
+  now: string;
+  projects: string;
+  blog: string;
+  knowledge: string;
+  tools: string;
+  latest: string;
+  back: string;
+  comments: string;
+  search: string;
+  searchTitle: string;
+  searchDescription: string;
+  searchPlaceholder: string;
+  newsletterTitle: string;
+  newsletterDescription: string;
+  newsletterPlaceholder: string;
+  newsletterSubmit: string;
+  newsletterSubmitting: string;
+  newsletterSuccess: string;
+  newsletterErrorInvalid: string;
+  newsletterErrorGeneric: string;
+  noPostsForTag: string;
+  tagPageTitle: (tag: string) => string;
+  tagPageDescription: (tag: string) => string;
+};
+
 export const ui = {
   zh: {
     siteTitle: 'PeterClaw',
@@ -87,7 +116,10 @@ export const ui = {
     newsletterSubmitting: '提交中…',
     newsletterSuccess: '订阅成功！请查收确认邮件。',
     newsletterErrorInvalid: '请输入有效的邮箱地址。',
-    newsletterErrorGeneric: '订阅失败，请稍后再试。'
+    newsletterErrorGeneric: '订阅失败，请稍后再试。',
+    noPostsForTag: '暂无文章。',
+    tagPageTitle: (tag: string) => `标签：${tag}`,
+    tagPageDescription: (tag: string) => `浏览标签「${tag}」下的博客文章。`
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -112,6 +144,9 @@ export const ui = {
     newsletterSubmitting: 'Submitting…',
     newsletterSuccess: 'You are subscribed! Check your inbox to confirm.',
     newsletterErrorInvalid: 'Please enter a valid email address.',
-    newsletterErrorGeneric: 'Subscription failed. Please try again later.'
+    newsletterErrorGeneric: 'Subscription failed. Please try again later.',
+    noPostsForTag: 'No posts yet.',
+    tagPageTitle: (tag: string) => `Tag: ${tag}`,
+    tagPageDescription: (tag: string) => `Blog posts tagged “${tag}”.`
   }
-} satisfies Record<Locale, Record<string, string>>;
+} satisfies Record<Locale, UiCopy>;
