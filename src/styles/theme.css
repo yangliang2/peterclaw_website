@@ -18,6 +18,7 @@
   --color-code-bg: #111827;
   --color-code-inline-bg: rgba(37, 99, 235, 0.1);
   --color-button-text: #ffffff;
+  --color-error: #dc2626;
 
   --color-primary: #2563eb;
   --color-secondary: #7c3aed;
@@ -56,7 +57,7 @@
   --color-bg: #050505;
   --color-surface: #0f1117;
   --color-text: #f0f0f0;
-  --color-text-muted: #a0a0a0;
+  --color-text-muted: #b4bcc8;
   --color-heading: #ffffff;
   --color-article: #e0e0e0;
   --color-line: rgba(255, 255, 255, 0.1);
@@ -68,6 +69,7 @@
   --color-code-bg: #0d1117;
   --color-code-inline-bg: rgba(255, 255, 255, 0.08);
   --color-button-text: #ffffff;
+  --color-error: #f87171;
 
   --color-primary: #3b82f6;
   --color-secondary: #8b5cf6;
@@ -91,6 +93,21 @@
 
 html {
   background: var(--color-bg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-transition,
+  html.theme-transition body {
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  html.theme-transition body {
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
 }
 
 body {

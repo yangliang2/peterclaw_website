@@ -47,7 +47,14 @@ const navItems = [
         </a>
       </li>
       <li>
-        <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label={copy.themeToggleToDark}
+          title={copy.themeToggleToDark}
+          data-label-dark={copy.themeToggleToDark}
+          data-label-light={copy.themeToggleToLight}
+        >
           <svg
             class="theme-icon theme-icon-sun"
             xmlns="http://www.w3.org/2000/svg"
@@ -97,24 +104,56 @@ const navItems = [
     const storageKey = 'peterclaw-theme';
     const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
 
-    function setTheme(theme: 'light' | 'dark') {
-      document.documentElement.dataset.theme = theme;
+    function hasStoredPreference() {
       try {
-        localStorage.setItem(storageKey, theme);
+        const stored = localStorage.getItem(storageKey);
+        return stored === 'light' || stored === 'dark';
       } catch {
-        // Keep the live theme switch working when storage is unavailable.
+        return false;
       }
-      toggle?.setAttribute('aria-pressed', String(theme === 'dark'));
     }
+
+    function syncToggleState(theme: 'light' | 'dark') {
+      toggle?.setAttribute('aria-pressed', String(theme === 'dark'));
+      const label =
+        theme === 'dark'
+          ? (toggle?.dataset.labelLight ?? 'Switch to light mode')
+          : (toggle?.dataset.labelDark ?? 'Switch to dark mode');
+      if (label && toggle) {
+        toggle.setAttribute('aria-label', label);
+        toggle.setAttribute('title', label);
+      }
+    }
+
+    function applyTheme(theme: 'light' | 'dark', persist = false) {
+      document.documentElement.dataset.theme = theme;
+      if (persist) {
+        try {
+          localStorage.setItem(storageKey, theme);
+        } catch {
+          // Keep the live theme switch working when storage is unavailable.
+        }
+      }
+      syncToggleState(theme);
+    }
+
+    requestAnimationFrame(() => {
+      document.documentElement.classList.add('theme-transition');
+    });
 
     if (toggle) {
       const currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      toggle.setAttribute('aria-pressed', String(currentTheme === 'dark'));
+      syncToggleState(currentTheme);
       toggle.addEventListener('click', () => {
         const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-        setTheme(nextTheme);
+        applyTheme(nextTheme, true);
       });
     }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+      if (hasStoredPreference()) return;
+      applyTheme(event.matches ? 'dark' : 'light');
+    });
   })();
 </script>
 
