@@ -13,6 +13,9 @@ tags:
 series: "AI 工具评测专栏"
 seriesNumber: 1
 recommendation: 5
+reviewedProduct:
+  name: Cursor
+  url: https://cursor.com
 draft: false
 ---
 

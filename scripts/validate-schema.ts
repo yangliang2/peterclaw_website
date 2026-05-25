@@ -85,6 +85,29 @@ const BreadcrumbListSchema = z.looseObject({
     .min(2),
 });
 
+const ReviewSchema = z.looseObject({
+  '@type': z.literal('Review'),
+  name: z.string().min(1),
+  reviewBody: z.string().min(1),
+  url: z.url(),
+  datePublished: z.iso.datetime(),
+  author: z.object({
+    '@type': z.literal('Person'),
+    name: z.literal('PeterClaw'),
+  }),
+  reviewRating: z.object({
+    '@type': z.literal('Rating'),
+    ratingValue: z.number().int().min(1).max(5),
+    bestRating: z.literal(5),
+    worstRating: z.literal(1),
+  }),
+  itemReviewed: z.object({
+    '@type': z.literal('SoftwareApplication'),
+    name: z.string().min(1),
+    url: z.url(),
+  }),
+});
+
 function validateFile(filePath: string, distRoot: string) {
   const html = readFileSync(filePath, 'utf-8');
   const dom = new JSDOM(html);
@@ -103,7 +126,10 @@ function validateFile(filePath: string, distRoot: string) {
   const isHomePage = /^\/[a-z]{2}\/index\.html$/.test(relativePath);
   const isBlogList = /^\/[a-z]{2}\/blog\/index\.html$/.test(relativePath);
   const isBlogPost = /^\/[a-z]{2}\/blog\/[^/]+\/index\.html$/.test(relativePath);
+  const isReviewPost = /\/blog\/ai-tool-review-/.test(relativePath);
+  const isKnowledgeList = /^\/[a-z]{2}\/knowledge\/index\.html$/.test(relativePath);
   const isKnowledgePost = /^\/[a-z]{2}\/knowledge\/[^/]+\/index\.html$/.test(relativePath);
+  const isToolsPage = /^\/[a-z]{2}\/tools\/index\.html$/.test(relativePath);
 
   if (isHomePage) {
     const hasWebSite = schemas.some((s) => s['@type'] === 'WebSite');
@@ -135,6 +161,21 @@ function validateFile(filePath: string, distRoot: string) {
     }
   }
 
+  if (isReviewPost && !schemas.some((s) => s['@type'] === 'Review')) {
+    console.error(`[Error] Missing Review schema in ${filePath}`);
+    process.exit(1);
+  }
+
+  if (isKnowledgeList && !schemas.some((s) => s['@type'] === 'BreadcrumbList')) {
+    console.error(`[Error] Missing BreadcrumbList schema in ${filePath}`);
+    process.exit(1);
+  }
+
+  if (isToolsPage && !schemas.some((s) => s['@type'] === 'BreadcrumbList')) {
+    console.error(`[Error] Missing BreadcrumbList schema in ${filePath}`);
+    process.exit(1);
+  }
+
   if (isKnowledgePost) {
     if (!schemas.some((s) => s['@type'] === 'Article')) {
       console.error(`[Error] Missing Article schema in ${filePath}`);
@@ -160,6 +201,8 @@ function validateFile(filePath: string, distRoot: string) {
         FAQPageSchema.parse(schema);
       } else if (schema['@type'] === 'BreadcrumbList') {
         BreadcrumbListSchema.parse(schema);
+      } else if (schema['@type'] === 'Review') {
+        ReviewSchema.parse(schema);
       }
     } catch (e) {
       console.error(`Validation failed for ${schema['@type']} in ${filePath}`);

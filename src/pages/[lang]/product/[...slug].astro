@@ -8,9 +8,10 @@ import {
   isLocale,
   localeFromId,
   stripLocaleFromId,
+  ui,
   type Locale
 } from '@/lib/i18n';
-import { buildProductSchema } from '@/utils/seo';
+import { buildBreadcrumbSchema, buildProductSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
   const products = await getCollection('product');
@@ -44,6 +45,7 @@ const copy: Record<Locale, { features: string; pricing: string }> = {
 };
 const canonicalPath = collectionPath(lang, 'product', product.id);
 const cta = product.data.cta;
+const siteCopy = ui[lang];
 ---
 
 <BaseLayout
@@ -51,12 +53,19 @@ const cta = product.data.cta;
   title={product.data.title}
   description={product.data.description}
   canonicalPath={canonicalPath}
-  structuredData={buildProductSchema({
-    title: product.data.title,
-    description: product.data.description,
-    path: canonicalPath,
-    locale: lang
-  })}
+  structuredData={[
+    buildProductSchema({
+      title: product.data.title,
+      description: product.data.description,
+      path: canonicalPath,
+      locale: lang,
+    }),
+    buildBreadcrumbSchema([
+      { name: siteCopy.siteTitle, path: `/${lang}/` },
+      { name: siteCopy.products, path: `/${lang}/product/` },
+      { name: product.data.title, path: canonicalPath },
+    ]),
+  ]}
   alternateLocales={alternateLocales}
 >
   <section class="product-hero">

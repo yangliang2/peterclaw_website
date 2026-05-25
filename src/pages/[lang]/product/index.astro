@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { buildHreflangAlternates, isLocale, localeFromId, stripLocaleFromId, type Locale } from '@/lib/i18n';
+import { buildHreflangAlternates, isLocale, localeFromId, stripLocaleFromId, ui, type Locale } from '@/lib/i18n';
+import { buildBreadcrumbSchema } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -30,6 +31,7 @@ const products = (await getCollection('product'))
   .filter((product) => localeFromId(product.id) === lang)
   .sort((a, b) => a.data.title.localeCompare(b.data.title));
 const pageCopy = copy[lang];
+const siteCopy = ui[lang];
 ---
 
 <BaseLayout
@@ -38,6 +40,10 @@ const pageCopy = copy[lang];
   description={pageCopy.description}
   canonicalPath={`/${lang}/product/`}
   alternateLocales={buildHreflangAlternates('/product/')}
+  structuredData={buildBreadcrumbSchema([
+    { name: siteCopy.siteTitle, path: `/${lang}/` },
+    { name: siteCopy.products, path: `/${lang}/product/` },
+  ])}
 >
   <section class="hero product-hero">
     <p class="eyebrow">{pageCopy.eyebrow}</p>
