@@ -16,6 +16,14 @@ export type ArticleSchemaInput = {
   imagePath?: string;
 };
 
+export type ProductSchemaInput = {
+  title: string;
+  description: string;
+  path: string;
+  locale: Locale;
+  price?: string;
+};
+
 export function absoluteUrl(path = '/'): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return new URL(normalized, getSiteUrl()).href;
@@ -125,5 +133,26 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
     },
     image: [image],
     inLanguage: input.locale,
+  };
+}
+
+export function buildProductSchema(input: ProductSchemaInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: input.title,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    applicationCategory: 'BusinessApplication',
+    inLanguage: input.locale,
+    ...(input.price
+      ? {
+          offers: {
+            '@type': 'Offer',
+            price: input.price,
+            priceCurrency: 'USD',
+          },
+        }
+      : {}),
   };
 }

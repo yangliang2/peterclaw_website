@@ -40,4 +40,32 @@ const knowledge = defineCollection({
   })
 });
 
-export const collections = { blog, knowledge };
+const product = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/product' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    eyebrow: z.string().optional(),
+    features: z.array(z.object({
+      title: z.string(),
+      description: z.string()
+    })).min(1),
+    pricing: z.array(z.object({
+      name: z.string(),
+      price: z.string(),
+      cadence: z.string().optional(),
+      description: z.string(),
+      features: z.array(z.string()).default([]),
+      featured: z.boolean().default(false)
+    })).default([]),
+    cta: z.object({
+      title: z.string(),
+      description: z.string(),
+      label: z.string(),
+      href: z.string().optional(),
+      emailSignup: z.boolean().default(false)
+    })
+  })
+});
+
+export const collections = { blog, knowledge, product };
