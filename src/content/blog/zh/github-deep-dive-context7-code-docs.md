@@ -32,6 +32,13 @@ faq:
     answer: "通过 Tree-sitter 解析器支持主流语言：TypeScript/JavaScript、Python、Go、Rust、Java、C/C++、Ruby 等。新语言只需添加对应的 Tree-sitter grammar。"
   - question: "生成的文档会过时吗？"
     answer: "Context7 设计为增量更新：监控 Git 变更，只重新解析改动过的文件，更新受影响的知识图谱节点。无需全量重建。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
 > 56,000 Stars，TypeScript 编写，自称「为 LLM 和 AI 代码编辑器提供最新代码文档」——Context7 不是又一个代码搜索工具，而是试图解决 AI 编程中最痛的一个问题：**LLM 根本看不懂你的代码库结构**。

@@ -32,6 +32,13 @@ faq:
     answer: "JSC 启动更快、内存占用更低，且 Bun 团队发现其内部 API 更适合构建一体化工具链。代价是部分 V8 特有 API 需要重新实现。"
   - question: "Bun 的 package manager 比 pnpm 快在哪里？"
     answer: "Bun 使用全局硬链接缓存 + 并行解析 + 原生代码实现，安装速度可达 npm 的 30 倍。核心差异在 I/O 模型和依赖解析算法。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
 > 89,000 Stars，212 个版本，被 Cursor 和 Midjourney 采用——Bun 从一个「实验性项目」变成了认真挑战 JavaScript 生态标准的选手。
@@ -213,5 +220,5 @@ Bun 不是一个「更快的 Node.js」。它是一个**重新思考 JavaScript 
 
 > **延伸阅读**
 > - [Bun 官方文档：Node.js 兼容性](https://bun.sh/docs/runtime/nodejs-apis)
-> - [Jarred Sumner 的 Zig 选型说明](https://bun.sh/blog/the-bun-frontend)
+> - [Jarred Sumner 的 Zig 选型说明](https://bun.sh/blog)
 > - [Bun 1.0 发布时的架构总览](https://bun.sh/blog/bun-v1.0)

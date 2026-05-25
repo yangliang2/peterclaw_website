@@ -32,6 +32,13 @@ faq:
     answer: "是的，pkgroll 从 package.json 的 exports 字段推断入口和输出格式。如果你需要复杂定制（如自定义插件），可能还是需要 Rollup。"
   - question: "Rolldown 和 Rollup 的 API 兼容吗？"
     answer: "Rolldown 目标是与 Rollup 插件 API 兼容，但用 Rust 重写核心。目前大部分 Rollup 插件可以无缝迁移，但仍有少数边缘 API 在完善中。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
 > 2026 年发布一个 TypeScript npm 包，你不需要再写 50 行 Rollup 配置、安装 8 个插件、调试 CommonJS/ESM 双模式输出。

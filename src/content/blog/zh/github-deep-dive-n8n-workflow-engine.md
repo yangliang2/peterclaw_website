@@ -1,5 +1,5 @@
 ---
-title: "n8n 工作流引擎深度剖析：184k Star 的节点执行架构与 AI Agent 集成"
+title: "n8n 工作流引擎深度剖析：~80k Star 的节点执行架构与 AI Agent 集成"
 description: "从 400+ 集成的节点图谱到 AI Agent 节点的自主决策循环，拆解 n8n 的工作流执行引擎、触发机制与公平代码许可证背后的商业逻辑。"
 contentType: review
 publishedAt: 2026-05-26
@@ -32,9 +32,16 @@ faq:
     answer: "n8n 使用 fair-code 许可（Sustainable Use License）：个人和内部使用免费，但提供「n8n 即服务」的商业托管需要购买授权。这不是 OSI 认证的开源协议，但源码完全公开。"
   - question: "AI Agent 节点真的能自主决策吗？"
     answer: "n8n 的 AI Agent 节点实现了「LLM 推理 → 工具选择 → 执行 → 再推理」的循环，但工具集合是预先配置的。它不能做「未配置过的事」，但在配置范围内可以自主组合步骤。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
-> 184,000 Stars，400+ 应用集成，2700 万+ Docker 下载——n8n 是 2026 年工作流自动化领域最活跃的开源项目。
+> ~80,000 Stars，400+ 应用集成，2700 万+ Docker 下载——n8n 是 2026 年工作流自动化领域最活跃的开源项目。
 >
 > 但它真正引人注目的不是「Zapier 的开源替代品」这个定位，而是 2025-2026 年引入的 **AI Agent 节点**：让 LLM 在工作流中自主决策、调用工具、循环执行，把一个线性的「触发-动作」系统变成了真正的智能代理编排平台。
 >
@@ -338,13 +345,13 @@ n8n 的 Error Trigger 和 Retry 配置是生产级工作流的必修课：
 
 ## 结论
 
-n8n 的 184k Stars 不仅仅因为它「免费替代 Zapier」。它的真正价值在于证明了一件事：**工作流自动化和 AI Agent 编排可以在同一个架构中统一**。
+n8n 的 ~80k Stars 不仅仅因为它「免费替代 Zapier」。它的真正价值在于证明了一件事：**工作流自动化和 AI Agent 编排可以在同一个架构中统一**。
 
 节点化的执行模型、标准化的接口、可视化的编排界面，再加上 LLM 的自主决策能力——n8n 正在从「连接 API 的工具」进化为「编排智能代理的平台」。
 
 对于 Astro + TypeScript 的团队，n8n 提供了一个值得参考的「可视化编排 + 类型安全扩展」的架构范式。即使不直接使用 n8n，它的节点接口设计、执行引擎的图模型、以及 AI Agent 的 ReAct 实现，都是可迁移的工程资产。
 
 > **延伸阅读**
-> - [n8n 官方文档：AI Agent 节点](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/builtin-nodes-langchain.agent/)
+> - [n8n 官方文档：AI Agent 节点](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/)
 > - [n8n 自托管部署指南](https://docs.n8n.io/hosting/)
 > - [Fair-code 许可证说明](https://faircode.io/)
