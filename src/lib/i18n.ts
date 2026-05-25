@@ -87,7 +87,16 @@ export const ui = {
     newsletterSubmitting: '提交中…',
     newsletterSuccess: '订阅成功！请查收确认邮件。',
     newsletterErrorInvalid: '请输入有效的邮箱地址。',
-    newsletterErrorGeneric: '订阅失败，请稍后再试。'
+    newsletterErrorGeneric: '订阅失败，请稍后再试。',
+    chat: 'AI 问答',
+    chatTitle: 'AI 站内问答',
+    chatDescription: '向 PeterClaw AI 提问，获取基于博客与知识库内容的智能回答。',
+    chatWelcome: '你好！我是 PeterClaw AI 助手。你可以向我提问关于这个网站的内容、文章或任何你感兴趣的话题。',
+    chatPlaceholder: '输入你的问题…',
+    chatSend: '发送',
+    chatSending: '思考中…',
+    chatError: '发生错误，请重试。',
+    chatPowered: '由 Claude AI 驱动，基于站内博客和知识库内容回答'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -112,6 +121,15 @@ export const ui = {
     newsletterSubmitting: 'Submitting…',
     newsletterSuccess: 'You are subscribed! Check your inbox to confirm.',
     newsletterErrorInvalid: 'Please enter a valid email address.',
-    newsletterErrorGeneric: 'Subscription failed. Please try again later.'
+    newsletterErrorGeneric: 'Subscription failed. Please try again later.',
+    chat: 'AI Chat',
+    chatTitle: 'AI Site Q&A',
+    chatDescription: 'Ask PeterClaw AI questions and get answers based on blog posts and knowledge base content.',
+    chatWelcome: "Hi! I'm PeterClaw AI. Ask me anything about this site's content, articles, or topics you're curious about.",
+    chatPlaceholder: 'Type your question…',
+    chatSend: 'Send',
+    chatSending: 'Thinking…',
+    chatError: 'Something went wrong. Please try again.',
+    chatPowered: 'Powered by Claude AI, answering from site blog posts and knowledge base'
   }
 } satisfies Record<Locale, Record<string, string>>;
