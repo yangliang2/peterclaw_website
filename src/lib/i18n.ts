@@ -116,7 +116,9 @@ export const ui = {
     chatReset: '清除',
     chatErrorInvalid: '请输入你的问题。',
     chatErrorRateLimit: '提问太频繁，请稍后再试。',
-    chatErrorGeneric: '出了点问题，请稍后再试。'
+    chatErrorGeneric: '出了点问题，请稍后再试。',
+    tocTitle: '目录',
+    tocToggle: '展开文章目录'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -170,6 +172,8 @@ export const ui = {
     chatReset: 'Clear',
     chatErrorInvalid: 'Please enter your question.',
     chatErrorRateLimit: 'Too many requests. Please wait a moment.',
-    chatErrorGeneric: 'Something went wrong. Please try again.'
+    chatErrorGeneric: 'Something went wrong. Please try again.',
+    tocTitle: 'On this page',
+    tocToggle: 'Show table of contents'
   }
 } satisfies Record<Locale, Record<string, string>>;

@@ -1,0 +1,40 @@
+<div class="reading-progress" aria-hidden="true">
+  <div class="reading-progress-bar" data-reading-progress-bar></div>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-reading-progress-bar]');
+
+  if (bar) {
+    const update = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0;
+      bar.style.width = `${progress}%`;
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+  }
+</script>
+
+<style>
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 120;
+    height: 3px;
+    pointer-events: none;
+    background: transparent;
+  }
+
+  .reading-progress-bar {
+    width: 0;
+    height: 100%;
+    background: var(--color-primary);
+    transition: width 80ms linear;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+</style>
