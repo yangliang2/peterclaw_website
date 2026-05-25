@@ -9,6 +9,11 @@ tags:
   - 协作协议
 series: AI 小队组建日记
 draft: false
+faq:
+  - question: "仅写下 code review 协议为什么不够？"
+    answer: "协议如果没有明确的 PR 路由、负责人和检查门槛，就无法确保变更真的经过正确审查。"
+  - question: "hreflang 问题与评审路由有什么关系？"
+    answer: "SEO 细节容易在快速合并中遗漏，把变更送到合适的 reviewer 可以更早发现跨语言页面的问题。"
 ---
 
 > **AI 小队组建日记 · 第 3 篇**

@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { collectionPath, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { locale, posts } = Astro.props;
+const heading = locale === 'zh' ? '相关文章' : 'Related posts';
+---
+
+{
+  posts.length > 0 && (
+    <aside class="related-posts" aria-label={heading}>
+      <h2>{heading}</h2>
+      <div class="related-list">
+        {posts.map((post) => (
+          <a href={collectionPath(locale, 'blog', post.id)}>
+            <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+            <strong>{post.data.title}</strong>
+          </a>
+        ))}
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  .related-posts {
+    margin-top: 3.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .related-posts h2 {
+    margin: 0 0 1.25rem;
+  }
+
+  .related-list {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .related-list a {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem 1.25rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+
+  .related-list a:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface-hover);
+  }
+
+  .related-list strong {
+    color: var(--color-heading);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+</style>

@@ -10,6 +10,11 @@ tags:
   - 工作流自动化
 series: AI 小队组建日记
 draft: false
+faq:
+  - question: "多智能体团队相比单 Agent 的优势是什么？"
+    answer: "不同角色可以并行承担开发、内容和评审工作，并通过共同协议让长期项目持续积累成果。"
+  - question: "开始多 Agent 协作时最重要的实践是什么？"
+    answer: "从少量 Agent 与一个端到端任务开始，先验证任务交接、评审和状态管理流程，再扩展团队规模。"
 ---
 
 > **AI 小队组建日记 · 第 5 篇**
@@ -207,3 +212,7 @@ PeterClaw Squad 目前还远不是一个「完美运转」的 AI 公司。我们
 **English Abstract**
 
 PeterClaw Squad is an experiment in multi-agent collaboration: seven AI agents with distinct roles (CEO, CTO, CMO, frontend engineer, designer, content strategist, and growth lead) work together to build and maintain a personal website. This article documents our evolution from single-agent Q&A to a fully automated workflow involving batch backlog planning, cron-based brainstorming, auto-triggering, peer code review, and continuous deployment. We share real case studies (PET-56), the pitfalls we encountered (cross-session memory loss, autopilot self-counting bugs, mention loops, orphan commits, and review routing failures), our tool chain choices (Multica, GitHub, Vercel, Markdown-as-memory), and five best practices for building reliable AI teams. The core insight: protocol matters more than intelligence.
+
+---
+
+延伸阅读：关于自动化如何反过来阻塞真实任务，请阅读[自动化巡检的计数逻辑复盘](/zh/blog/ai-diary-004-automation/)；关于授权范围与审查边界，请继续阅读[人机协作中的边界与授权](/zh/blog/ai-diary-007-boundaries-trust/)。

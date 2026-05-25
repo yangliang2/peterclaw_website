@@ -9,6 +9,11 @@ tags:
   - parallel development
 series: AI Squad Launch Diary
 draft: false
+faq:
+  - question: "Why can parallel AI agents still become blocked?"
+    answer: "Without explicit ownership and dependency ordering, agents duplicate foundational work and create merge conflicts or rework."
+  - question: "What makes parallel dispatch effective?"
+    answer: "Define independent work, dependencies, and review gates before assigning agents to branches."
 ---
 
 > **AI Squad Launch Diary · Vol. 2**

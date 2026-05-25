@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Giscus from '@/components/Giscus.astro';
 import SocialShare from '@/components/SocialShare.astro';
+import RelatedPosts from '@/components/RelatedPosts.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import EmailSignup from '@/components/EmailSignup.astro';
 import ReaderFeedback from '@/components/ReaderFeedback.astro';
@@ -12,7 +13,7 @@ import {
   localeFromId,
   stripLocaleFromId
 } from '@/lib/i18n';
-import { buildArticleSchema } from '@/utils/seo';
+import { buildArticleSchema, buildFaqSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -20,6 +21,20 @@ export async function getStaticPaths() {
 
   return posts.map((post) => {
     const lang = localeFromId(post.id);
+    const relatedPosts = posts
+      .filter((candidate) => candidate.id !== post.id && localeFromId(candidate.id) === lang)
+      .map((candidate) => ({
+        candidate,
+        score:
+          (candidate.data.series && candidate.data.series === post.data.series ? 10 : 0) +
+          candidate.data.tags.filter((tag) => post.data.tags.includes(tag)).length,
+      }))
+      .filter(({ score }) => score > 0)
+      .sort(({ candidate: left, score: leftScore }, { candidate: right, score: rightScore }) =>
+        rightScore - leftScore || right.data.publishedAt.valueOf() - left.data.publishedAt.valueOf()
+      )
+      .slice(0, 3)
+      .map(({ candidate }) => candidate);
 
     return {
       params: {
@@ -28,13 +43,14 @@ export async function getStaticPaths() {
       },
       props: {
         post,
+        relatedPosts,
         alternateLocales: buildContentAlternateLocales('blog', post.id, postIds)
       }
     };
   });
 }
 
-const { post, alternateLocales } = Astro.props;
+const { post, relatedPosts, alternateLocales } = Astro.props;
 const { lang } = Astro.params;
 if (!isLocale(lang)) {
   return Astro.redirect('/zh/blog/');
@@ -45,6 +61,19 @@ const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
+const faq = post.data.faq ?? [];
+const structuredData = [
+  buildArticleSchema({
+    title: post.data.title,
+    description: post.data.description,
+    path: canonicalPath,
+    locale: lang,
+    publishedTime: post.data.publishedAt,
+    modifiedTime: post.data.updatedAt,
+    imagePath: ogImage,
+  }),
+  ...(faq.length > 0 ? [buildFaqSchema(faq)] : []),
+];
 ---
 
 <BaseLayout
@@ -56,15 +85,7 @@ const ogImage = post.data.ogImage;
   ogImage={ogImage}
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
-  structuredData={buildArticleSchema({
-    title: post.data.title,
-    description: post.data.description,
-    path: canonicalPath,
-    locale: lang,
-    publishedTime: post.data.publishedAt,
-    modifiedTime: post.data.updatedAt,
-    imagePath: ogImage,
-  })}
+  structuredData={structuredData}
   alternateLocales={alternateLocales}
 >
   <article data-pagefind-body>
@@ -72,9 +93,50 @@ const ogImage = post.data.ogImage;
     <h1>{post.data.title}</h1>
     <p class="lede">{post.data.description}</p>
     <Content />
+    {
+      faq.length > 0 && (
+        <section class="faq" aria-labelledby="faq-title">
+          <h2 id="faq-title">{lang === 'zh' ? '常见问题' : 'Frequently asked questions'}</h2>
+          <dl>
+            {faq.map((item) => (
+              <div>
+                <dt>{item.question}</dt>
+                <dd>{item.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+    <RelatedPosts locale={lang} posts={relatedPosts} />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
   <Giscus locale={lang} />
 </BaseLayout>
+
+<style>
+  .faq dl {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .faq dl div {
+    padding: 1.1rem 1.25rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+
+  .faq dt {
+    margin-bottom: 0.55rem;
+    color: var(--color-heading);
+    font-weight: 700;
+  }
+
+  .faq dd {
+    color: var(--color-article);
+    line-height: 1.7;
+  }
+</style>
