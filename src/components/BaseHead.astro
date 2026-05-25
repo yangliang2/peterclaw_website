@@ -62,6 +62,13 @@ const schemas = structuredData
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content={ogLocale} />
+{
+  hreflangAlternates
+    .filter(({ locale: altLocale }) => altLocale !== locale)
+    .map(({ locale: altLocale }) => (
+      <meta property="og:locale:alternate" content={siteConfig.ogLocale[altLocale]} />
+    ))
+}
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:alt" content={title} />
 

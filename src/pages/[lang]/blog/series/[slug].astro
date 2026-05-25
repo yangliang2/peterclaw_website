@@ -26,7 +26,7 @@ if (!series) {
 const allPosts = await getCollection('blog');
 const posts = postsInSeries(allPosts, series, lang);
 const canonicalPath = seriesArchivePath(lang, slug);
-const alternateLocales = buildHreflangAlternates(`/blog/series/${slug}/`);
+const alternateLocales = buildHreflangAlternates(canonicalPath);
 const volLabel = lang === 'zh' ? '第' : 'Vol.';
 const volSuffix = lang === 'zh' ? '篇' : '';
 ---
