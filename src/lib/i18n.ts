@@ -104,7 +104,9 @@ export const ui = {
     feedbackSubmitting: '发送中…',
     feedbackSuccess: '感谢你的反馈！我们已收到。',
     feedbackErrorInvalid: '请先选择类型并填写反馈内容。',
-    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。'
+    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。',
+    readingTimeMinutes: (minutes: number) => `预计阅读 ${minutes} 分钟`,
+    relatedPosts: '相关文章'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -146,6 +148,8 @@ export const ui = {
     feedbackSubmitting: 'Sending…',
     feedbackSuccess: 'Thanks for your feedback! We received it.',
     feedbackErrorInvalid: 'Select a type and enter your feedback first.',
-    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.'
+    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.',
+    readingTimeMinutes: (minutes: number) => `${minutes} min read`,
+    relatedPosts: 'Related posts'
   }
-} satisfies Record<Locale, Record<string, string>>;
+} satisfies Record<Locale, Record<string, string | ((minutes: number) => string)>>;

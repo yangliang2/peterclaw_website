@@ -5,14 +5,19 @@ import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import EmailSignup from '@/components/EmailSignup.astro';
 import ReaderFeedback from '@/components/ReaderFeedback.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import RelatedPosts from '@/components/RelatedPosts.astro';
 import {
   buildContentAlternateLocales,
   collectionPath,
   isLocale,
   localeFromId,
-  stripLocaleFromId
+  stripLocaleFromId,
+  ui
 } from '@/lib/i18n';
 import { buildArticleSchema } from '@/utils/seo';
+import { estimateReadingMinutes } from '@/utils/reading';
+import { findRelatedPosts } from '@/utils/related-posts';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -28,13 +33,14 @@ export async function getStaticPaths() {
       },
       props: {
         post,
-        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds)
+        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds),
+        localePosts: posts.filter((entry) => localeFromId(entry.id) === lang)
       }
     };
   });
 }
 
-const { post, alternateLocales } = Astro.props;
+const { post, alternateLocales, localePosts } = Astro.props;
 const { lang } = Astro.params;
 if (!isLocale(lang)) {
   return Astro.redirect('/zh/blog/');
@@ -45,6 +51,10 @@ const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
+const copy = ui[lang];
+const readingMinutes = estimateReadingMinutes(post.body ?? '');
+const relatedPosts = findRelatedPosts(post, localePosts);
+const publishedDate = post.data.publishedAt.toISOString().slice(0, 10);
 ---
 
 <BaseLayout
@@ -67,14 +77,33 @@ const ogImage = post.data.ogImage;
   })}
   alternateLocales={alternateLocales}
 >
+  <ReadingProgress />
   <article data-pagefind-body>
-    <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
+    <p class="meta article-meta">
+      <time datetime={publishedTime}>{publishedDate}</time>
+      <span class="meta-sep" aria-hidden="true"> · </span>
+      <span>{copy.readingTimeMinutes(readingMinutes)}</span>
+    </p>
     <h1>{post.data.title}</h1>
     <p class="lede">{post.data.description}</p>
     <Content />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
+  <RelatedPosts locale={lang} posts={relatedPosts} />
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
   <Giscus locale={lang} />
 </BaseLayout>
+
+<style>
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .meta-sep {
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,67 @@
+<div
+  class="reading-progress"
+  role="progressbar"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow="0"
+  aria-label="Reading progress"
+>
+  <div class="reading-progress__bar"></div>
+</div>
+
+<script>
+  (() => {
+    const root = document.querySelector<HTMLElement>('.reading-progress');
+    const bar = document.querySelector<HTMLElement>('.reading-progress__bar');
+    if (!root || !bar) {
+      return;
+    }
+
+    let ticking = false;
+
+    const update = () => {
+      const scrollTop = window.scrollY;
+      const viewport = window.innerHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const maxScroll = Math.max(scrollHeight - viewport, 1);
+      const progress = Math.min(100, Math.round((scrollTop / maxScroll) * 100));
+
+      bar.style.transform = `scaleX(${progress / 100})`;
+      root.setAttribute('aria-valuenow', String(progress));
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  })();
+</script>
+
+<style>
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 110;
+    height: 3px;
+    pointer-events: none;
+    background: transparent;
+  }
+
+  .reading-progress__bar {
+    height: 100%;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: var(--gradient-ai);
+    will-change: transform;
+  }
+</style>
