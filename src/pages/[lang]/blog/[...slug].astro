@@ -23,6 +23,13 @@ import {
   buildReviewSchema,
   type JsonLdSchema,
 } from '@/utils/seo';
+import {
+  estimateReadingMinutes,
+  extractTocFromMarkdown,
+  formatReadingTime,
+} from '@/utils/reading';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import ArticleToc from '@/components/ArticleToc.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -72,6 +79,9 @@ const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString(
 const ogImage = post.data.ogImage;
 const faq = post.data.faq ?? [];
 const copy = ui[lang];
+const readingMinutes = estimateReadingMinutes(post.body ?? '');
+const readingTimeLabel = formatReadingTime(readingMinutes, lang);
+const tocEntries = extractTocFromMarkdown(post.body ?? '');
 const structuredData: JsonLdSchema[] = [
   buildArticleSchema({
     title: post.data.title,
@@ -120,11 +130,15 @@ if (
   structuredData={structuredData}
   alternateLocales={alternateLocales}
 >
-  <article data-pagefind-body>
-    <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
-    <h1>{post.data.title}</h1>
-    <p class="lede">{post.data.description}</p>
-    <Content />
+  <ReadingProgress />
+  <div class="article-layout">
+    <ArticleToc locale={lang} entries={tocEntries} />
+    <article class="article-main" data-pagefind-body>
+      <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
+      <h1>{post.data.title}</h1>
+      <p class="reading-time">{readingTimeLabel}</p>
+      <p class="lede">{post.data.description}</p>
+      <Content />
     {
       faq.length > 0 && (
         <section class="faq" aria-labelledby="faq-title">
@@ -143,7 +157,8 @@ if (
     <RelatedPosts locale={lang} posts={relatedPosts} />
     <SeriesNav locale={lang} post={post} />
     <SocialShare title={post.data.title} url={Astro.url.href} />
-  </article>
+    </article>
+  </div>
   <ArticleChat locale={lang} articleContent={post.body ?? ''} />
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
@@ -151,6 +166,38 @@ if (
 </BaseLayout>
 
 <style>
+  .article-layout {
+    display: grid;
+    gap: 2rem;
+    width: min(100%, 1100px);
+    margin: 0 auto;
+  }
+
+  @media (min-width: 1024px) {
+    .article-layout {
+      grid-template-columns: minmax(0, 720px) minmax(180px, 240px);
+      justify-content: center;
+      align-items: start;
+    }
+
+    .article-layout .article-main {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .article-layout .article-toc {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+
+  .reading-time {
+    margin: -0.75rem 0 1.25rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+
   .faq dl {
     display: grid;
     gap: 1rem;
