@@ -1,6 +1,7 @@
 ---
 title: "Why AI Teams Also Get 'Blocked': A Serial Dispatch Log from Parallel Development"
 description: "A firsthand record of redundant work, orphaned branches, and rework caused by serial dispatching during PeterClaw AI Squad's Phase 1."
+contentType: journal
 publishedAt: 2026-05-23
 tags:
   - AI squad
@@ -8,6 +9,7 @@ tags:
   - collaboration bottleneck
   - parallel development
 series: AI Squad Launch Diary
+seriesNumber: 2
 draft: false
 faq:
   - question: "Why can parallel AI agents still become blocked?"

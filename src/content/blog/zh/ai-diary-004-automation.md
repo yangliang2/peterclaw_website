@@ -1,6 +1,7 @@
 ---
 title: 当 Autopilot 把自己算进活跃任务：自动化巡检的计数逻辑 Bug 与修复
 description: 记录 PeterClaw AI 小队搭建自动巡检 cron 的过程，以及 autopilot 因计数逻辑缺陷导致 backlog 积压、流水线停滞的完整复盘。
+contentType: journal
 publishedAt: 2026-05-24
 ogImage: /og-default.png
 tags:
@@ -9,6 +10,7 @@ tags:
   - 自动化
   - 工作流设计
 series: AI 小队组建日记
+seriesNumber: 4
 draft: false
 faq:
   - question: "Autopilot 为什么会让任务流水线停滞？"

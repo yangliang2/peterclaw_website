@@ -1,6 +1,7 @@
 ---
 title: 为什么 AI 团队也会"阻塞"？一次并行开发中的串行派工实录
 description: 记录 PeterClaw AI 小队在 Phase 1 中因为串行派工导致的重复劳动、分支孤儿与返工全过程。
+contentType: journal
 publishedAt: 2026-05-23
 tags:
   - AI 小队
@@ -8,6 +9,7 @@ tags:
   - 协作瓶颈
   - 并行开发
 series: AI 小队组建日记
+seriesNumber: 2
 draft: false
 faq:
   - question: "AI Agent 可以并行工作，为什么仍会阻塞？"

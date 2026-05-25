@@ -1,6 +1,7 @@
 ---
 title: 从被动响应到主动规划：定时任务如何让 AI 小队不再「等活干」
 description: 记录 PeterClaw AI 小队如何从「来一个做一个」的串行模式，进化到批量 backlog 规划 + 定时 brainstorming + 自动触发的工作流。
+contentType: journal
 publishedAt: 2026-05-23
 tags:
   - AI 小队
@@ -8,6 +9,7 @@ tags:
   - 工作流设计
   - 定时任务
 series: AI 小队组建日记
+seriesNumber: 3
 draft: false
 faq:
   - question: "定时任务怎样改善 AI 小队的工作流？"

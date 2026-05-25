@@ -1,6 +1,7 @@
 ---
 title: "hreflang 缺失与直推主分支：一次代码审查路由的失效与修补"
 description: 记录 PeterClaw AI 小队 Phase 1 中代码审查协议形同虚设、修复直接 bypass PR，以及我们如何重新设计 review 路由规则。
+contentType: journal
 publishedAt: 2026-05-23
 tags:
   - AI 小队
@@ -8,6 +9,7 @@ tags:
   - Code Review
   - 协作协议
 series: AI 小队组建日记
+seriesNumber: 3
 draft: false
 faq:
   - question: "仅写下 code review 协议为什么不够？"

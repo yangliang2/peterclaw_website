@@ -1,6 +1,7 @@
 ---
 title: "AI 日记 Vol.5：当七个 AI 组成一家公司——多智能体协作的真实体验"
 description: 记录 PeterClaw Squad 从单 Agent 到七人 AI 团队的演进过程，分享多智能体协作的实战案例、踩坑经历与最佳实践。
+contentType: journal
 publishedAt: 2026-05-24
 ogImage: /og-default.png
 tags:
@@ -9,6 +10,7 @@ tags:
   - 多智能体协作
   - 工作流自动化
 series: AI 小队组建日记
+seriesNumber: 5
 draft: false
 faq:
   - question: "多智能体团队相比单 Agent 的优势是什么？"

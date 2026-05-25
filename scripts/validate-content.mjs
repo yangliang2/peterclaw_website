@@ -22,6 +22,8 @@ const staticRoutes = new Set([
   '/en/search', '/en/search/',
   '/zh/blog', '/zh/blog/',
   '/en/blog', '/en/blog/',
+  '/zh/blog/series/ai-diary', '/zh/blog/series/ai-diary/',
+  '/en/blog/series/ai-diary', '/en/blog/series/ai-diary/',
   '/zh/knowledge', '/zh/knowledge/',
   '/en/knowledge', '/en/knowledge/',
 ]);

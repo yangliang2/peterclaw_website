@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getSeriesBySlug, seriesArchivePath, seriesCatalog } from '@/config/series';
+import { buildHreflangAlternates, collectionPath, isLocale } from '@/lib/i18n';
+import { postsInSeries } from '@/lib/series';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].flatMap((lang) =>
+    seriesCatalog.map((series) => ({
+      params: { lang, slug: series.slug },
+    }))
+  );
+}
+
+const { lang, slug } = Astro.params;
+if (!isLocale(lang) || !slug) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const series = getSeriesBySlug(slug);
+if (!series) {
+  return Astro.redirect(`/${lang}/blog/`);
+}
+
+const allPosts = await getCollection('blog');
+const posts = postsInSeries(allPosts, series, lang);
+const canonicalPath = seriesArchivePath(lang, slug);
+const alternateLocales = buildHreflangAlternates(`/blog/series/${slug}/`);
+const volLabel = lang === 'zh' ? '第' : 'Vol.';
+const volSuffix = lang === 'zh' ? '篇' : '';
+---
+
+<BaseLayout
+  locale={lang}
+  title={series.title[lang]}
+  description={series.description[lang]}
+  canonicalPath={canonicalPath}
+  alternateLocales={alternateLocales}
+>
+  <nav class="meta">
+    <a href={`/${lang}/blog/`}>{lang === 'zh' ? '← 返回博客' : '← Back to blog'}</a>
+  </nav>
+
+  <header class="series-intro">
+    <h1>{series.title[lang]}</h1>
+    <p class="lede">{series.description[lang]}</p>
+    <dl class="series-meta">
+      <div>
+        <dt>{lang === 'zh' ? '系列定位' : 'About this series'}</dt>
+        <dd>{series.intent[lang]}</dd>
+      </div>
+      <div>
+        <dt>{lang === 'zh' ? '更新节奏' : 'Update cadence'}</dt>
+        <dd>{series.updateFrequency[lang]}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section aria-labelledby="series-episodes-heading">
+    <h2 id="series-episodes-heading">{lang === 'zh' ? '全部文章' : 'All episodes'}</h2>
+    <div class="content-list">
+      {
+        posts.map((post) => (
+          <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+            <span class="meta">
+              {post.data.seriesNumber
+                ? `${volLabel} ${post.data.seriesNumber} ${volSuffix}`.trim()
+                : post.data.publishedAt.toISOString().slice(0, 10)}
+              {' · '}
+              {post.data.publishedAt.toISOString().slice(0, 10)}
+            </span>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .series-intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .series-meta {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .series-meta dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .series-meta dd {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .content-item h3 {
+    margin: 0.25rem 0 0.5rem;
+    font-size: 1.125rem;
+  }
+</style>
