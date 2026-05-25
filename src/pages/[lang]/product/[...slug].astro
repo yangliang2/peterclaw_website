@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+import EmailSignup from '@/components/EmailSignup.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import {
+  buildContentAlternateLocales,
+  collectionPath,
+  isLocale,
+  localeFromId,
+  stripLocaleFromId,
+  type Locale
+} from '@/lib/i18n';
+import { buildProductSchema } from '@/utils/seo';
+
+export async function getStaticPaths() {
+  const products = await getCollection('product');
+  const productIds = products.map((entry) => entry.id);
+
+  return products.map((product) => {
+    const lang = localeFromId(product.id);
+
+    return {
+      params: {
+        lang,
+        slug: stripLocaleFromId(product.id, lang)
+      },
+      props: {
+        product,
+        alternateLocales: buildContentAlternateLocales('product', product.id, productIds)
+      }
+    };
+  });
+}
+
+const { product, alternateLocales } = Astro.props;
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/product/');
+}
+
+const copy: Record<Locale, { features: string; pricing: string }> = {
+  zh: { features: '核心功能', pricing: '定价' },
+  en: { features: 'Features', pricing: 'Pricing' }
+};
+const canonicalPath = collectionPath(lang, 'product', product.id);
+const cta = product.data.cta;
+---
+
+<BaseLayout
+  locale={lang}
+  title={product.data.title}
+  description={product.data.description}
+  canonicalPath={canonicalPath}
+  structuredData={buildProductSchema({
+    title: product.data.title,
+    description: product.data.description,
+    path: canonicalPath,
+    locale: lang
+  })}
+  alternateLocales={alternateLocales}
+>
+  <section class="product-hero">
+    {product.data.eyebrow && <p class="eyebrow">{product.data.eyebrow}</p>}
+    <h1>{product.data.title}</h1>
+    <p class="lede">{product.data.description}</p>
+    {cta.href && (
+      <a
+        class="btn btn-primary"
+        href={cta.href}
+        target={cta.href.startsWith('http') ? '_blank' : undefined}
+        rel={cta.href.startsWith('http') ? 'noreferrer' : undefined}
+      >
+        {cta.label}
+      </a>
+    )}
+  </section>
+
+  <section class="feature-section" aria-labelledby="features-heading">
+    <h2 id="features-heading">{copy[lang].features}</h2>
+    <div class="feature-grid">
+      {
+        product.data.features.map((feature) => (
+          <article class="feature glass-card">
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  {product.data.pricing.length > 0 && (
+    <section class="pricing-section" aria-labelledby="pricing-heading">
+      <h2 id="pricing-heading">{copy[lang].pricing}</h2>
+      <div class="pricing-grid">
+        {
+          product.data.pricing.map((plan) => (
+            <article class:list={['plan', 'glass-card', { featured: plan.featured }]}>
+              <h3>{plan.name}</h3>
+              <p class="price">{plan.price}<small>{plan.cadence}</small></p>
+              <p class="plan-description">{plan.description}</p>
+              <ul>
+                {plan.features.map((feature) => <li>{feature}</li>)}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  )}
+
+  <section class="cta glass-card" aria-labelledby="cta-heading">
+    <div>
+      <h2 id="cta-heading">{cta.title}</h2>
+      <p>{cta.description}</p>
+    </div>
+    {cta.href && (
+      <a
+        class="btn btn-primary"
+        href={cta.href}
+        target={cta.href.startsWith('http') ? '_blank' : undefined}
+        rel={cta.href.startsWith('http') ? 'noreferrer' : undefined}
+      >
+        {cta.label}
+      </a>
+    )}
+  </section>
+
+  {cta.emailSignup && <EmailSignup locale={lang} />}
+</BaseLayout>
+
+<style>
+  .product-hero {
+    max-width: 780px;
+    padding: clamp(3rem, 8vw, 6rem) 0 var(--space-xl);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-md);
+    color: var(--color-secondary);
+    font: 700 0.82rem/1.2 var(--font-mono);
+    letter-spacing: 0.12em;
+  }
+
+  .product-hero .lede {
+    margin-bottom: var(--space-lg);
+  }
+
+  .feature-section,
+  .pricing-section {
+    margin: var(--space-xl) 0;
+  }
+
+  section h2 {
+    margin-bottom: var(--space-lg);
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+  }
+
+  .feature-grid,
+  .pricing-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .feature,
+  .plan {
+    max-width: none;
+    margin: 0;
+    padding: var(--space-lg);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .feature h3,
+  .plan h3 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1.3rem;
+  }
+
+  .feature p,
+  .plan-description {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .plan.featured {
+    border-color: var(--color-primary);
+  }
+
+  .price {
+    margin: var(--space-md) 0;
+    color: var(--color-heading);
+    font-size: 2.25rem;
+    font-weight: 700;
+  }
+
+  .price small {
+    margin-left: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .plan ul {
+    margin: var(--space-md) 0 0;
+    padding-left: 1.25rem;
+    color: var(--color-text-muted);
+  }
+
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .cta h2 {
+    margin: 0 0 var(--space-sm);
+  }
+
+  .cta p {
+    max-width: 600px;
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 720px) {
+    .feature-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pricing-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { buildHreflangAlternates, isLocale, localeFromId, stripLocaleFromId, type Locale } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/product/');
+}
+
+const copy: Record<Locale, { title: string; description: string; eyebrow: string; view: string }> = {
+  zh: {
+    title: '可立即试用的产品',
+    description: '面向独立创作者与小团队的 AI 原生工具，每个页面清楚展示价值、功能、定价和下一步。',
+    eyebrow: 'PRODUCTS',
+    view: '查看产品'
+  },
+  en: {
+    title: 'Products ready to explore',
+    description: 'AI-native tools for independent builders and small teams, with clear value, features, pricing, and a next step.',
+    eyebrow: 'PRODUCTS',
+    view: 'View product'
+  }
+};
+const products = (await getCollection('product'))
+  .filter((product) => localeFromId(product.id) === lang)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+const pageCopy = copy[lang];
+---
+
+<BaseLayout
+  locale={lang}
+  title={pageCopy.title}
+  description={pageCopy.description}
+  canonicalPath={`/${lang}/product/`}
+  alternateLocales={buildHreflangAlternates('/product/')}
+>
+  <section class="hero product-hero">
+    <p class="eyebrow">{pageCopy.eyebrow}</p>
+    <h1>{pageCopy.title}</h1>
+    <p class="lede">{pageCopy.description}</p>
+  </section>
+
+  <section class="product-grid" aria-label={pageCopy.title}>
+    {
+      products.map((product) => (
+        <a class="product-card glass-card" href={`/${lang}/product/${stripLocaleFromId(product.id, lang)}/`}>
+          {product.data.eyebrow && <p class="eyebrow">{product.data.eyebrow}</p>}
+          <h2>{product.data.title}</h2>
+          <p>{product.data.description}</p>
+          <span>{pageCopy.view} &rarr;</span>
+        </a>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .product-hero {
+    margin-bottom: var(--space-xl);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-md);
+    color: var(--color-secondary);
+    font: 700 0.82rem/1.2 var(--font-mono);
+    letter-spacing: 0.12em;
+  }
+
+  .product-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .product-card {
+    display: grid;
+    gap: var(--space-md);
+    padding: clamp(1.5rem, 4vw, 2rem);
+    color: inherit;
+  }
+
+  .product-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .product-card h2 {
+    margin: 0;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+  }
+
+  .product-card p:not(.eyebrow) {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .product-card span {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  @media (min-width: 720px) {
+    .product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

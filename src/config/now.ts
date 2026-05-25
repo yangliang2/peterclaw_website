@@ -11,6 +11,16 @@ export type NowSection = {
   items: NowItem[];
 };
 
+export type NowDynamicCopy = {
+  githubHeading: string;
+  githubLede: string;
+  githubProfile: string;
+  cachedNote: string;
+  toolkitHeading: string;
+  toolkitLede: string;
+  toolkitLink: string;
+};
+
 export type NowCopy = {
   pageTitle: string;
   metaDescription: string;
@@ -18,6 +28,7 @@ export type NowCopy = {
   heroLede: string;
   updatedLabel: string;
   nownownowCta: string;
+  dynamic: NowDynamicCopy;
   sections: NowSection[];
 };
 
@@ -31,6 +42,15 @@ export const nowCopy = {
       '这是 PeterClaw 的实时状态页，记录当前的项目重心、学习方向和写作计划。灵感来自 nownownow.com 运动。',
     updatedLabel: '本页最后更新于',
     nownownowCta: '什么是 /now 页面？',
+    dynamic: {
+      githubHeading: '最近 GitHub 提交',
+      githubLede: '从公开 Push 事件拉取的最近 5 条 commit，每 15 分钟刷新缓存。',
+      githubProfile: '查看 GitHub 主页',
+      cachedNote: '（当前为缓存数据）',
+      toolkitHeading: '当前 AI 工具栈',
+      toolkitLede: '与工具箱页面同步的日常助手与开发部署栈。',
+      toolkitLink: '浏览完整工具箱',
+    },
     sections: [
       {
         heading: '当前项目重心',
@@ -107,6 +127,15 @@ export const nowCopy = {
       'A real-time status page tracking current projects, learning directions, and writing plans. Inspired by the nownownow.com movement.',
     updatedLabel: 'Last updated',
     nownownowCta: 'What is a /now page?',
+    dynamic: {
+      githubHeading: 'Recent GitHub Commits',
+      githubLede: 'The latest 5 commits from public push events, cached and refreshed every 15 minutes.',
+      githubProfile: 'View GitHub profile',
+      cachedNote: '(showing cached data)',
+      toolkitHeading: 'Current AI Toolkit',
+      toolkitLede: 'Daily assistants and dev/deploy stack synced from the toolkit page.',
+      toolkitLink: 'Browse full toolkit',
+    },
     sections: [
       {
         heading: 'Current Focus',

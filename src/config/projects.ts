@@ -8,6 +8,7 @@ export interface Project {
   tags: ProjectTag[];
   stack: string[];
   github?: string;
+  githubRepo?: string;
   demo?: string | Record<Locale, string>;
 }
 
@@ -23,7 +24,12 @@ export const projectsCopy = {
     filtersLabel: '项目筛选',
     stack: '技术栈',
     github: 'GitHub',
-    demo: 'Demo'
+    demo: 'Demo',
+    stars: 'Stars',
+    forks: 'Forks',
+    language: '主语言',
+    updated: '最近更新',
+    githubStatsLoading: '正在获取 GitHub 数据'
   },
   en: {
     pageTitle: 'Projects',
@@ -34,7 +40,12 @@ export const projectsCopy = {
     filtersLabel: 'Project filters',
     stack: 'Stack',
     github: 'GitHub',
-    demo: 'Demo'
+    demo: 'Demo',
+    stars: 'Stars',
+    forks: 'Forks',
+    language: 'Language',
+    updated: 'Updated',
+    githubStatsLoading: 'Loading GitHub data'
   }
 } satisfies Record<Locale, Record<string, string>>;
 
@@ -48,6 +59,7 @@ export const projects: Project[] = [
     tags: ['Web', 'Tool'],
     stack: ['Astro', 'TypeScript', 'Content Collections', 'Vercel'],
     github: 'https://github.com/yangliang2/peterclaw_website',
+    githubRepo: 'yangliang2/peterclaw_website',
     demo: 'https://peterclaw.com'
   },
   {

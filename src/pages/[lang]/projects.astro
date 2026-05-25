@@ -48,7 +48,7 @@ const getDemoHref = (demo: (typeof projects)[number]['demo']) => {
     <div class="projects-grid">
       {
         projects.map((project) => (
-          <article class="project-card glass-card" data-tags={project.tags.join(' ')}>
+          <article class="project-card glass-card" data-tags={project.tags.join(' ')} data-github-repo={project.githubRepo}>
             <div class="project-main">
               <div>
                 <p class="project-tags">{project.tags.join(' / ')}</p>
@@ -56,6 +56,32 @@ const getDemoHref = (demo: (typeof projects)[number]['demo']) => {
               </div>
               <p>{project.description[lang]}</p>
             </div>
+
+            {
+              project.githubRepo && (
+                <div class="github-stats" data-github-stats aria-live="polite">
+                  <p class="github-stats-loading">{copy.githubStatsLoading}</p>
+                  <dl hidden>
+                    <div>
+                      <dt>{copy.stars}</dt>
+                      <dd data-stat="stars"></dd>
+                    </div>
+                    <div>
+                      <dt>{copy.forks}</dt>
+                      <dd data-stat="forks"></dd>
+                    </div>
+                    <div>
+                      <dt>{copy.language}</dt>
+                      <dd class="language" data-stat="language"></dd>
+                    </div>
+                    <div>
+                      <dt>{copy.updated}</dt>
+                      <dd data-stat="updated"></dd>
+                    </div>
+                  </dl>
+                </div>
+              )
+            }
 
             <div class="stack">
               <span>{copy.stack}</span>
@@ -75,8 +101,73 @@ const getDemoHref = (demo: (typeof projects)[number]['demo']) => {
   </section>
 
   <script>
+    interface RepositoryStats {
+      repo: string;
+      stars: number;
+      forks: number;
+      language: string | null;
+      updatedAt: string;
+    }
+
+    const languageColors: Record<string, string> = {
+      Astro: '#ff5d01',
+      CSS: '#563d7c',
+      JavaScript: '#f1e05a',
+      TypeScript: '#3178c6',
+      Python: '#3572a5',
+      Go: '#00add8',
+      Rust: '#dea584',
+      Vue: '#41b883',
+    };
+
+    const locale = document.documentElement.lang === 'en' ? 'en' : 'zh-CN';
+    const numberFormatter = new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 });
+    const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' });
     const filters = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
     const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-tags]'));
+
+    fetch('/api/github-projects')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('GitHub API request failed');
+        }
+
+        return response.json() as Promise<{ repositories: RepositoryStats[] }>;
+      })
+      .then(({ repositories }) => {
+        const statsByRepository = new Map(repositories.map((repository) => [repository.repo, repository]));
+
+        cards.forEach((card) => {
+          const repository = card.dataset.githubRepo && statsByRepository.get(card.dataset.githubRepo);
+          const stats = card.querySelector<HTMLElement>('[data-github-stats]');
+
+          if (!repository || !stats) {
+            return;
+          }
+
+          const stars = stats.querySelector<HTMLElement>('[data-stat="stars"]');
+          const forks = stats.querySelector<HTMLElement>('[data-stat="forks"]');
+          const language = stats.querySelector<HTMLElement>('[data-stat="language"]');
+          const updated = stats.querySelector<HTMLElement>('[data-stat="updated"]');
+
+          if (!stars || !forks || !language || !updated) {
+            return;
+          }
+
+          stars.textContent = `\u2605 ${numberFormatter.format(repository.stars)}`;
+          forks.textContent = numberFormatter.format(repository.forks);
+          language.textContent = repository.language ?? '-';
+          language.style.setProperty('--language-color', languageColors[repository.language ?? ''] ?? '#8b949e');
+          updated.textContent = dateFormatter.format(new Date(repository.updatedAt));
+          stats.querySelector('.github-stats-loading')?.remove();
+          stats.querySelector('dl')?.removeAttribute('hidden');
+        });
+      })
+      .catch(() => {
+        document.querySelectorAll<HTMLElement>('[data-github-stats]').forEach((element) => {
+          element.hidden = true;
+        });
+      });
 
     filters.forEach((filter) => {
       filter.addEventListener('click', () => {
@@ -179,6 +270,55 @@ const getDemoHref = (demo: (typeof projects)[number]['demo']) => {
   .stack {
     display: grid;
     gap: var(--space-sm);
+  }
+
+  .github-stats {
+    min-height: 4.9rem;
+  }
+
+  .github-stats-loading {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .github-stats dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: var(--space-sm) 0;
+    margin: 0;
+    border-block: 1px solid var(--color-line);
+  }
+
+  .github-stats dt {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .github-stats dd {
+    margin: 0.25rem 0 0;
+    color: var(--color-text);
+    font-size: 0.93rem;
+    font-weight: 600;
+  }
+
+  .github-stats .language {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .github-stats .language::before {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: var(--language-color, #8b949e);
+    content: '';
   }
 
   .stack span {
