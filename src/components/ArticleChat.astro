@@ -1,0 +1,229 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  articleContent: string;
+}
+
+const { locale, articleContent } = Astro.props;
+const copy = ui[locale];
+// Truncate at build time so the payload embedded in HTML stays bounded
+const content = articleContent.slice(0, 6000);
+---
+
+<details class="article-chat glass-card" aria-label={copy.chatPrompt}>
+  <summary>{copy.chatPrompt}</summary>
+  <div class="article-chat-body">
+    <h2>{copy.chatTitle}</h2>
+    <p>{copy.chatDescription}</p>
+    <form class="article-chat-form" data-chat-form novalidate>
+      <label class="article-chat-field">
+        <textarea
+          name="question"
+          rows="2"
+          placeholder={copy.chatPlaceholder}
+          required
+          maxlength="500"
+        ></textarea>
+      </label>
+      <div class="article-chat-actions">
+        <button class="btn btn-primary" type="submit" data-chat-submit>{copy.chatSubmit}</button>
+        <button class="btn" type="button" data-chat-reset hidden>{copy.chatReset}</button>
+      </div>
+    </form>
+    <div class="article-chat-answer" data-chat-answer hidden aria-live="polite">
+      <div class="article-chat-answer-text" data-chat-answer-text></div>
+    </div>
+    <p class="article-chat-status" data-chat-status role="status" aria-live="polite" hidden></p>
+  </div>
+</details>
+
+<script is:inline define:vars={{ articleContent: content, locale, messages: {
+  submitting: copy.chatSubmitting,
+  submitLabel: copy.chatSubmit,
+  invalid: copy.chatErrorInvalid,
+  rateLimit: copy.chatErrorRateLimit,
+  generic: copy.chatErrorGeneric,
+} }}>
+  document.querySelectorAll('[data-chat-form]').forEach((element) => {
+    if (!(element instanceof HTMLFormElement) || element.dataset.ready === 'true') return;
+    element.dataset.ready = 'true';
+
+    const form = element;
+    const body = form.closest('.article-chat-body');
+    const submitBtn = form.querySelector('[data-chat-submit]');
+    const resetBtn = form.querySelector('[data-chat-reset]');
+    const answerEl = body && body.querySelector('[data-chat-answer]');
+    const answerText = answerEl && answerEl.querySelector('[data-chat-answer-text]');
+    const statusEl = body && body.querySelector('[data-chat-status]');
+
+    if (!(submitBtn instanceof HTMLButtonElement) || !(resetBtn instanceof HTMLButtonElement)) return;
+
+    function setStatus(text, isError) {
+      if (!(statusEl instanceof HTMLElement)) return;
+      statusEl.textContent = text;
+      statusEl.className = 'article-chat-status' + (isError ? ' is-error' : '');
+      statusEl.hidden = !text;
+    }
+
+    resetBtn.addEventListener('click', () => {
+      if (answerEl instanceof HTMLElement) answerEl.hidden = true;
+      if (answerText instanceof HTMLElement) answerText.textContent = '';
+      resetBtn.hidden = true;
+      setStatus('', false);
+      form.reset();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      setStatus('', false);
+
+      const textarea = form.querySelector('textarea[name="question"]');
+      if (!(textarea instanceof HTMLTextAreaElement) || !textarea.value.trim()) {
+        setStatus(messages.invalid, true);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = messages.submitting;
+      resetBtn.hidden = true;
+      if (answerEl instanceof HTMLElement) answerEl.hidden = true;
+      if (answerText instanceof HTMLElement) answerText.textContent = '';
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: textarea.value.trim(),
+            articleContent,
+            locale,
+          }),
+        });
+
+        if (response.status === 429) {
+          setStatus(messages.rateLimit, true);
+          return;
+        }
+        if (!response.ok || !response.body) {
+          setStatus(messages.generic, true);
+          return;
+        }
+
+        if (answerEl instanceof HTMLElement) answerEl.hidden = false;
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (answerText instanceof HTMLElement) {
+            answerText.textContent += decoder.decode(value, { stream: true });
+          }
+        }
+        if (answerText instanceof HTMLElement) {
+          answerText.textContent += decoder.decode();
+        }
+
+        resetBtn.hidden = false;
+      } catch {
+        setStatus(messages.generic, true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = messages.submitLabel;
+      }
+    });
+  });
+</script>
+
+<style>
+  .article-chat {
+    max-width: 720px;
+    margin: var(--space-xl) auto 0;
+    padding: 0;
+  }
+
+  .article-chat summary {
+    cursor: pointer;
+    padding: var(--space-lg);
+    color: var(--color-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    list-style-position: inside;
+  }
+
+  .article-chat[open] summary {
+    border-bottom: var(--border-glass);
+  }
+
+  .article-chat-body {
+    padding: var(--space-lg);
+  }
+
+  .article-chat-body h2 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1.5rem;
+  }
+
+  .article-chat-body > p {
+    margin: 0 0 var(--space-lg);
+    color: var(--color-text-muted);
+  }
+
+  .article-chat-form {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .article-chat-field textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    resize: vertical;
+  }
+
+  .article-chat-field textarea:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .article-chat-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .article-chat-form .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .article-chat-answer {
+    margin-top: var(--space-lg);
+    padding: var(--space-lg);
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-soft-bg);
+  }
+
+  .article-chat-answer-text {
+    white-space: pre-wrap;
+    color: var(--color-article);
+    line-height: 1.7;
+  }
+
+  .article-chat-status {
+    margin: var(--space-md) 0 0;
+    font-size: 0.95rem;
+  }
+
+  .article-chat-status.is-error {
+    color: #f87171;
+  }
+</style>

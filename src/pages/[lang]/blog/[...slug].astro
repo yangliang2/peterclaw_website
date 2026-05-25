@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import ArticleChat from '@/components/ArticleChat.astro';
 import Giscus from '@/components/Giscus.astro';
 import SeriesNav from '@/components/SeriesNav.astro';
 import SocialShare from '@/components/SocialShare.astro';
@@ -120,6 +121,7 @@ const structuredData = [
     <SeriesNav locale={lang} post={post} />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
+  <ArticleChat locale={lang} articleContent={post.body ?? ''} />
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
   <Giscus locale={lang} />
