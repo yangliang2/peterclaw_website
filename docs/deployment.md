@@ -12,13 +12,16 @@
     - 运行 `npm ci` 安装依赖。
     - 运行 `npm run build` (包含 `astro check`) 验证代码是否可构建。
 2.  **Lighthouse 审计 (Lighthouse Audit)**:
-    - 针对 PR 提交，自动运行 Lighthouse 性能审计。
+    - 针对 `main` 的 push 与 Pull Request，自动运行 Lighthouse 性能审计。
     - 门禁指标：
-        - Performance ≥ 90
-        - Accessibility ≥ 90
-        - Best Practices ≥ 90
-        - SEO ≥ 90
-        - LCP < 2.5s
+      - Performance ≥ 85
+      - Accessibility ≥ 90
+      - Best Practices ≥ 90
+      - SEO ≥ 90
+      - LCP ≤ 2.5s
+      - CLS ≤ 0.1
+      - TBT ≤ 200ms（实验室环境中的 INP 代理指标）
+    - Lighthouse 完整报告作为 artifact 保留 14 天，PR 会收到性能预算对比表。
 
 ### Vercel 部署
 
