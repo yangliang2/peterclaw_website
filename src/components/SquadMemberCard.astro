@@ -1,0 +1,75 @@
+---
+import type { SquadMember } from '@/config/about';
+
+interface Props {
+  member: SquadMember;
+  position: number;
+}
+
+const { member, position } = Astro.props;
+const number = String(position + 1).padStart(2, '0');
+---
+
+<article class="squad-card glass-card">
+  <div class="card-meta" aria-hidden="true">
+    <span class="number">{number}</span>
+    <span class="signal"></span>
+  </div>
+  <h3>{member.name}</h3>
+  <p class="role">{member.title}</p>
+  <p class="summary">{member.summary}</p>
+</article>
+
+<style>
+  .squad-card {
+    min-height: 220px;
+    margin: 0;
+    max-width: none;
+    padding: clamp(1.25rem, 3vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .squad-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-line));
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-muted);
+    font: 0.75rem/1 var(--font-mono);
+  }
+
+  .signal {
+    width: 2rem;
+    height: 1px;
+    background: var(--gradient-ai);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .role {
+    margin: 0;
+    font: 0.8rem/1.5 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+  }
+
+  .summary {
+    margin: auto 0 0;
+    padding-top: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+</style>

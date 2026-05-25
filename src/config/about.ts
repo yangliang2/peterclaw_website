@@ -6,19 +6,39 @@ export type SquadMember = {
   summary: string;
 };
 
+type MissionPoint = {
+  title: string;
+  description: string;
+};
+
+type ContactLink = {
+  label: string;
+  href: string;
+};
+
 export type AboutCopy = {
   pageTitle: string;
   metaDescription: string;
   heroTitle: string;
   heroLede: string;
+  heroBadge: string;
+  heroStats: { value: string; label: string }[];
   introHeading: string;
   introParagraphs: string[];
   squadHeading: string;
   squadLede: string;
+  workflowHeading: string;
+  workflowSteps: string[];
+  missionHeading: string;
+  missionLede: string;
+  missionPoints: MissionPoint[];
   experimentHeading: string;
   experimentParagraph: string;
   diaryCta: string;
   diaryHref: string;
+  contactHeading: string;
+  contactParagraph: string;
+  contactLinks: ContactLink[];
   members: SquadMember[];
 };
 
@@ -104,19 +124,54 @@ export const aboutCopy = {
     metaDescription:
       'PeterClaw 是一场由 AI 小队公开协作构建个人网站的实验：认识团队分工，并在 AI 小队组建日记中阅读幕后故事。',
     heroTitle: '关于 PeterClaw',
-    heroLede: '一个由 AI 小队公开协作构建的网站，也是一场正在进行的实验。',
-    introHeading: '这场实验在做什么',
+    heroLede: 'Peter Claw 与七位 AI Agent 在公开协作中写作、设计和交付产品：这是一个网站，也是一场持续发生的团队实验。',
+    heroBadge: 'HUMAN DIRECTION / AI SQUAD DELIVERY',
+    heroStats: [
+      { value: '1', label: '人类发起人' },
+      { value: '7', label: 'AI Squad 成员' },
+      { value: '∞', label: '公开迭代' },
+    ],
+    introHeading: 'Peter Claw 为什么组建 AI 团队',
     introParagraphs: [
-      'PeterClaw 不追求传统意义上的「个人主页」——这里没有简历式的时间线，也没有私人生活的陈列。这个站的存在，是为了验证一个问题：当多个 AI Agent 像真实软件团队一样分工、提 PR、争论方案、返工合并时，能否同时交付可用的产品，并把过程本身变成值得阅读的内容？',
-      '人类负责人设定方向与验收标准；七位 Agent 在 Issue、分支与评论里协作。每一次合并、每一次协议修订、每一次踩坑，都会尽量留在公开记录里——因为透明本身就是实验数据。',
+      'Peter Claw 想验证的不是「AI 能不能写一段代码」，而是它能否成为长期协作的创作团队：理解方向、分担专业角色、在反馈后重做，并持续交付读者真正会使用的内容与产品。',
+      '因此，PeterClaw 不只是传统个人主页。人类负责人提出问题、设定边界并做最终判断；七位 Agent 在 Issue、分支、评审与部署中接力。每次选择、碰撞和修订，都构成这个站点的真实成长记录。',
     ],
     squadHeading: 'AI 小队成员',
-    squadLede: '七位成员覆盖从协调、架构、设计、开发到质量与内容的完整链路。',
+    squadLede: 'PeterClaw Squad 像一支小型产品团队运作：七个清晰岗位覆盖方向拆解、技术落地、品牌传播与交付质量。',
+    workflowHeading: '一项想法如何上线',
+    workflowSteps: [
+      '人类负责人定义问题、边界与验收标准。',
+      'Squad 拆解任务，在独立分支实现、讨论与评审。',
+      '通过构建和验证的成果合并发布，经验沉淀为公开内容。',
+    ],
+    missionHeading: '这个网站想传递什么',
+    missionLede: '把 AI 协作从口号变成可观察、可检验、可复用的实践。',
+    missionPoints: [
+      {
+        title: '公开过程',
+        description: '展示决策、失败与修正，让读者看到成果背后的协作证据。',
+      },
+      {
+        title: '可用交付',
+        description: '以真实网站、工具与文章检验创意，而不是停留在演示与承诺。',
+      },
+      {
+        title: '共享方法',
+        description: '把工作流和经验整理成他人也能带走、改造和继续实验的知识。',
+      },
+    ],
     experimentHeading: '幕后故事在哪里',
     experimentParagraph:
       '如果你想知道「他们今天吵了什么」「为什么又 merge 了三个脚手架」，请阅读博客里的 AI 小队组建日记系列——那是这支小队的工作日志，而不是包装过的成功案例。',
     diaryCta: '阅读 AI 小队组建日记',
     diaryHref: '/zh/blog/ai-squad-launch-diary/',
+    contactHeading: '和 PeterClaw 保持联系',
+    contactParagraph: '关注构建进展、浏览源码，或从 RSS 获取最新文章。每一次反馈都会成为下一轮迭代的输入。',
+    contactLinks: [
+      { label: 'GitHub', href: 'https://github.com/yangliang2' },
+      { label: 'X / Twitter', href: 'https://twitter.com/peterclaw' },
+      { label: 'RSS', href: '/rss.xml' },
+    ],
     members: squadZh,
   },
   en: {
@@ -124,19 +179,54 @@ export const aboutCopy = {
     metaDescription:
       'PeterClaw is a public experiment: an AI squad building a personal site in the open. Meet the team and read the behind-the-scenes diary.',
     heroTitle: 'About PeterClaw',
-    heroLede: 'A website built in public by an AI-native squad—and an experiment still running.',
-    introHeading: 'What this experiment is',
+    heroLede: 'Peter Claw and seven AI agents write, design, and ship in public. This is a website and an ongoing experiment in how a modern team can work.',
+    heroBadge: 'HUMAN DIRECTION / AI SQUAD DELIVERY',
+    heroStats: [
+      { value: '1', label: 'Human founder' },
+      { value: '7', label: 'AI squad members' },
+      { value: '∞', label: 'Open iterations' },
+    ],
+    introHeading: 'Why Peter Claw formed an AI team',
     introParagraphs: [
-      'PeterClaw is not a classic portfolio. There is no résumé timeline and no private life on display. The site exists to test a question: when multiple AI agents work like a real software team—owning roles, opening PRs, debating trade-offs, and merging fixes—can they ship a usable product while making the process itself worth reading?',
-      'A human owner sets direction and acceptance criteria; seven agents collaborate through issues, branches, and comments. Every merge, protocol tweak, and mistake is meant to stay visible—transparency is part of the data.',
+      'Peter Claw is testing more than whether AI can write a snippet of code. The question is whether it can become a durable creative team: understanding direction, owning specialties, revising after feedback, and repeatedly shipping things readers can actually use.',
+      'PeterClaw is therefore more than a conventional personal site. A human owner frames the problems, sets boundaries, and makes final calls; seven agents carry work through issues, branches, reviews, and deployment. Each choice, conflict, and revision is part of the story.',
     ],
     squadHeading: 'The AI squad',
-    squadLede: 'Seven members span coordination, architecture, design, engineering, quality, and content.',
+    squadLede: 'PeterClaw Squad operates like a compact product studio: seven defined roles spanning direction, engineering, communication, and delivery quality.',
+    workflowHeading: 'How an idea ships',
+    workflowSteps: [
+      'The human owner defines the problem, guardrails, and acceptance criteria.',
+      'The squad decomposes the work, implementing and reviewing on dedicated branches.',
+      'Validated work ships, while the lessons become public content for the next iteration.',
+    ],
+    missionHeading: 'What this site stands for',
+    missionLede: 'Turning AI collaboration from a claim into an observable, testable, reusable practice.',
+    missionPoints: [
+      {
+        title: 'Open process',
+        description: 'Show decisions, failures, and revisions so the work behind each result remains visible.',
+      },
+      {
+        title: 'Useful delivery',
+        description: 'Test ideas through real pages, tools, and writing instead of stopping at demos or promises.',
+      },
+      {
+        title: 'Shared methods',
+        description: 'Distill workflows and lessons into knowledge others can adapt and build upon.',
+      },
+    ],
     experimentHeading: 'Where to read the backstage',
     experimentParagraph:
       'For the messy parts—parallel scaffolds, review gaps, workflow pivots—read the AI Squad diary series on the blog. It is a work log, not a polished success story.',
     diaryCta: 'Read the AI Squad diary (中文)',
     diaryHref: '/zh/blog/ai-squad-launch-diary/',
+    contactHeading: 'Keep in touch with PeterClaw',
+    contactParagraph: 'Follow the build, explore the source, or subscribe through RSS. Each piece of feedback can inform the next iteration.',
+    contactLinks: [
+      { label: 'GitHub', href: 'https://github.com/yangliang2' },
+      { label: 'X / Twitter', href: 'https://twitter.com/peterclaw' },
+      { label: 'RSS', href: '/rss.xml' },
+    ],
     members: squadEn,
   },
 } satisfies Record<Locale, AboutCopy>;
