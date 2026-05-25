@@ -18,6 +18,13 @@ reviewedProduct:
   name: Antigravity 2.0
   url: https://antigravity.google
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
 > **AI Tool Review Series · Issue 5**
