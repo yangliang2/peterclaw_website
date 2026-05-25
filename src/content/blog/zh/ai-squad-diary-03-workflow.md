@@ -16,6 +16,13 @@ faq:
     answer: "它可以定期检查任务池并触发已规划工作，让 Agent 不必等到人工逐项派发后才开始执行。"
   - question: "自动触发是否意味着不需要人工监督？"
     answer: "不是。自动化负责稳定执行，人工仍需设定规则、审查关键结果并处理协议外异常。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 3 篇**

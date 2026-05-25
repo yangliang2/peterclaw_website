@@ -16,6 +16,13 @@ faq:
     answer: "Without explicit ownership and dependency ordering, agents duplicate foundational work and create merge conflicts or rework."
   - question: "What makes parallel dispatch effective?"
     answer: "Define independent work, dependencies, and review gates before assigning agents to branches."
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI Squad Launch Diary · Vol. 2**

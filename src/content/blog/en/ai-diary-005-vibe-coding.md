@@ -11,6 +11,13 @@ tags:
 series: AI Diary
 seriesNumber: 5
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI Diary · Vol. 5**

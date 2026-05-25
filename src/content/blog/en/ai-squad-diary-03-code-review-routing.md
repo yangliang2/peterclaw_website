@@ -16,6 +16,13 @@ faq:
     answer: "Without PR routing and enforced review gates, changes can merge without reaching the reviewer responsible for catching relevant risks."
   - question: "How does review routing improve SEO quality?"
     answer: "Routing internationalization and metadata changes to an appropriate reviewer helps detect issues such as missing hreflang links before release."
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI Squad Launch Diary · Vol. 3**

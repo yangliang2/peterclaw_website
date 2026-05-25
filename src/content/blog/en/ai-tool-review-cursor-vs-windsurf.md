@@ -17,6 +17,13 @@ reviewedProduct:
   name: Cursor
   url: https://cursor.com
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI Tool Review Series · Issue 1**

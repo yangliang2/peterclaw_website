@@ -17,6 +17,13 @@ faq:
     answer: "巡检任务把自身计入活跃任务数量，错误判断团队仍在忙碌，因此没有继续从 backlog 提升实际工作。"
   - question: "自动化巡检如何避免自我计数问题？"
     answer: "统计执行任务时排除巡检自身，并让自动化 issue 完成后立即释放所占用的执行槽位。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 4 篇**

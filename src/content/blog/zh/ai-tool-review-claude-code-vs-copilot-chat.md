@@ -17,6 +17,13 @@ reviewedProduct:
   name: Claude Code
   url: https://www.anthropic.com/claude-code
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 工具评测专栏 · 第 2 篇**

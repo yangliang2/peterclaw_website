@@ -8,6 +8,13 @@ tags:
   - Astro
 area: architecture
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 PeterClaw's content is organized along two tracks:

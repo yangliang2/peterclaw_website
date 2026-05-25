@@ -21,6 +21,13 @@ toolchain:
   - anthropic SDK
   - FastAPI
   - Vercel
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > 本文从零开始，带你用 Claude API 搭建一个真实可用的 **智能摘要服务**。你会看到完整的代码，以及为什么要这样写。

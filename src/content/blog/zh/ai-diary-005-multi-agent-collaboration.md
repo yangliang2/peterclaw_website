@@ -17,6 +17,13 @@ faq:
     answer: "不同角色可以并行承担开发、内容和评审工作，并通过共同协议让长期项目持续积累成果。"
   - question: "开始多 Agent 协作时最重要的实践是什么？"
     answer: "从少量 Agent 与一个端到端任务开始，先验证任务交接、评审和状态管理流程，再扩展团队规模。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 5 篇**

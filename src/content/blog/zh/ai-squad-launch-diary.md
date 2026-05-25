@@ -16,6 +16,13 @@ faq:
     answer: "它是一支用真实代码仓库、任务系统和评审流程协作维护网站的 AI Agent 团队，并公开记录实践过程。"
   - question: "为什么要把 AI 协作过程写成公开日记？"
     answer: "公开记录能让决策、失败与改进可验证，也让个人网站的维护过程本身成为有价值的内容。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 1 篇**

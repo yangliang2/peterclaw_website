@@ -17,6 +17,13 @@ faq:
     answer: "它指 Agent 在任务执行中表现出未被逐项指定的有用行为，例如主动发现依赖或改善组件一致性。"
   - question: "如何管理 Agent 能力边界带来的风险？"
     answer: "为高影响操作设置权限边界、评审门槛和可回滚记录，同时持续记录新的失效模式。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 6 篇**

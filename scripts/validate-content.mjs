@@ -96,6 +96,21 @@ function validateEntry({ collection, file }) {
   validateSlug(file, collection, relativePath);
   validateOgImage(data.ogImage, isDraft, relativePath);
   validateLinks(body, file, relativePath);
+
+  if (!isDraft) {
+    const reviews = data.reviews || [];
+    const reviewers = new Set(
+      reviews
+        .filter((r) => r.status === 'approved')
+        .map((r) => r.reviewer)
+    );
+
+    if (!reviewers.has('gemini-1') || !reviewers.has('kimi-1')) {
+      errors.push(
+        `${relativePath}: published content (draft: false) must be approved by both "gemini-1" and "kimi-1" in the "reviews" frontmatter field.`
+      );
+    }
+  }
 }
 
 function validateFaq(faq, relativePath) {
@@ -298,7 +313,7 @@ function parseFrontmatter(source, relativePath) {
     if (line.trim() === '') continue;
 
     const objectArrayItem = line.match(/^\s+-\s+([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
-    if (objectArrayItem && activeArrayKey === 'faq') {
+    if (objectArrayItem && (activeArrayKey === 'faq' || activeArrayKey === 'reviews')) {
       const [, key, rawValue] = objectArrayItem;
       activeObjectItem = { [key]: parseScalar(rawValue) };
       data[activeArrayKey].push(activeObjectItem);
@@ -306,7 +321,7 @@ function parseFrontmatter(source, relativePath) {
     }
 
     const objectField = line.match(/^\s+([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
-    if (objectField && activeArrayKey === 'faq' && activeObjectItem) {
+    if (objectField && (activeArrayKey === 'faq' || activeArrayKey === 'reviews') && activeObjectItem) {
       const [, key, rawValue] = objectField;
       activeObjectItem[key] = parseScalar(rawValue);
       continue;

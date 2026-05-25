@@ -16,6 +16,13 @@ faq:
     answer: "协议如果没有明确的 PR 路由、负责人和检查门槛，就无法确保变更真的经过正确审查。"
   - question: "hreflang 问题与评审路由有什么关系？"
     answer: "SEO 细节容易在快速合并中遗漏，把变更送到合适的 reviewer 可以更早发现跨语言页面的问题。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 3 篇**

@@ -16,6 +16,13 @@ faq:
     answer: "缺少明确分工、依赖关系和合并顺序时，多个 Agent 会重复建设同一基础设施，最终产生返工和等待。"
   - question: "减少多 Agent 串行派工的关键是什么？"
     answer: "先把独立任务、依赖任务与验收入口定义清楚，再用分支和评审流程承接并行产出。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 2 篇**

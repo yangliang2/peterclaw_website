@@ -17,6 +17,13 @@ faq:
     answer: "不是。可信协作的核心是根据风险设定授权边界，把关键决策保留给人类，把可逆执行交给 Agent。"
   - question: "哪些 AI 操作最需要明确边界？"
     answer: "涉及发布、删除、资金、权限和外部承诺的操作通常需要更强约束与清晰的人工确认机制。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-26"
 ---
 
 > **AI 小队组建日记 · 第 7 篇**
