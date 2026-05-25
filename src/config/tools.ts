@@ -19,11 +19,76 @@ export type ToolsCopy = {
   heroLede: string;
   categories: ToolCategory[];
   disclaimer: string;
+  lastUpdatedLabel: string;
 };
 
 const categoriesZh: ToolCategory[] = [
   {
-    title: 'AI 对话与编程助手',
+    title: '硬件设备',
+    items: [
+      {
+        name: 'MacBook Pro 14" (M3 Pro)',
+        url: 'https://www.apple.com/macbook-pro/',
+        description: 'Apple Silicon 芯片的 14 英寸专业笔记本，续航与性能的平衡点。',
+        review: '主力开发机。18GB 统一内存足够同时跑多个 IDE、浏览器标签和本地服务，风扇几乎不转。',
+      },
+      {
+        name: 'Dell U2723QE 4K 显示器',
+        url: 'https://www.dell.com/en-us/shop/dell-ultrasharp-27-4k-usb-c-hub-monitor-u2723qe/apd/210-bdpf/monitors-monitor-accessories',
+        description: '27 英寸 4K IPS Black 面板显示器，支持 USB-C 一线通和 90W 反向供电。',
+        review: '代码阅读和文档并排时的刚需。4K 分辨率下字体锐利，USB-C 一线通让桌面线缆极简。',
+      },
+      {
+        name: 'Keychron Q1 Pro',
+        url: 'https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard',
+        description: '全铝客制化机械键盘，支持 QMK/VIA 改键和蓝牙双模。',
+        review: '从薄膜键盘换过来后打字体验质变。Gasket 结构 + 自定义键位让长时间编码的疲劳感大幅降低。',
+      },
+      {
+        name: 'Logitech MX Master 3S',
+        url: 'https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006556.html',
+        description: '人体工学无线鼠标，MagSpeed 电磁滚轮可在段落和极速模式间切换。',
+        review: '横向滚轮在浏览宽代码文件和 Figma 画布时意外好用。静音点击不会打扰深夜专注。',
+      },
+      {
+        name: 'Sony WH-1000XM5',
+        url: 'https://www.sony.com/electronics/headband-headphones/wh-1000xm5',
+        description: '旗舰级主动降噪头戴式耳机，轻量化设计适合长时间佩戴。',
+        review: '深度工作时的隔音罩。降噪一开，咖啡店瞬间变书房。续航足够一周通勤和办公。',
+      },
+    ],
+  },
+  {
+    title: '编辑器与 IDE',
+    items: [
+      {
+        name: 'Cursor',
+        url: 'https://cursor.com',
+        description: '内置 AI 的代码编辑器，基于 VS Code，支持 Composer 和 Tab 补全。',
+        review: '日常编码的默认环境。Composer 模式在多文件重构时省掉大量上下文切换，Tab 补全的准确率也在持续提升。',
+      },
+      {
+        name: 'VS Code',
+        url: 'https://code.visualstudio.com',
+        description: '微软出品的开源代码编辑器，拥有最丰富的插件生态。',
+        review: 'Cursor 之外的备用环境。某些语言服务器的稳定性更好，也是远程开发和容器开发的首选。',
+      },
+      {
+        name: 'Warp',
+        url: 'https://warp.dev',
+        description: '基于 Rust 构建的现代终端，支持 AI 命令提示和块级输出编辑。',
+        review: '命令行历史的块状设计让复制输出和分享截图变得优雅。AI 补全在记不起复杂参数时救了无数次。',
+      },
+      {
+        name: 'TablePlus',
+        url: 'https://tableplus.com',
+        description: '现代化的数据库管理 GUI，支持 MySQL、PostgreSQL、SQLite 等主流数据库。',
+        review: '比传统数据库客户端更轻量、更美观。本地开发和调试时快速查看表结构和执行查询很顺手。',
+      },
+    ],
+  },
+  {
+    title: 'AI 工具链',
     items: [
       {
         name: 'Claude',
@@ -38,21 +103,27 @@ const categoriesZh: ToolCategory[] = [
         review: '中文内容架构和品牌叙事的主力。处理中文长文、知识库整理时，Kimi 的语义把握比多数模型更自然。',
       },
       {
-        name: 'Cursor',
-        url: 'https://cursor.com',
-        description: '内置 AI 的代码编辑器，基于 VS Code，支持 Composer 和 Tab 补全。',
-        review: '日常编码的默认环境。Composer 模式在多文件重构时省掉大量上下文切换，Tab 补全的准确率也在持续提升。',
-      },
-      {
         name: 'ChatGPT',
         url: 'https://chatgpt.com',
         description: 'OpenAI 的旗舰对话模型，支持代码解释器、联网搜索和自定义 GPT。',
         review: '快速验证想法和生成原型代码的便利工具。o 系列模型在数学和逻辑推理任务上表现突出。',
       },
+      {
+        name: 'Midjourney',
+        url: 'https://midjourney.com',
+        description: 'AI 图像生成工具，以艺术感和氛围感著称。',
+        review: '网站封面图和博客配图的来源。提示词控制熟练后，能在几分钟内得到风格统一的视觉资产。',
+      },
+      {
+        name: 'v0.dev',
+        url: 'https://v0.dev',
+        description: 'Vercel 推出的 AI 界面生成工具，从自然语言描述生成可复制的 React 组件。',
+        review: '快速搭建页面原型和组件骨架的神器。生成的代码质量足够作为起点，再手动微调样式和交互。',
+      },
     ],
   },
   {
-    title: '网站开发与部署',
+    title: '部署与运维',
     items: [
       {
         name: 'Astro',
@@ -78,17 +149,6 @@ const categoriesZh: ToolCategory[] = [
         description: 'CDN、DNS 和边缘计算服务，提供全球加速与安全防护。',
         review: 'DNS 管理和免费 CDN 加速是标配。对于静态站点，Cloudflare Pages 也是 Vercel 之外的可靠备选。',
       },
-    ],
-  },
-  {
-    title: '自动化与工作流',
-    items: [
-      {
-        name: 'n8n',
-        url: 'https://n8n.io',
-        description: '开源的工作流自动化工具，支持自托管和可视化节点编排。',
-        review: '比 Zapier 更灵活，比写脚本更直观。内容发布后的多渠道分发、数据同步等场景用 n8n 搭流水线很顺手。',
-      },
       {
         name: 'GitHub Actions',
         url: 'https://github.com/features/actions',
@@ -96,38 +156,15 @@ const categoriesZh: ToolCategory[] = [
         review: 'Lighthouse CI 评分、自动构建检查、发布前的质量门禁——全部写在 YAML 里，和代码一起版本管理。',
       },
       {
-        name: 'Make',
-        url: 'https://www.make.com',
-        description: '可视化自动化平台（原 Integromat），连接数百种 SaaS 服务。',
-        review: '当 n8n 的自托管显得过重，Make 的云托管方案是轻量替代。适合快速搭建社交媒体或邮件自动化。',
+        name: 'n8n',
+        url: 'https://n8n.io',
+        description: '开源的工作流自动化工具，支持自托管和可视化节点编排。',
+        review: '比 Zapier 更灵活，比写脚本更直观。内容发布后的多渠道分发、数据同步等场景用 n8n 搭流水线很顺手。',
       },
     ],
   },
   {
-    title: '设计与媒体',
-    items: [
-      {
-        name: 'Figma',
-        url: 'https://figma.com',
-        description: '基于浏览器的协作设计工具，支持原型、设计系统和开发者交付。',
-        review: 'AI 小队也需要视觉规范。Figma 的 Dev Mode 让设计到代码的交接更顺畅，组件系统也减少了重复劳动。',
-      },
-      {
-        name: 'Midjourney',
-        url: 'https://midjourney.com',
-        description: 'AI 图像生成工具，以艺术感和氛围感著称。',
-        review: '网站封面图和博客配图的来源。提示词控制熟练后，能在几分钟内得到风格统一的视觉资产。',
-      },
-      {
-        name: 'Canva',
-        url: 'https://canva.com',
-        description: '在线平面设计工具，提供模板、素材和团队协作功能。',
-        review: '不需要从零设计时使用。社交媒体封面、Newsletter 头图等快速产出场景，Canva 的模板库省很多时间。',
-      },
-    ],
-  },
-  {
-    title: '内容、知识与数据分析',
+    title: '日常 SaaS',
     items: [
       {
         name: 'Notion',
@@ -140,6 +177,18 @@ const categoriesZh: ToolCategory[] = [
         url: 'https://obsidian.md',
         description: '基于本地 Markdown 的知识库工具，支持双向链接和插件生态。',
         review: '个人思考和大纲草稿的根据地。双向链接让碎片想法逐渐连成网络，后续再迁移到 Notion 或直接进入网站。',
+      },
+      {
+        name: 'Figma',
+        url: 'https://figma.com',
+        description: '基于浏览器的协作设计工具，支持原型、设计系统和开发者交付。',
+        review: 'AI 小队也需要视觉规范。Figma 的 Dev Mode 让设计到代码的交接更顺畅，组件系统也减少了重复劳动。',
+      },
+      {
+        name: 'Canva',
+        url: 'https://canva.com',
+        description: '在线平面设计工具，提供模板、素材和团队协作功能。',
+        review: '不需要从零设计时使用。社交媒体封面、Newsletter 头图等快速产出场景，Canva 的模板库省很多时间。',
       },
       {
         name: 'Google Analytics',
@@ -159,7 +208,71 @@ const categoriesZh: ToolCategory[] = [
 
 const categoriesEn: ToolCategory[] = [
   {
-    title: 'AI Chat & Coding Assistants',
+    title: 'Hardware',
+    items: [
+      {
+        name: 'MacBook Pro 14" (M3 Pro)',
+        url: 'https://www.apple.com/macbook-pro/',
+        description: 'Apple Silicon-powered 14-inch professional laptop balancing battery life and performance.',
+        review: 'My primary dev machine. 18GB unified memory is enough for multiple IDEs, browser tabs, and local services simultaneously—and the fan barely spins up.',
+      },
+      {
+        name: 'Dell U2723QE 4K Monitor',
+        url: 'https://www.dell.com/en-us/shop/dell-ultrasharp-27-4k-usb-c-hub-monitor-u2723qe/apd/210-bdpf/monitors-monitor-accessories',
+        description: '27-inch 4K IPS Black panel with USB-C single-cable connectivity and 90W power delivery.',
+        review: 'Essential for side-by-side code and documentation. 4K makes text razor-sharp, and USB-C single-cable keeps the desk minimalist.',
+      },
+      {
+        name: 'Keychron Q1 Pro',
+        url: 'https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard',
+        description: 'Full-aluminum custom mechanical keyboard with QMK/VIA programmability and Bluetooth dual-mode.',
+        review: 'A transformative upgrade from membrane keyboards. The gasket mount + custom keymap significantly reduce fatigue during long coding sessions.',
+      },
+      {
+        name: 'Logitech MX Master 3S',
+        url: 'https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006556.html',
+        description: 'Ergonomic wireless mouse with MagSpeed electromagnetic wheel switching between ratchet and hyper-fast modes.',
+        review: 'The horizontal scroll wheel is surprisingly useful for wide code files and Figma canvases. Silent clicks don\'t disturb deep-focus late nights.',
+      },
+      {
+        name: 'Sony WH-1000XM5',
+        url: 'https://www.sony.com/electronics/headband-headphones/wh-1000xm5',
+        description: 'Flagship active noise-canceling over-ear headphones with a lightweight design for extended wear.',
+        review: 'My isolation dome for deep work. Flip the switch and a coffee shop becomes a private study. Battery lasts a full week of commutes and work.',
+      },
+    ],
+  },
+  {
+    title: 'Editors & IDEs',
+    items: [
+      {
+        name: 'Cursor',
+        url: 'https://cursor.com',
+        description: 'AI-native code editor built on VS Code, featuring Composer and Tab completion.',
+        review: 'My default daily editor. Composer mode saves tons of context switching during multi-file refactors, and Tab completion accuracy keeps improving.',
+      },
+      {
+        name: 'VS Code',
+        url: 'https://code.visualstudio.com',
+        description: 'Microsoft\'s open-source code editor with the richest extension ecosystem.',
+        review: 'My fallback environment when Cursor isn\'t the right fit. Some language servers are more stable here, and it\'s my go-to for remote and container development.',
+      },
+      {
+        name: 'Warp',
+        url: 'https://warp.dev',
+        description: 'A Rust-built modern terminal with AI command suggestions and block-based output editing.',
+        review: 'The block-based design makes copying output and sharing screenshots elegant. AI completion has saved me countless times when I can\'t recall complex flags.',
+      },
+      {
+        name: 'TablePlus',
+        url: 'https://tableplus.com',
+        description: 'Modern database management GUI supporting MySQL, PostgreSQL, SQLite, and more.',
+        review: 'Lighter and more polished than traditional database clients. Great for quickly inspecting schemas and running queries during local development.',
+      },
+    ],
+  },
+  {
+    title: 'AI Toolchain',
     items: [
       {
         name: 'Claude',
@@ -174,21 +287,27 @@ const categoriesEn: ToolCategory[] = [
         review: 'The main workhorse for Chinese content architecture and brand storytelling. Its grasp of Chinese semantics feels more natural than most models for long-form writing.',
       },
       {
-        name: 'Cursor',
-        url: 'https://cursor.com',
-        description: 'AI-native code editor built on VS Code, featuring Composer and Tab completion.',
-        review: 'My default daily editor. Composer mode saves tons of context switching during multi-file refactors, and Tab completion accuracy keeps improving.',
-      },
-      {
         name: 'ChatGPT',
         url: 'https://chatgpt.com',
         description: 'OpenAI\'s flagship conversational model with Code Interpreter, web search, and custom GPTs.',
         review: 'A convenient tool for quick idea validation and prototype code. The o-series models shine on math and logic-heavy tasks.',
       },
+      {
+        name: 'Midjourney',
+        url: 'https://midjourney.com',
+        description: 'AI image generation tool known for artistic quality and atmosphere.',
+        review: 'Source of website cover images and blog illustrations. With practiced prompt control, you can get stylistically consistent visual assets in minutes.',
+      },
+      {
+        name: 'v0.dev',
+        url: 'https://v0.dev',
+        description: 'Vercel\'s AI UI generation tool that creates copyable React components from natural language descriptions.',
+        review: 'A magic wand for rapid page prototypes and component skeletons. The generated code is solid enough as a starting point, then I manually refine styles and interactions.',
+      },
     ],
   },
   {
-    title: 'Web Development & Deployment',
+    title: 'Deployment & Ops',
     items: [
       {
         name: 'Astro',
@@ -214,17 +333,6 @@ const categoriesEn: ToolCategory[] = [
         description: 'CDN, DNS, and edge-computing services offering global acceleration and security.',
         review: 'DNS management and free CDN acceleration are standard. For static sites, Cloudflare Pages is also a solid alternative to Vercel.',
       },
-    ],
-  },
-  {
-    title: 'Automation & Workflow',
-    items: [
-      {
-        name: 'n8n',
-        url: 'https://n8n.io',
-        description: 'Open-source workflow automation tool with self-hosting and visual node orchestration.',
-        review: 'More flexible than Zapier, more visual than writing scripts. Great for building pipelines for multi-channel content distribution and data syncing.',
-      },
       {
         name: 'GitHub Actions',
         url: 'https://github.com/features/actions',
@@ -232,38 +340,15 @@ const categoriesEn: ToolCategory[] = [
         review: 'Lighthouse CI scoring, automated build checks, pre-release quality gates—all written in YAML and version-controlled alongside the code.',
       },
       {
-        name: 'Make',
-        url: 'https://www.make.com',
-        description: 'Visual automation platform (formerly Integromat) connecting hundreds of SaaS services.',
-        review: 'When n8n self-hosting feels heavy, Make\'s cloud-hosted option is a lighter alternative. Great for quickly wiring up social media or email automations.',
+        name: 'n8n',
+        url: 'https://n8n.io',
+        description: 'Open-source workflow automation tool with self-hosting and visual node orchestration.',
+        review: 'More flexible than Zapier, more visual than writing scripts. Great for building pipelines for multi-channel content distribution and data syncing.',
       },
     ],
   },
   {
-    title: 'Design & Media',
-    items: [
-      {
-        name: 'Figma',
-        url: 'https://figma.com',
-        description: 'Browser-based collaborative design tool supporting prototypes, design systems, and developer handoff.',
-        review: 'Even an AI squad needs visual standards. Figma\'s Dev Mode makes design-to-code handoff smoother, and component systems cut down on repetitive work.',
-      },
-      {
-        name: 'Midjourney',
-        url: 'https://midjourney.com',
-        description: 'AI image generation tool known for artistic quality and atmosphere.',
-        review: 'Source of website cover images and blog illustrations. With practiced prompt control, you can get stylistically consistent visual assets in minutes.',
-      },
-      {
-        name: 'Canva',
-        url: 'https://canva.com',
-        description: 'Online graphic design tool with templates, assets, and team collaboration.',
-        review: 'Useful when you don\'t need to design from scratch. Social media covers, newsletter headers, and other quick-turnaround visuals—Canva\'s template library saves a lot of time.',
-      },
-    ],
-  },
-  {
-    title: 'Content, Knowledge & Analytics',
+    title: 'Daily SaaS',
     items: [
       {
         name: 'Notion',
@@ -276,6 +361,18 @@ const categoriesEn: ToolCategory[] = [
         url: 'https://obsidian.md',
         description: 'Local Markdown-based knowledge base with bi-directional linking and a rich plugin ecosystem.',
         review: 'My territory for personal thinking and outline drafts. Bi-directional linking lets fragmented ideas gradually form a network before migrating to Notion or the site itself.',
+      },
+      {
+        name: 'Figma',
+        url: 'https://figma.com',
+        description: 'Browser-based collaborative design tool supporting prototypes, design systems, and developer handoff.',
+        review: 'Even an AI squad needs visual standards. Figma\'s Dev Mode makes design-to-code handoff smoother, and component systems cut down on repetitive work.',
+      },
+      {
+        name: 'Canva',
+        url: 'https://canva.com',
+        description: 'Online graphic design tool with templates, assets, and team collaboration.',
+        review: 'Useful when you don\'t need to design from scratch. Social media covers, newsletter headers, and other quick-turnaround visuals—Canva\'s template library saves a lot of time.',
       },
       {
         name: 'Google Analytics',
@@ -295,25 +392,29 @@ const categoriesEn: ToolCategory[] = [
 
 export const toolsCopy = {
   zh: {
-    pageTitle: '工具箱',
+    pageTitle: '/uses',
     metaDescription:
-      'PeterClaw 日常使用的 AI 工具、自动化平台和独立开发资源清单——从代码编辑器到设计、从部署到内容分发。',
-    heroTitle: '我的 AI 工具箱',
+      'PeterClaw 的 /uses 页面：一个独立开发者的完整工具链清单——从硬件设备、编辑器、AI 工具到部署运维和日常 SaaS。',
+    heroTitle: '我的工具栈',
     heroLede:
-      '这份清单记录了 PeterClaw 团队日常依赖的工具与资源。没有付费推广，只有真实使用体验。',
+      '这份清单记录了 PeterClaw 团队日常依赖的硬件、软件与服务。没有付费推广，只有真实使用体验。灵感来自 uses.tech 社区。',
     categories: categoriesZh,
     disclaimer:
       '部分链接可能包含联盟营销代码。所有评价均基于实际使用体验，不受商业合作影响。',
+    lastUpdatedLabel: '本页最后更新于',
   },
   en: {
-    pageTitle: 'Toolkit',
+    pageTitle: '/uses',
     metaDescription:
-      'A curated list of AI tools, automation platforms, and indie developer resources used by the PeterClaw team daily.',
-    heroTitle: 'My AI Toolkit',
+      'PeterClaw\'s /uses page: a complete inventory of an indie developer\'s toolchain—from hardware and editors to AI tools, deployment, and daily SaaS.',
+    heroTitle: 'My Stack',
     heroLede:
-      'A living list of tools and resources the PeterClaw squad relies on. No paid placements—just honest usage notes.',
+      'A living list of hardware, software, and services the PeterClaw squad relies on. No paid placements—just honest usage notes. Inspired by the uses.tech community.',
     categories: categoriesEn,
     disclaimer:
       'Some links may contain affiliate codes. All reviews are based on hands-on experience and are not influenced by commercial partnerships.',
+    lastUpdatedLabel: 'Last updated',
   },
 } satisfies Record<Locale, ToolsCopy>;
+
+export const toolsLastUpdated = '2026-05-25';

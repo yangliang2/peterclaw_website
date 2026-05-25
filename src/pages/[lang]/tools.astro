@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { toolsCopy } from '@/config/tools';
+import { toolsCopy, toolsLastUpdated } from '@/config/tools';
 import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+import { absoluteUrl } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -14,6 +15,42 @@ if (!isLocale(lang)) {
 
 const copy = toolsCopy[lang];
 const prefix = `/${lang}`;
+
+const updatedAt = new Date(toolsLastUpdated).toLocaleDateString(
+  lang === 'zh' ? 'zh-CN' : 'en-US',
+  { year: 'numeric', month: 'long', day: 'numeric' }
+);
+
+function buildItemListSchema() {
+  let position = 0;
+  const itemListElement = copy.categories.flatMap((category) =>
+    category.items.map((tool) => {
+      position += 1;
+      return {
+        '@type': 'ListItem',
+        position,
+        item: {
+          '@type': 'SoftwareApplication',
+          name: tool.name,
+          description: tool.description,
+          url: tool.url,
+          applicationCategory: 'DeveloperApplication',
+        },
+      };
+    })
+  );
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: copy.heroTitle,
+    description: copy.metaDescription,
+    url: absoluteUrl(`${prefix}/tools/`),
+    itemListElement,
+  };
+}
+
+const itemListSchema = buildItemListSchema();
 ---
 
 <BaseLayout
@@ -22,6 +59,7 @@ const prefix = `/${lang}`;
   description={copy.metaDescription}
   canonicalPath={`${prefix}/tools/`}
   alternateLocales={buildHreflangAlternates('/tools/')}
+  structuredData={itemListSchema}
 >
   <section class="hero">
     <h1>{copy.heroTitle}</h1>
@@ -68,6 +106,11 @@ const prefix = `/${lang}`;
   }
 
   <p class="disclaimer">{copy.disclaimer}</p>
+
+  <p class="last-updated">
+    <span class="last-updated-label">{copy.lastUpdatedLabel}</span>
+    <time datetime={toolsLastUpdated}>{updatedAt}</time>
+  </p>
 </BaseLayout>
 
 <style>
@@ -152,5 +195,27 @@ const prefix = `/${lang}`;
     font-size: 0.875rem;
     color: var(--color-text-muted);
     text-align: center;
+  }
+
+  .last-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: var(--space-xl) auto 0;
+    padding: 0.5rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    justify-content: center;
+  }
+
+  .last-updated-label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
   }
 </style>

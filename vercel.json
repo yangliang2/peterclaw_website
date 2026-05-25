@@ -4,5 +4,10 @@
   "trailingSlash": false,
   "framework": "astro",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/uses", "destination": "/zh/tools/", "permanent": true },
+    { "source": "/zh/uses", "destination": "/zh/tools/", "permanent": true },
+    { "source": "/en/uses", "destination": "/en/tools/", "permanent": true }
+  ]
 }
