@@ -62,7 +62,7 @@ const prefix = `/${lang}`;
   </section>
 </BaseLayout>
 
-<script define:vars={{ lang, chatSending: copy.chatSending, chatError: copy.chatError }}>
+<script define:vars={{ lang, chatSending: copy.chatSending, chatError: copy.chatError, chatSend: copy.chatSend, chatUserAvatar: copy.chatUserAvatar }}>
   const form = document.getElementById('chat-form');
   const input = document.getElementById('chat-input');
   const sendBtn = document.getElementById('send-btn');
@@ -89,7 +89,7 @@ const prefix = `/${lang}`;
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
     avatar.setAttribute('aria-hidden', 'true');
-    avatar.textContent = role === 'user' ? '你' : 'AI';
+    avatar.textContent = role === 'user' ? chatUserAvatar : 'AI';
 
     const body = document.createElement('div');
     body.className = 'message-body';
@@ -129,7 +129,7 @@ const prefix = `/${lang}`;
     if (loading) {
       sendBtn.querySelector('.send-label').textContent = chatSending;
     } else {
-      sendBtn.querySelector('.send-label').textContent = (lang === 'zh') ? '发送' : 'Send';
+      sendBtn.querySelector('.send-label').textContent = chatSend;
       input.style.height = 'auto';
     }
   }
