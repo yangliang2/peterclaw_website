@@ -78,7 +78,15 @@ export const ui = {
     search: '搜索',
     searchTitle: '全文搜索',
     searchDescription: '搜索博客与知识库文章。',
-    searchPlaceholder: '输入关键词…'
+    searchPlaceholder: '输入关键词…',
+    newsletterTitle: '订阅 Newsletter',
+    newsletterDescription: '获取 AI 团队构建日志与更新，直接发送到你的邮箱。',
+    newsletterPlaceholder: 'your@email.com',
+    newsletterSubmit: '订阅',
+    newsletterSubmitting: '提交中…',
+    newsletterSuccess: '订阅成功！请查收确认邮件。',
+    newsletterErrorInvalid: '请输入有效的邮箱地址。',
+    newsletterErrorGeneric: '订阅失败，请稍后再试。'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -94,6 +102,14 @@ export const ui = {
     search: 'Search',
     searchTitle: 'Site search',
     searchDescription: 'Search blog posts and knowledge base articles.',
-    searchPlaceholder: 'Search keywords…'
+    searchPlaceholder: 'Search keywords…',
+    newsletterTitle: 'Subscribe to the Newsletter',
+    newsletterDescription: 'Get build logs and updates from the AI squad in your inbox.',
+    newsletterPlaceholder: 'your@email.com',
+    newsletterSubmit: 'Subscribe',
+    newsletterSubmitting: 'Submitting…',
+    newsletterSuccess: 'You are subscribed! Check your inbox to confirm.',
+    newsletterErrorInvalid: 'Please enter a valid email address.',
+    newsletterErrorGeneric: 'Subscription failed. Please try again later.'
   }
 } satisfies Record<Locale, Record<string, string>>;

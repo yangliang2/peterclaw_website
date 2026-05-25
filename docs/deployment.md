@@ -37,6 +37,16 @@ Vercel 会自动检测项目并根据 `vercel.json` 配置进行部署：
 
 ### 环境变量与 Secrets
 
+#### Vercel 环境变量
+
+Newsletter 订阅 API 需要 Buttondown API Key，请在 Vercel 项目设置中添加：
+
+- `BUTTONDOWN_API_KEY`: 在 [Buttondown Settings → API](https://buttondown.com/settings/api) 获取
+
+该变量仅在服务端 `/api/subscribe` 路由中使用，不会暴露到前端代码。
+
+#### GitHub Actions Secrets
+
 为了使 GitHub Actions 中的 Lighthouse CI 工作，需要在 GitHub Repo Settings -> Secrets and variables -> Actions 中配置以下 Secret：
 
 - `LHCI_GITHUB_APP_TOKEN`: 用于将 Lighthouse 报告回写到 PR 状态（可选，但推荐）。
