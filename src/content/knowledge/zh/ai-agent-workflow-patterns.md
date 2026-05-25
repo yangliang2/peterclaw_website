@@ -7,7 +7,7 @@ tags:
   - 工作流设计
   - 多智能体协作
   - 可复用模式
-area: workflow
+area: operations
 draft: false
 ---
 

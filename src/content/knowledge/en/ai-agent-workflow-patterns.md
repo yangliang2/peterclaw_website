@@ -7,7 +7,7 @@ tags:
   - workflow design
   - multi-agent collaboration
   - reusable patterns
-area: workflow
+area: operations
 draft: false
 ---
 
