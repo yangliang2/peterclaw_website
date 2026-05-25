@@ -24,6 +24,7 @@ const [blog, knowledge] = await Promise.all([
 const latest = [...blog, ...knowledge]
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
   .slice(0, 6);
+const heroEyebrow = lang === 'zh' ? 'AI 小队 / 公开构建中' : 'AI SQUAD / BUILDING IN PUBLIC';
 ---
 
 <BaseLayout
@@ -31,12 +32,22 @@ const latest = [...blog, ...knowledge]
   canonicalPath={`/${lang}/`}
   structuredData={[buildWebSiteSchema(lang, copy.tagline), buildOrganizationSchema(), buildPersonSchema()]}
 >
-  <section class="hero">
-    <h1>{copy.siteTitle}</h1>
-    <p class="lede">{copy.tagline}</p>
+  <section class="hero home-hero" aria-labelledby="home-title">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-primary" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-secondary" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <p class="hero-eyebrow">{heroEyebrow}</p>
+      <h1 id="home-title" class="gradient-text">{copy.siteTitle}</h1>
+      <p class="lede">{copy.tagline}</p>
+      <nav class="hero-actions" aria-label={lang === 'zh' ? '首页导航' : 'Explore PeterClaw'}>
+        <a class="btn btn-primary" href={`/${lang}/projects/`}>{copy.projects}</a>
+        <a class="btn btn-secondary" href={`/${lang}/blog/`}>{copy.blog}</a>
+      </nav>
+    </div>
   </section>
 
-  <section>
+  <section class="latest-section">
     <h2>{copy.latest}</h2>
     <div class="content-list">
       {
@@ -55,3 +66,186 @@ const latest = [...blog, ...knowledge]
 
   <EmailSignup locale={lang} />
 </BaseLayout>
+
+<style>
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    min-height: clamp(26rem, 62vh, 33rem);
+    display: flex;
+    align-items: center;
+    margin-bottom: clamp(3.25rem, 9vw, 5.5rem);
+    padding: clamp(3.75rem, 9vw, 6rem) clamp(1.25rem, 5vw, 3.5rem);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 75% 20%, rgba(124, 58, 237, 0.16), transparent 32%),
+      radial-gradient(circle at 12% 90%, rgba(37, 99, 235, 0.13), transparent 34%),
+      var(--gradient-glass);
+    box-shadow: var(--shadow-glass);
+  }
+
+  .hero-grid {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    opacity: 0.42;
+    background-image:
+      linear-gradient(var(--color-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+    -webkit-mask-image: radial-gradient(circle at center, black, transparent 78%);
+    mask-image: radial-gradient(circle at center, black, transparent 78%);
+  }
+
+  .hero-orb {
+    position: absolute;
+    z-index: -1;
+    border-radius: 999px;
+    filter: blur(4px);
+  }
+
+  .hero-orb-primary {
+    top: 13%;
+    right: clamp(1rem, 9vw, 6rem);
+    width: clamp(5.5rem, 13vw, 8.5rem);
+    aspect-ratio: 1;
+    background: rgba(37, 99, 235, 0.16);
+  }
+
+  .hero-orb-secondary {
+    right: clamp(3rem, 18vw, 12rem);
+    bottom: 17%;
+    width: clamp(3.5rem, 8vw, 5rem);
+    aspect-ratio: 1;
+    background: rgba(124, 58, 237, 0.18);
+  }
+
+  .hero-copy {
+    width: min(100%, 670px);
+  }
+
+  .hero-eyebrow {
+    margin: 0 0 clamp(1.25rem, 4vw, 1.75rem);
+    color: var(--color-primary);
+    font: 700 0.74rem/1.35 var(--font-mono);
+    letter-spacing: 0.15em;
+  }
+
+  .home-hero h1 {
+    margin-bottom: clamp(1.25rem, 4vw, 1.75rem);
+    font-size: clamp(3rem, 10.5vw, 5.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.065em;
+  }
+
+  .home-hero .lede {
+    max-width: 570px;
+    margin-bottom: clamp(2rem, 6vw, 2.75rem);
+    font-size: clamp(1.08rem, 3.4vw, 1.35rem);
+    line-height: 1.65;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .hero-actions .btn {
+    min-width: 7.75rem;
+    padding: 0.85rem 1.65rem;
+  }
+
+  .latest-section h2 {
+    margin-bottom: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.65rem, 4vw, 2.15rem);
+    line-height: 1.2;
+  }
+
+  :global([data-theme='dark']) .home-hero {
+    background:
+      radial-gradient(circle at 75% 20%, rgba(139, 92, 246, 0.22), transparent 32%),
+      radial-gradient(circle at 12% 90%, rgba(59, 130, 246, 0.18), transparent 34%),
+      var(--gradient-glass);
+  }
+
+  :global([data-theme='dark']) .hero-grid {
+    opacity: 0.48;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-eyebrow,
+    .home-hero h1,
+    .home-hero .lede,
+    .hero-actions {
+      animation: hero-enter 0.64s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    .home-hero h1 {
+      animation-delay: 0.08s;
+    }
+
+    .home-hero .lede {
+      animation-delay: 0.16s;
+    }
+
+    .hero-actions {
+      animation-delay: 0.24s;
+    }
+
+    .hero-grid {
+      animation: hero-grid-reveal 1.1s ease-out both;
+    }
+
+    .hero-orb-primary {
+      animation: orb-float 8s ease-in-out infinite;
+    }
+
+    .hero-orb-secondary {
+      animation: orb-float 10s 0.8s ease-in-out infinite reverse;
+    }
+  }
+
+  @keyframes hero-enter {
+    from {
+      opacity: 0;
+      transform: translateY(1.1rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-grid-reveal {
+    from {
+      opacity: 0;
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes orb-float {
+    50% {
+      transform: translate3d(0, -0.8rem, 0) scale(1.06);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .home-hero {
+      min-height: 25rem;
+      padding-inline: 1.1rem;
+    }
+
+    .home-hero h1 {
+      font-size: clamp(2.65rem, 17vw, 3.4rem);
+      letter-spacing: -0.055em;
+    }
+
+    .hero-actions .btn {
+      flex: 1 1 calc(50% - 0.4rem);
+      min-width: 0;
+    }
+  }
+</style>
