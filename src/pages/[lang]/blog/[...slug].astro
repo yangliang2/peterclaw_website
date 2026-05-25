@@ -5,6 +5,7 @@ import Giscus from '@/components/Giscus.astro';
 import SeriesNav from '@/components/SeriesNav.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import RelatedPosts from '@/components/RelatedPosts.astro';
+import ArticleFooter from '@/components/ArticleFooter.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import EmailSignup from '@/components/EmailSignup.astro';
 import ReaderFeedback from '@/components/ReaderFeedback.astro';
@@ -157,6 +158,7 @@ if (
     <RelatedPosts locale={lang} posts={relatedPosts} />
     <SeriesNav locale={lang} post={post} />
     <SocialShare title={post.data.title} url={Astro.url.href} />
+    <ArticleFooter locale={lang} />
     </article>
   </div>
   <ArticleChat locale={lang} articleContent={post.body ?? ''} />

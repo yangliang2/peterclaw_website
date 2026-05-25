@@ -3,6 +3,8 @@ import type { Locale } from '@/lib/i18n';
 export const siteConfig = {
   name: 'PeterClaw',
   twitterHandle: '@peterclaw',
+  twitterUrl: 'https://x.com/peterclaw',
+  newsletterUrl: 'https://newsletter.peterclaw.com', // Placeholder
   defaultOgImage: '/og-default.png',
   author: {
     name: 'PeterClaw',
