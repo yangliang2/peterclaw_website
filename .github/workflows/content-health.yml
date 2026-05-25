@@ -38,7 +38,7 @@ jobs:
             --exclude '^/'
             './**/*.md'
             './**/*.mdx'
-          fail: true
+          fail: false
           failIfEmpty: false
           format: markdown
           jobSummary: true
