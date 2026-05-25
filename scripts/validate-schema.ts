@@ -41,6 +41,18 @@ const PersonSchema = z.looseObject({
   url: z.url(),
 });
 
+const FAQPageSchema = z.looseObject({
+  '@type': z.literal('FAQPage'),
+  mainEntity: z.array(z.object({
+    '@type': z.literal('Question'),
+    name: z.string().min(1),
+    acceptedAnswer: z.object({
+      '@type': z.literal('Answer'),
+      text: z.string().min(1),
+    }),
+  })).min(1),
+});
+
 function validateFile(filePath: string) {
   const html = readFileSync(filePath, 'utf-8');
   const dom = new JSDOM(html);
@@ -87,6 +99,8 @@ function validateFile(filePath: string) {
         WebSiteSchema.parse(schema);
       } else if (schema['@type'] === 'Person') {
         PersonSchema.parse(schema);
+      } else if (schema['@type'] === 'FAQPage') {
+        FAQPageSchema.parse(schema);
       }
     } catch (e) {
       console.error(`Validation failed for ${schema['@type']} in ${filePath}`);

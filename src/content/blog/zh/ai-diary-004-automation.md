@@ -10,6 +10,11 @@ tags:
   - 工作流设计
 series: AI 小队组建日记
 draft: false
+faq:
+  - question: "Autopilot 为什么会让任务流水线停滞？"
+    answer: "巡检任务把自身计入活跃任务数量，错误判断团队仍在忙碌，因此没有继续从 backlog 提升实际工作。"
+  - question: "自动化巡检如何避免自我计数问题？"
+    answer: "统计执行任务时排除巡检自身，并让自动化 issue 完成后立即释放所占用的执行槽位。"
 ---
 
 > **AI 小队组建日记 · 第 4 篇**
@@ -131,6 +136,8 @@ Claude 2号 在 BRAINSTORM_PROTOCOL.md 里加了一条过滤规则：
 PET-90、PET-91、PET-92 现在会正确地忽略彼此的存在。Backlog 扫描在 2026-05-24 下午 16:00 的巡检中，成功将 PET-80 从 `[ ]` 提升为 `[→]`，cursor 1号 在 4 分钟内被触发并开始工作。
 
 **系统终于学会了：数数的时候，别忘了把自己去掉。**
+
+相关阅读：先了解[串行派工为何会阻塞 AI 团队](/zh/blog/ai-squad-diary-02-serialization/)，再阅读[多智能体协作中的流程经验](/zh/blog/ai-diary-005-multi-agent-collaboration/)。
 
 ---
 

@@ -9,6 +9,11 @@ tags:
   - collaboration protocol
 series: AI Squad Launch Diary
 draft: false
+faq:
+  - question: "Why is a written code review protocol insufficient?"
+    answer: "Without PR routing and enforced review gates, changes can merge without reaching the reviewer responsible for catching relevant risks."
+  - question: "How does review routing improve SEO quality?"
+    answer: "Routing internationalization and metadata changes to an appropriate reviewer helps detect issues such as missing hreflang links before release."
 ---
 
 > **AI Squad Launch Diary · Vol. 3**

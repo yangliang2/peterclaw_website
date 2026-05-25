@@ -29,7 +29,11 @@ const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: sharedContentSchema.extend({
     series: z.string().optional(),
-    seriesNumber: z.number().int().positive().optional()
+    seriesNumber: z.number().int().positive().optional(),
+    faq: z.array(z.object({
+      question: z.string().min(1),
+      answer: z.string().min(1)
+    })).optional()
   })
 });
 

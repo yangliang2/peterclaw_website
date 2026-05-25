@@ -87,9 +87,29 @@ function validateEntry({ collection, file }) {
     errors.push(`${relativePath}: "tags" must be a non-empty list of strings.`);
   }
 
+  if (collection === 'blog' && data.faq !== undefined) {
+    validateFaq(data.faq, relativePath);
+  }
+
   validateSlug(file, collection, relativePath);
   validateOgImage(data.ogImage, isDraft, relativePath);
   validateLinks(body, file, relativePath);
+}
+
+function validateFaq(faq, relativePath) {
+  if (
+    !Array.isArray(faq) ||
+    faq.length === 0 ||
+    faq.some((item) => (
+      typeof item !== 'object' ||
+      typeof item.question !== 'string' ||
+      item.question.trim() === '' ||
+      typeof item.answer !== 'string' ||
+      item.answer.trim() === ''
+    ))
+  ) {
+    errors.push(`${relativePath}: "faq" must be a non-empty list of question/answer objects.`);
+  }
 }
 
 function validateSlug(file, collection, relativePath) {
@@ -270,9 +290,25 @@ function parseFrontmatter(source, relativePath) {
   const data = {};
   const rawKeys = new Set();
   let activeArrayKey = null;
+  let activeObjectItem = null;
 
   for (const line of raw.split('\n')) {
     if (line.trim() === '') continue;
+
+    const objectArrayItem = line.match(/^\s+-\s+([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (objectArrayItem && activeArrayKey === 'faq') {
+      const [, key, rawValue] = objectArrayItem;
+      activeObjectItem = { [key]: parseScalar(rawValue) };
+      data[activeArrayKey].push(activeObjectItem);
+      continue;
+    }
+
+    const objectField = line.match(/^\s+([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (objectField && activeArrayKey === 'faq' && activeObjectItem) {
+      const [, key, rawValue] = objectField;
+      activeObjectItem[key] = parseScalar(rawValue);
+      continue;
+    }
 
     const arrayItem = line.match(/^\s+-\s+(.*)$/);
     if (arrayItem && activeArrayKey) {
@@ -284,6 +320,7 @@ function parseFrontmatter(source, relativePath) {
     if (!field) {
       warnings.push(`${relativePath}: unsupported frontmatter line was ignored: ${line}`);
       activeArrayKey = null;
+      activeObjectItem = null;
       continue;
     }
 
@@ -293,9 +330,11 @@ function parseFrontmatter(source, relativePath) {
     if (rawValue === '') {
       data[key] = [];
       activeArrayKey = key;
+      activeObjectItem = null;
     } else {
       data[key] = parseScalar(rawValue);
       activeArrayKey = null;
+      activeObjectItem = null;
     }
   }
 

@@ -24,6 +24,11 @@ export type ProductSchemaInput = {
   price?: string;
 };
 
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
 export function absoluteUrl(path = '/'): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return new URL(normalized, getSiteUrl()).href;
@@ -133,6 +138,21 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
     },
     image: [image],
     inLanguage: input.locale,
+  };
+}
+
+export function buildFaqSchema(items: FaqItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
   };
 }
 
