@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import pagefind from 'astro-pagefind';
 
 export default defineConfig({
-  site: 'https://peterclaw-website.vercel.app',
+  site: 'https://peteryangclaw.cc',
   output: 'static',
   integrations: [sitemap(), pagefind()],
   adapter: vercel({

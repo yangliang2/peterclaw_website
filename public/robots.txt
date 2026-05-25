@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://peterclaw-website.vercel.app/sitemap-index.xml
+Sitemap: https://peteryangclaw.cc/sitemap-index.xml
