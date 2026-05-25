@@ -1,5 +1,13 @@
 ---
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'zh' } = Astro.props;
 const currentYear = new Date().getFullYear();
+const nowHref = `/${locale}/now/`;
 ---
 
 <footer class="footer" data-pagefind-ignore="all">
@@ -9,6 +17,7 @@ const currentYear = new Date().getFullYear();
       <div class="social-links">
         <a href="https://github.com/yangliang2" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="/rss.xml">RSS</a>
+        <a href={nowHref}>Now</a>
       </div>
     </div>
     
