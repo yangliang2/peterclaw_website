@@ -216,9 +216,7 @@ The relationship between these three tools and Cursor is "complementary" rather 
 ## Further Reading
 
 - [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1
-- [Claude Code vs GitHub Copilot Chat Deep Review: Which Command-Line AI Assistant Wins?](/en/blog/ai-tool-review-claude-code-vs-copilot-chat/) — AI Tool Review Series Issue 2
 - [AI Diary Vol.5: Vibe Coding Practice Log](/en/blog/ai-diary-005-vibe-coding/) — How we use AI-assisted coding in the PeterClaw project
-- [AI Diary Vol.6: When AI Shows Emergent Capabilities](/en/blog/ai-diary-006-emergent-capabilities/) — Unexpected discoveries in multi-agent collaboration
 - [Antigravity Official Documentation](https://antigravity.google)
 - [Kiro Official Documentation](https://kiro.dev)
 - [Cline GitHub Repository](https://github.com/cline/cline)
