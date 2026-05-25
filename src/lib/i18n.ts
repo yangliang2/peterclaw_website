@@ -193,6 +193,13 @@ export const ui = {
     askAiPlaceholder: '输入问题…',
     askAiSubmit: '发送',
     askAiClose: '关闭',
+    chat: 'AI 问答',
+    chatWelcome: '你好！我是 PeterClaw AI 助手。你可以向我提问关于这个网站的内容、文章或任何你感兴趣的话题。',
+    chatSend: '发送',
+    chatSending: '思考中…',
+    chatError: '发生错误，请重试。',
+    chatPowered: '由 Claude AI 驱动，基于站内博客和知识库内容回答',
+    chatUserAvatar: '你',
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -323,5 +330,12 @@ export const ui = {
     askAiPlaceholder: 'Ask a question…',
     askAiSubmit: 'Send',
     askAiClose: 'Close',
+    chat: 'AI Chat',
+    chatWelcome: "Hi! I'm PeterClaw AI. Ask me anything about this site's content, articles, or topics you're curious about.",
+    chatSend: 'Send',
+    chatSending: 'Thinking…',
+    chatError: 'Something went wrong. Please try again.',
+    chatPowered: 'Powered by Claude AI, answering from site blog posts and knowledge base',
+    chatUserAvatar: 'You',
   }
 } satisfies Record<Locale, Record<string, string>>;
