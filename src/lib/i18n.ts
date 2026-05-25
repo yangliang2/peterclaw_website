@@ -103,7 +103,12 @@ export const ui = {
     feedbackSubmitting: '发送中…',
     feedbackSuccess: '感谢你的反馈！我们已收到。',
     feedbackErrorInvalid: '请先选择类型并填写反馈内容。',
-    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。'
+    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。',
+    tags: '标签',
+    taggedWith: '标签',
+    allTags: '全部标签',
+    postsTagged: '包含标签',
+    noPostsForTag: '暂无该标签的文章。'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -144,6 +149,11 @@ export const ui = {
     feedbackSubmitting: 'Sending…',
     feedbackSuccess: 'Thanks for your feedback! We received it.',
     feedbackErrorInvalid: 'Select a type and enter your feedback first.',
-    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.'
+    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.',
+    tags: 'Tags',
+    taggedWith: 'Tagged with',
+    allTags: 'All Tags',
+    postsTagged: 'Posts tagged',
+    noPostsForTag: 'No posts found with this tag.'
   }
 } satisfies Record<Locale, Record<string, string>>;

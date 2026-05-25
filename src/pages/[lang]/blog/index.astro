@@ -27,8 +27,34 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
           <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
           <h2>{post.data.title}</h2>
           <p>{post.data.description}</p>
+          {post.data.tags && post.data.tags.length > 0 && (
+            <div class="tag-row">
+              {post.data.tags.map((tag) => (
+                <span class="tag-pill">{tag}</span>
+              ))}
+            </div>
+          )}
         </a>
       ))
     }
   </div>
+
+  <style>
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .tag-pill {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: var(--color-soft-bg);
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-line);
+    }
+  </style>
 </BaseLayout>

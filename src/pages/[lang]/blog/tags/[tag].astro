@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tagMap = new Map<string, Set<string>>();
+
+  for (const post of posts) {
+    const lang = localeFromId(post.id);
+    for (const tag of post.data.tags ?? []) {
+      const key = `${lang}/${tag}`;
+      if (!tagMap.has(key)) {
+        tagMap.set(key, new Set());
+      }
+      tagMap.get(key)!.add(post.id);
+    }
+  }
+
+  return Array.from(tagMap.entries()).map(([key]) => {
+    const [lang, ...tagParts] = key.split('/');
+    const tag = tagParts.join('/');
+    return {
+      params: { lang, tag }
+    };
+  });
+}
+
+const { lang, tag } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const copy = ui[lang];
+const allPosts = (await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+const posts = allPosts.filter((post) => (post.data.tags ?? []).includes(tag));
+---
+
+<BaseLayout locale={lang} title={`${copy.postsTagged} “${tag}”`} canonicalPath={`/${lang}/blog/tags/${encodeURIComponent(tag)}/`}>
+  <h1>{copy.postsTagged} <span class="tag-highlight">{tag}</span></h1>
+  <p class="meta">
+    <a href={`/${lang}/blog/`}>← {copy.blog}</a>
+  </p>
+  <div class="content-list">
+    {
+      posts.length > 0 ? (
+        posts.map((post) => (
+          <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+            <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="tag-row">
+                {post.data.tags.map((t) => (
+                  <span class={`tag-pill${t === tag ? ' tag-pill-active' : ''}`}>{t}</span>
+                ))}
+              </div>
+            )}
+          </a>
+        ))
+      ) : (
+        <p>{copy.noPostsForTag}</p>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-highlight {
+    color: var(--color-primary);
+  }
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  .tag-pill {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--color-soft-bg);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-line);
+    transition: all 0.2s ease;
+  }
+  .tag-pill-active {
+    background: var(--color-primary-soft-bg);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+</style>
