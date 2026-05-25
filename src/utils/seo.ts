@@ -6,6 +6,8 @@ export type BreadcrumbItem = {
   path: string;
 };
 
+export type ArticleSchemaType = 'BlogPosting' | 'Article';
+
 export type ArticleSchemaInput = {
   title: string;
   description: string;
@@ -14,6 +16,7 @@ export type ArticleSchemaInput = {
   publishedTime: Date;
   modifiedTime?: Date;
   imagePath?: string;
+  schemaType?: ArticleSchemaType;
 };
 
 export type ProductSchemaInput = {
@@ -103,10 +106,11 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
 export function buildArticleSchema(input: ArticleSchemaInput) {
   const url = absoluteUrl(input.path);
   const image = absoluteUrl(input.imagePath ?? siteConfig.defaultOgImage);
+  const schemaType = input.schemaType ?? 'BlogPosting';
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': schemaType,
     headline: input.title,
     description: input.description,
     url,

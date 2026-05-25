@@ -3,23 +3,24 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, extname } from 'path';
 import { z } from 'zod';
 
-const BlogPostingSchema = z.looseObject({
-  '@type': z.literal('BlogPosting'),
-  headline: z.string().min(1),
-  description: z.string().min(1),
-  author: z.object({
-    '@type': z.literal('Person'),
-    name: z.literal('PeterClaw'),
-  }),
-  datePublished: z.iso.datetime(),
-  dateModified: z.iso.datetime(),
-  url: z.url(),
-  publisher: z.looseObject({
-    '@type': z.literal('Organization'),
-    name: z.string().min(1),
-  }),
-  image: z.array(z.url()).min(1),
-});
+const ArticleLikeSchema = (schemaType: 'BlogPosting' | 'Article') =>
+  z.looseObject({
+    '@type': z.literal(schemaType),
+    headline: z.string().min(1),
+    description: z.string().min(1),
+    author: z.object({
+      '@type': z.literal('Person'),
+      name: z.literal('PeterClaw'),
+    }),
+    datePublished: z.iso.datetime(),
+    dateModified: z.iso.datetime(),
+    url: z.url(),
+    publisher: z.looseObject({
+      '@type': z.literal('Organization'),
+      name: z.string().min(1),
+    }),
+    image: z.array(z.url()).min(1),
+  });
 
 const WebSiteSchema = z.looseObject({
   '@type': z.literal('WebSite'),
@@ -59,6 +60,7 @@ function validateFile(filePath: string) {
   const relativePath = filePath.replace(distDir, '');
   const isHomePage = /^\/[a-z]{2}\/index\.html$/.test(relativePath);
   const isBlogPost = /^\/[a-z]{2}\/blog\/[^/]+\/index\.html$/.test(relativePath);
+  const isKnowledgeArticle = /^\/[a-z]{2}\/knowledge\/[^/]+\/index\.html$/.test(relativePath);
 
   if (isHomePage) {
     const hasWebSite = schemas.some(s => s['@type'] === 'WebSite');
@@ -79,10 +81,17 @@ function validateFile(filePath: string) {
     process.exit(1);
   }
 
+  if (isKnowledgeArticle && !schemas.some(s => s['@type'] === 'Article')) {
+    console.error(`[Error] Missing Article schema in ${filePath}`);
+    process.exit(1);
+  }
+
   for (const schema of schemas) {
     try {
       if (schema['@type'] === 'BlogPosting') {
-        BlogPostingSchema.parse(schema);
+        ArticleLikeSchema('BlogPosting').parse(schema);
+      } else if (schema['@type'] === 'Article') {
+        ArticleLikeSchema('Article').parse(schema);
       } else if (schema['@type'] === 'WebSite') {
         WebSiteSchema.parse(schema);
       } else if (schema['@type'] === 'Person') {
