@@ -32,8 +32,9 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
-            --root-dir .
             --no-progress
+            --scheme https
+            --scheme http
             './**/*.md'
             './**/*.mdx'
           fail: true
