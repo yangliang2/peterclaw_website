@@ -1,0 +1,242 @@
+---
+import type { Locale } from '@/lib/i18n';
+import type { Project, ProjectsCopy } from '@/config/projects';
+
+interface Props {
+  project: Project;
+  locale: Locale;
+  copy: ProjectsCopy;
+}
+
+const { project, locale, copy } = Astro.props;
+const projectUrl = typeof project.url === 'string' ? project.url : project.url[locale];
+---
+
+<article class="project-card glass-card" data-tags={project.tags.join(' ')} data-github-repo={project.githubRepo}>
+  <img
+    class="project-cover"
+    src={project.coverImage}
+    alt={project.coverAlt[locale]}
+    width="640"
+    height="360"
+    loading="lazy"
+    decoding="async"
+  />
+
+  <div class="project-main">
+    <div class="project-heading">
+      <p class="project-tags">{project.tags.join(' / ')}</p>
+      <span class:list={['status', `status-${project.status}`]}>{copy.status[project.status]}</span>
+    </div>
+    <h3>{project.title}</h3>
+    <p>{project.description[locale]}</p>
+  </div>
+
+  {
+    project.githubRepo && (
+      <div class="github-stats" data-github-stats aria-live="polite">
+        <p class="github-stats-loading">{copy.githubStatsLoading}</p>
+        <dl hidden>
+          <div>
+            <dt>{copy.stars}</dt>
+            <dd data-stat="stars"></dd>
+          </div>
+          <div>
+            <dt>{copy.forks}</dt>
+            <dd data-stat="forks"></dd>
+          </div>
+          <div>
+            <dt>{copy.language}</dt>
+            <dd class="language" data-stat="language"></dd>
+          </div>
+          <div>
+            <dt>{copy.updated}</dt>
+            <dd data-stat="updated"></dd>
+          </div>
+        </dl>
+      </div>
+    )
+  }
+
+  <div class="stack">
+    <span>{copy.stack}</span>
+    <ul>
+      {project.stack.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <div class="project-links">
+    {project.github && <a class="btn btn-secondary" href={project.github}>{copy.github}</a>}
+    <a class="btn btn-primary" href={projectUrl}>{copy.visit}</a>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: none;
+    padding: var(--space-md);
+    margin: 0;
+  }
+
+  .project-cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-soft-bg);
+  }
+
+  .project-main {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .project-main h3 {
+    margin: 0;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+  }
+
+  .project-main > p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .project-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .project-tags {
+    margin: 0;
+    color: var(--color-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .status {
+    flex-shrink: 0;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .status-shipped {
+    color: var(--color-primary);
+    background: var(--color-primary-soft-bg);
+  }
+
+  .status-experiment {
+    color: var(--color-secondary);
+    background: var(--color-soft-bg);
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .github-stats {
+    min-height: 4.9rem;
+  }
+
+  .github-stats-loading {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .github-stats dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: var(--space-sm) 0;
+    margin: 0;
+    border-block: 1px solid var(--color-line);
+  }
+
+  .github-stats dt {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .github-stats dd {
+    margin: 0.25rem 0 0;
+    color: var(--color-text);
+    font-size: 0.93rem;
+    font-weight: 600;
+  }
+
+  .github-stats .language {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .github-stats .language::before {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: var(--language-color, #8b949e);
+    content: '';
+  }
+
+  .stack span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+
+  .stack ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    background: var(--color-soft-bg);
+    font-size: 0.9rem;
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .project-links .btn {
+    min-width: 7rem;
+  }
+
+  @media (min-width: 760px) {
+    .project-card {
+      min-height: 35rem;
+      align-content: space-between;
+      padding: var(--space-lg);
+    }
+  }
+</style>
