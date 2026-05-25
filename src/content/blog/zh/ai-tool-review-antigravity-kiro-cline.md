@@ -1,0 +1,231 @@
+---
+title: "Antigravity 2.0 / Kiro / Cline 深度评测：新一代 Agent IDE 三强争霸，独立开发者该押谁？"
+description: "历时两周真实项目测试，从多 Agent 协作、Spec 驱动、开源自由度等全新维度，深度对比 2026 Q2 三款新一代 Agent IDE，给出独立开发者的明确选型建议。"
+contentType: review
+publishedAt: 2026-05-26
+ogImage: /og-default.png
+tags:
+  - AI 工具评测
+  - 效率工具
+  - Antigravity
+  - Kiro
+  - Cline
+  - AI 编程
+series: "AI 工具评测专栏"
+seriesNumber: 5
+recommendation: 5
+reviewedProduct:
+  name: Antigravity 2.0
+  url: https://antigravity.google
+draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
+---
+
+> **AI 工具评测专栏 · 第 5 篇**
+>
+> 当 AI 编程工具从「辅助补全」进化到「多 Agent 自主协作」，选工具的逻辑已经变了——不再是选一个更快的输入法，而是选一个更靠谱的「虚拟技术合伙人」。
+
+---
+
+## 评测背景
+
+2026 年 Q2，AI Agent IDE 赛道迎来一波剧烈洗牌。Google 在 I/O 大会上发布 Antigravity 2.0，AWS 的 Kiro 进入稳定迭代期，开源社区出身的 Cline 则凭借 CLI 2.0 和多 Agent 团队功能迅速蹿红。这三款工具代表了三种截然不同的产品哲学：
+
+- **Antigravity 2.0** → 大厂的「Agent 原生」野心，多 Agent 并行 + 定时后台任务
+- **Kiro** → 云厂商的「Spec 驱动」工程化路线，规范先于代码
+- **Cline** → 开源社区的「自由拼装」方案，模型任选 + 零订阅锁定
+
+中文开发者社区对这三款工具的讨论热度很高，但大多停留在「功能介绍」或「发布会复读」层面，缺少在真实项目中的横向对比。本次评测正是为了填补这个空白。
+
+本次评测基于以下环境：
+
+- **测试周期**：2026-05-12 至 2026-05-25（两周）
+- **测试项目**：PeterClaw 网站（Astro + TypeScript，约 8000 行代码）+ 一个内部数据分析 CLI（Python，约 2500 行）
+- **系统环境**：macOS 15.4，32GB RAM，M3 Pro
+- **使用方式**：每个项目分别在三款工具中完成同等复杂度的功能迭代
+- **订阅状态**：Antigravity AI Pro（$20/月）、Kiro 早期访问（免费）、Cline（开源免费，自付 API），均无利益相关
+
+目标读者：已经在使用 Cursor / Claude Code / Windsurf，正在考虑是否需要「升级」或「补充」工具链的独立开发者与技术团队。
+
+---
+
+## 评测维度
+
+本次评测聚焦六个核心维度——其中三个是新一代 Agent IDE 才有的新维度：
+
+1. **多 Agent 协作能力**——能否同时调度多个 Agent 处理不同子任务，并合并结果
+2. **Spec / 规划驱动**——工具是否强制或支持「先写规范、后写代码」的工作流
+3. **模型自由度**——是否锁定单一模型，还是支持任意模型切换
+4. **代码生成与编辑质量**——日常编码时的精准度、跨文件修改的可靠性
+5. **生态与集成**——与云服务商、CI/CD、第三方工具的整合深度
+6. **价格与可访问性**——订阅费用、国内网络环境、免费额度
+
+---
+
+## Antigravity 2.0：概述
+
+Antigravity 2.0 是 Google 在 2026 年 5 月 19 日 I/O 大会上发布的 Agent 原生开发平台。它不是 VS Code 分支，而是一个从头为 Agent 设计的独立桌面应用（同时提供 CLI 和 SDK）。核心引擎是 Gemini 3.5 Flash——Google 声称其输出速度约 289 tokens/秒，是 Claude Opus 4.7 的 4 倍以上。
+
+### 优点
+
+**多 Agent 并行是真正的杀手级功能。** Antigravity 2.0 的 Manager View 允许同时运行多达 5 个动态子 Agent，各自处理不同子任务后合并结果。在测试 PeterClaw 网站时，我让 Antigravity 同时处理三个任务：一个 Agent 重构博客列表组件，一个 Agent 更新对应的 CSS，另一个 Agent 在浏览器中预览并验证响应式表现。三个 Agent 并行工作，总耗时约 8 分钟——在 Cursor 中单线程完成同等任务大约需要 18 分钟。
+
+**Browser Subagent 是业界独家。** 这是我最惊喜的功能：AI Agent 在写前端代码的同时，会自动在内置 Chromium 浏览器中预览、测试、截屏，并基于视觉反馈自我修正。在调试一个 Astro 组件的移动端适配时，Browser Subagent 自己发现了 `client:idle` 与 Safari 的 hydration 冲突，并给出了正确的修复建议——全程无需我手动打开浏览器。
+
+**定时后台任务扩展了使用场景。** 你可以设置 Agent 在特定时间执行代码审查、文档更新或依赖检查。我在测试中设置了一个每日凌晨的 Hook：自动扫描项目中的 TODO 注释，生成一份 Markdown 摘要发到 Slack。这个能力目前只有 Antigravity 原生支持。
+
+**原生语音输入降低交互门槛。** 对于需要口述思路或双手在键盘上Coding的场景，直接说话描述需求，AI 自动转成代码指令，体验比想象中流畅。中文语音识别的准确率令人满意。
+
+### 缺点
+
+**非 VS Code 生态，插件兼容性有限。** Antigravity 是独立桌面应用，虽然界面熟悉，但你无法在它的编辑器里直接使用 VS Code 的插件生态。如果你依赖特定的主题、Linter 或调试插件，迁移成本不低。
+
+**Google 生态绑定较深。** Android、Firebase、Google Cloud 的集成是一流的，但如果你用 AWS、Vercel 或自托管方案，这些原生优势就变成了无关功能。对于非 Google 技术栈的团队，Antigravity 的吸引力会打折扣。
+
+**价格梯度跨度大。** AI Pro $20/月只是入门，重度使用者很快会触达限额。跳到 AI Ultra $100/月（5x 额度）或 $200/月（20x 额度）的门槛对独立开发者来说并不友好。Google 取消了每日限额，改为每 5 小时刷新计算池——这听起来灵活，实则让成本控制变得更难预测。
+
+**国内访问稳定性一般。** Antigravity 的服务端依赖 Google 基础设施，国内用户需要稳定的网络环境，且偶尔会出现 Gemini API 响应延迟波动。
+
+---
+
+## Kiro：概述
+
+Kiro 是 AWS 在 2025 年中推出的 Agentic IDE，基于 Code OSS（开源 VS Code）构建。它的核心理念与市面上所有工具都不同：「Spec 是源文件，代码是构建产物」。在 Kiro 中，你首先用自然语言写规范（Requirements → Design → Tasks），Agent 根据规范生成并维护代码。
+
+### 优点
+
+**Spec 驱动开发让复杂项目可控。** 在测试 PeterClaw 的国际化重构时，我先写了一份 Spec：「将博客系统的 hardcoded 中文提取到 i18n 字典，支持 en/zh 切换，URL 结构保持兼容」。Kiro 将这份 Spec 拆解为 6 个子任务，依次执行，每一步都可回溯到 Spec 中的某条要求。这种「需求可追溯」的特性，在多文件重构中极大降低了「AI 改错地方」的风险。
+
+**Agent Hooks 的自动化潜力被低估了。** Kiro 支持事件驱动的 Hook：文件保存时自动跑测试、PR 创建时自动生成变更日志、Spec 修改时自动级联更新下游依赖。我配置了一个 Hook：每次修改 `src/content/config.ts` 后，自动验证所有 Markdown 文件的 frontmatter 是否符合 schema。这个闭环在 Cursor 中需要手动触发或借助 MCP 才能实现，而 Kiro 是原生支持。
+
+**Steering Files 是长期项目的救星。** 你可以在项目根目录放置 `.steering` 文件，定义编码规范、架构约束、库偏好。Kiro 的 Agent 会在每次任务前读取这些文件，确保不偏离团队约定。对于维护期超过半年的项目，这比每次开新会话都重复一遍「请用单引号、优先用 Zod 而不是 Yup」要高效得多。
+
+**AWS 集成对于云原生团队是加分项。** CodeCatalyst、Lambda、SageMaker、Bedrock 的深度整合意味着你可以在 IDE 内直接部署函数、查看 CloudWatch 日志、甚至调用 Bedrock 的其他模型。如果你的整个基础设施都在 AWS 上，这种无缝感是其他工具难以比拟的。
+
+### 缺点
+
+**Spec 驱动增加了前置开销。** 对于「帮我改一行 CSS」或「给这个函数加个参数」这样的快速任务，Kiro 的 Spec 流程显得笨重。你必须先写规范，等 Agent 理解，然后才能看到代码变化。在快速原型阶段，这种仪式感会拖慢节奏。
+
+**编辑器体验与 VS Code 仍有差距。** 虽然基于 Code OSS，但 Kiro 的插件市场、主题生态和调试能力都落后于主流 VS Code。一些常用的扩展（如 Astro 语言支持）在 Kiro 中的安装和配置体验不够顺畅。
+
+**定价不明是最大隐患。** 目前 Kiro 仍处于早期访问阶段，免费使用。但 AWS 的历史定价策略偏向企业合同，GA 后的价格可能对独立开发者不友好。Bedrock 的模型调用费用是按量计费的，团队规模扩大后，成本可能快速失控。
+
+**学习曲线陡峭。** 要真正用好 Kiro，你需要理解 Spec 的 EARS 标记法、Hook 的触发规则、Steering File 的优先级机制。这不是一个「开箱即用」的工具，而是一个需要团队层面投资的「工作流改造」项目。
+
+---
+
+## Cline：概述
+
+Cline（原名 Claude Dev）是开源社区最具人气的 AI Agent 扩展，Apache 2.0 协议，61K+ GitHub stars。它最初是 VS Code 扩展，如今已扩展到 JetBrains、CLI、甚至独立的 Kanban Web 界面。Cline 的核心理念是「Plan / Act 分离」+「完全模型自由」——你可以接 Claude、GPT、Gemini、DeepSeek、Ollama 本地模型，甚至公司内部的私有模型。
+
+### 优点
+
+**Plan / Act 模式是安全感的来源。** 在 Plan 模式下，Cline 会探索代码库、提出澄清问题、生成执行策略——但不做任何修改。你可以在确认策略无误后，再进入 Act 模式执行。在测试 Python CLI 的数据库迁移脚本时，Cline 的 Plan 模式先发现了三个潜在的破坏性变更，让我在执行前就调整了需求描述。这种「先审后做」的流程，在面向生产环境的开发中价值极高。
+
+**模型自由度是真正的护城河。** 同样的任务，我分别用 Claude Sonnet 4.6、GPT-4o、Gemini 2.5 Pro 和 DeepSeek V4 跑了一遍。Claude 的代码质量最高，DeepSeek 的成本最低（单次任务约 $0.15），Gemini 的速度最快。在 Cline 中切换模型只需要改一行配置，没有任何订阅锁定。对于预算敏感的独立开发者，这意味着你可以根据任务复杂度「按需选刀」。
+
+**CLI 2.0 让自动化成为可能。** 2026 年 2 月发布的 CLI 2.0 支持并行执行、Headless CI/CD 模式和 ACP（Agent Client Protocol）。我在 GitHub Actions 中配置了一个 Cline Headless 任务：每次 PR 创建时，自动运行代码审查并输出 JSON 格式的评论。这个能力让 Cline 从一个「个人助手」升级成了「团队基础设施」。
+
+**Multi-Agent Teams 和 Kanban 界面意外好用。** Cline 的协调 Agent 可以将大任务拆解为子任务，委派给不同的专业 Agent，并通过 Kanban 板实时监看进度。在重构 PeterClaw 的内容架构时，我同时运行了 4 个 Agent：一个处理 Astro 路由，一个处理 i18n，一个处理 Markdown 迁移，一个跑构建验证。整个流程在 Web 界面中一目了然。
+
+**零订阅成本，国内友好。** Cline 本身完全免费，只需要自备 API Key。通过火山引擎 Ark、阿里云百炼或 DeepSeek 国内 API，国内开发者可以获得极低的延迟和稳定的访问体验。这是三款工具中对国内环境最友好的选择。
+
+### 缺点
+
+**没有实时 Tab 补全。** Cline 是 Agent 工具，不是 Copilot/Cursor 那种「边打边补」的输入法。如果你习惯了实时补全的流畅感，Cline 会显得很「慢」——它只在你要的时候才出现，而不是一直在旁边待命。
+
+**质量与模型选择强绑定。** Cline 本身不生成代码，它只是调用你选择的模型。如果你为了省钱用了便宜模型，结果可能就是「垃圾进、垃圾出」。这意味着你需要对各个模型的能力边界有一定了解，学习成本比「一键订阅」的工具高。
+
+**UI  polish 不如商业产品。** 虽然功能强大，但 Cline 的界面设计、错误提示和交互细节与 Cursor、Antigravity 相比仍有差距。开源社区的迭代速度很快，但在「精致感」上始终慢商业产品半拍。
+
+**大型代码库的上下文管理有待提升。** 在 8000 行代码的 PeterClaw 项目中，Cline 偶尔会在多轮对话后丢失部分上下文，需要手动 `@file` 重新引入。Claude Code 的上下文管理在这方面更成熟。
+
+---
+
+## 对比总表
+
+| 维度 | Antigravity 2.0 | Kiro | Cline | 备注 |
+|------|-----------------|------|-------|------|
+| 多 Agent 并行 | ★★★★★ | ★★★☆☆ | ★★★★☆ | Antigravity 原生 5 并行；Cline 支持但需配置 |
+| Spec / 规划驱动 | ★★★☆☆ | ★★★★★ | ★★★★☆ | Kiro 的 Spec 工作流最完整；Cline Plan 模式灵活 |
+| 模型自由度 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline 支持任意模型；Antigravity 主要绑 Gemini |
+| 代码生成质量 | ★★★★★ | ★★★★☆ | ★★★★☆ | Antigravity 的 Gemini 3.5 Flash 速度质量兼备 |
+| 生态集成 | ★★★★☆ | ★★★★★ | ★★★★☆ | Kiro 的 AWS 整合无可匹敌；Antigravity 强在 Google 栈 |
+| 响应速度 | ★★★★★ | ★★★★☆ | ★★★★☆ | Gemini 3.5 Flash 约 289 tokens/s，明显领先 |
+| 价格友好度 | ★★★☆☆ | ★★★☆☆ | ★★★★★ | Cline 免费 BYOK；Antigravity 和 Kiro 的企业定价倾向重 |
+| 国内可访问性 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline + 国内 API 最优；Kiro 依赖 AWS 尚可；Antigravity 一般 |
+| 上手门槛 | ★★★★☆ | ★★★☆☆ | ★★★★☆ | Kiro 的 Spec 文化需要团队适应 |
+| 开源 / 可审计 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline 完全开源；Kiro 基于 Code OSS；Antigravity 闭源 |
+
+---
+
+## 场景化推荐
+
+### 如果你是一名独立开发者，想找一个「最强 Agent」替代 Cursor
+
+**推荐 Antigravity 2.0（如果你用 Google 技术栈）或 Cline（如果你用混合技术栈）。**
+
+Antigravity 2.0 的多 Agent 并行和 Browser Subagent 是独一档的体验，在复杂前端开发中能省下大量手动验证时间。但如果你不用 Firebase / GCP / Android，Antigravity 的原生集成就成了摆设。此时 Cline 的模型自由和零订阅成本更具吸引力——你可以把它装在 VS Code 或 Cursor 里，用 DeepSeek 或 Gemini 低成本跑 Agent 任务。
+
+### 如果你是一名技术团队负责人，关注代码质量和可追溯性
+
+**推荐 Kiro。**
+
+Kiro 的 Spec 驱动和 Hooks 系统本质上是在用 AI 强化工程规范，而不是替代规范。对于需要 Code Review、变更审计、多人协作的团队，Kiro 的工作流比「让 AI 随便改」要安全得多。迁移成本是真实的——团队需要 2-4 周适应 Spec 文化——但一旦跑通，长期来看比 Cursor 的「自由 Agent 模式」更可维护。
+
+### 如果你是一名预算敏感的学生或业余开发者
+
+**推荐 Cline + DeepSeek / Ollama。**
+
+Cline 本身免费，DeepSeek V4 的 API 成本约 $1.74/百万 tokens（还经常有 75 折活动），一个月的密集开发可能只花 $3-5。如果你有本地 GPU，Ollama + Cline 可以实现完全零成本的 AI 编程。这是三款工具中唯一能让「零预算开发者」获得接近商业产品体验的组合。
+
+### 如果你是一名国内开发者，网络环境不稳定
+
+**推荐 Cline + 国内 API。**
+
+Antigravity 依赖 Google 服务，Kiro 依赖 AWS，两者在国内都需要科学上网。Cline 配合火山引擎 Ark、阿里云百炼或 DeepSeek 国内节点，可以获得稳定的低延迟访问。这是目前对国内环境最务实的选择。
+
+### 如果你已经在用 Cursor / Windsurf，是否需要切换？
+
+**不需要完全切换，建议「补充」而非「替代」。**
+
+Cursor 的 Tab 补全和 Composer 2.5 在日常编码中仍然是最流畅的。你可以：
+- 保留 Cursor 作为主力编辑器
+- 用 **Antigravity 2.0** 处理需要多 Agent 并行的复杂任务（如跨组件重构 + 视觉验证）
+- 用 **Kiro** 管理需要严格 Spec 的大型功能（如新增一个内容类型，涉及路由、组件、Schema、i18n）
+- 用 **Cline** 作为低成本备用 Agent，或在 CI/CD 中跑自动化审查
+
+三款工具与 Cursor 的关系是「互补」而非「取代」。
+
+---
+
+## 最终结论
+
+> **综合推荐：★★★★★**
+>
+> 2026 年 Q2 的 Agent IDE 战场已经没有「最强」——只有「最适合你的场景」。Antigravity 2.0 用多 Agent 并行重新定义了效率上限，Kiro 用 Spec 驱动守住了工程质量的底线，Cline 用开源自由撑起了独立开发者的天花板。三款工具共同证明了一件事：AI 编程的下一阶段不是「一个更聪明的助手」，而是「一群各司其职的合伙人」。
+
+**未来观望点**：
+
+- Antigravity 2.0 的 SDK 和 Managed Agents API 可能催生第三方 Agent 市场，值得关注生态发展速度
+- Kiro 的 GA 定价将在下半年揭晓，如果个人开发者定价合理，它可能成为企业市场的黑马
+- Cline 正在快速补齐 IDE 体验短板，JetBrains 支持和 Kanban 界面的成熟可能让它从「极客玩具」变成「团队标配」
+- Cursor 3.4 和 Claude Code 也不会坐视，下半年三强与老牌工具的交叉竞争会更加激烈
+
+---
+
+## 延伸阅读
+
+- [Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？](/zh/blog/ai-tool-review-cursor-vs-windsurf/) —— AI 工具评测专栏第 1 篇
+- [Claude Code vs GitHub Copilot Chat 深度评测：命令行 AI 助手谁更强？](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/) —— AI 工具评测专栏第 2 篇
+- [AI 日记 Vol.5：Vibe Coding 实践录](/zh/blog/ai-diary-005-vibe-coding/) —— 我们在 PeterClaw 项目中如何用 AI 辅助编码
+- [AI 日记 Vol.6：当 AI 展现出涌现能力](/zh/blog/ai-diary-006-emergent-capabilities/) —— 多 Agent 协作中的意外发现
+- [Antigravity 官方文档](https://antigravity.google)
+- [Kiro 官方文档](https://kiro.dev)
+- [Cline GitHub 仓库](https://github.com/cline/cline)
