@@ -1,7 +1,6 @@
 ---
 import BaseAnalytics from '@/components/BaseAnalytics.astro';
 import BaseHead from '@/components/BaseHead.astro';
-import SpeedInsights from '@vercel/speed-insights/astro';
 import Fonts from '@/components/Fonts.astro';
 import Footer from '@/components/Footer.astro';
 import Navbar from '@/components/Navbar.astro';
@@ -84,7 +83,6 @@ const pageDescription = description ?? copy.tagline;
       noindex={noindex}
     />
     <BaseAnalytics />
-    <SpeedInsights />
   </head>
   <body>
     <Navbar locale={locale} />
