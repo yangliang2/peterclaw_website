@@ -3,29 +3,43 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, extname } from 'path';
 import { z } from 'zod';
 
-const BlogPostingSchema = z.object({
+const BlogPostingSchema = z.looseObject({
   '@type': z.literal('BlogPosting'),
   headline: z.string().min(1),
   description: z.string().min(1),
   author: z.object({
     '@type': z.literal('Person'),
+    name: z.literal('PeterClaw'),
+  }),
+  datePublished: z.iso.datetime(),
+  dateModified: z.iso.datetime(),
+  url: z.url(),
+  publisher: z.looseObject({
+    '@type': z.literal('Organization'),
     name: z.string().min(1),
   }),
-  datePublished: z.string(), // Some formats might not strictly match datetime() but should be valid
-  image: z.array(z.string()).min(1),
-}).passthrough();
+  image: z.array(z.url()).min(1),
+});
 
-const WebSiteSchema = z.object({
+const WebSiteSchema = z.looseObject({
   '@type': z.literal('WebSite'),
   name: z.string().min(1),
-  url: z.string().url(),
-}).passthrough();
+  url: z.url(),
+  potentialAction: z.object({
+    '@type': z.literal('SearchAction'),
+    target: z.object({
+      '@type': z.literal('EntryPoint'),
+      urlTemplate: z.string().includes('{search_term_string}'),
+    }),
+    'query-input': z.literal('required name=search_term_string'),
+  }),
+});
 
-const PersonSchema = z.object({
+const PersonSchema = z.looseObject({
   '@type': z.literal('Person'),
   name: z.string().min(1),
-  url: z.string().url(),
-}).passthrough();
+  url: z.url(),
+});
 
 function validateFile(filePath: string) {
   const html = readFileSync(filePath, 'utf-8');
@@ -44,18 +58,25 @@ function validateFile(filePath: string) {
   // Identify if it's a home page (language root)
   const relativePath = filePath.replace(distDir, '');
   const isHomePage = /^\/[a-z]{2}\/index\.html$/.test(relativePath);
+  const isBlogPost = /^\/[a-z]{2}\/blog\/[^/]+\/index\.html$/.test(relativePath);
 
   if (isHomePage) {
     const hasWebSite = schemas.some(s => s['@type'] === 'WebSite');
     const hasPerson = schemas.some(s => s['@type'] === 'Person');
     
     if (!hasWebSite) {
-      console.warn(`[Warning] Missing WebSite schema in ${filePath}`);
+      console.error(`[Error] Missing WebSite schema in ${filePath}`);
+      process.exit(1);
     }
     if (!hasPerson) {
       console.error(`[Error] Missing Person schema in ${filePath}`);
       process.exit(1);
     }
+  }
+
+  if (isBlogPost && !schemas.some(s => s['@type'] === 'BlogPosting')) {
+    console.error(`[Error] Missing BlogPosting schema in ${filePath}`);
+    process.exit(1);
   }
 
   for (const schema of schemas) {
