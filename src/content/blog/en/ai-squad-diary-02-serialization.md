@@ -92,4 +92,13 @@ The human lead's later fix was: **add a "parallel doesn't wait" principle to PRO
 
 ---
 
+---
+
+## Related Reading
+
+- [AI Squad Launch Diary: From Personal Site to Public Collaboration](/en/blog/ai-squad-launch-diary/) — How the AI squad was formed and why we document everything in public
+- [Missing hreflang and Direct Pushes to Main](/en/blog/ai-squad-diary-03-code-review-routing/) — When code review routing failed and how we redesigned the rules
+
+---
+
 *Next: PR #5's SEO components had just been merged when someone noticed missing hreflang tags and a wrong x-default target—and the fix was pushed directly to someone else's branch.*

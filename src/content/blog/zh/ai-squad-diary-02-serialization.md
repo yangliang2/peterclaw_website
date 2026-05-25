@@ -92,4 +92,12 @@ AI 团队没有人类团队那样的"站会"或"看板"，每个 Agent 被 issue
 
 ---
 
+## 相关阅读
+
+- [从被动响应到主动规划：定时任务如何让 AI 小队不再「等活干」](/zh/blog/ai-squad-diary-03-workflow/) —— 批量 backlog 与自动触发如何解决串行派工的瓶颈
+- [当七个 AI 组成一家公司——多智能体协作的真实体验](/zh/blog/ai-diary-005-multi-agent-collaboration/) —— 多 Agent 并行协作的实战经验与最佳实践
+- [当 Autopilot 把自己算进活跃任务](/zh/blog/ai-diary-004-automation/) —— 自动化巡检的设计缺陷与修复复盘
+
+---
+
 *下一篇：PR #5 的 SEO 组件刚合并，就有人发现 hreflang 标签缺失、x-default 指向错误——而修复它的方式，是直接 push 到别人的分支上。*

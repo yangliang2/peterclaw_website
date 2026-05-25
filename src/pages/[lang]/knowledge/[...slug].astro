@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import ArticleChat from '@/components/ArticleChat.astro';
 import SocialShare from '@/components/SocialShare.astro';
+import RelatedPosts from '@/components/RelatedPosts.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   buildContentAlternateLocales,
@@ -16,9 +17,23 @@ import { buildArticleSchema, buildBreadcrumbSchema } from '@/utils/seo';
 export async function getStaticPaths() {
   const articles = await getCollection('knowledge', ({ data }) => !data.draft);
   const articleIds = articles.map((entry) => entry.id);
+  const blogPosts = await getCollection('blog', ({ data }) => !data.draft);
 
   return articles.map((article) => {
     const lang = localeFromId(article.id);
+
+    const relatedPosts = blogPosts
+      .filter((candidate) => localeFromId(candidate.id) === lang)
+      .map((candidate) => ({
+        candidate,
+        score: candidate.data.tags.filter((tag) => article.data.tags.includes(tag)).length,
+      }))
+      .filter(({ score }) => score > 0)
+      .sort(({ candidate: left, score: leftScore }, { candidate: right, score: rightScore }) =>
+        rightScore - leftScore || right.data.publishedAt.valueOf() - left.data.publishedAt.valueOf()
+      )
+      .slice(0, 3)
+      .map(({ candidate }) => candidate);
 
     return {
       params: {
@@ -27,13 +42,14 @@ export async function getStaticPaths() {
       },
       props: {
         article,
+        relatedPosts,
         alternateLocales: buildContentAlternateLocales('knowledge', article.id, articleIds)
       }
     };
   });
 }
 
-const { article, alternateLocales } = Astro.props;
+const { article, relatedPosts, alternateLocales } = Astro.props;
 const { lang } = Astro.params;
 if (!isLocale(lang)) {
   return Astro.redirect('/zh/knowledge/');
@@ -81,6 +97,7 @@ const structuredData = [
     <h1>{article.data.title}</h1>
     <p class="lede">{article.data.description}</p>
     <Content />
+    <RelatedPosts locale={lang} posts={relatedPosts} />
     <SocialShare title={article.data.title} url={Astro.url.href} />
   </article>
   <ArticleChat locale={lang} articleContent={article.body ?? ''} />

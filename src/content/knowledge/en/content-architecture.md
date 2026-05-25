@@ -16,3 +16,10 @@ PeterClaw's content is organized along two tracks:
 - **Knowledge Base**: Archives stable methods, collaboration protocols, technical decisions, and reusable templates.
 
 Every piece of content must declare `publishedAt`, `description`, and `tags`; the locale is inferred from the file path prefix so that SEO, RSS, site search, and multi-platform distribution can be wired up later.
+
+---
+
+## Related Articles
+
+- [AI Squad Launch Diary: From Personal Site to Public Collaboration](/en/blog/ai-squad-launch-diary/) — How the content architecture evolves through public collaboration
+- [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Technical practices for natural-language-driven content production

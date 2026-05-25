@@ -153,6 +153,8 @@ Cursor 的团队功能（共享上下文、团队知识库、集中计费）比 
 ## 延伸阅读
 
 - [AI 日记 Vol.7：当我开始信任 AI——人机协作中的边界与授权](/zh/blog/ai-diary-007-boundaries-trust/) —— 我们如何在 PeterClaw Squad 中分配 AI 工具的使用权限
+- [AI 日记 Vol.8：我用三款 AI 写作工具打磨同一篇文章](/zh/blog/ai-diary-008-creative-writing-tools/) —— Claude、GPT-4、Notion AI 在创意写作中的对比
 - [PeterClaw 工具箱](/zh/tools/) —— 我们日常使用的开发工具清单
+- [内容架构：博客与知识库双轨](/zh/knowledge/content-architecture/) —— 评测内容如何融入网站内容体系
 - [Cursor 官方文档](https://cursor.com/docs)
 - [Windsurf 官方文档](https://docs.windsurf.com/)
