@@ -14,6 +14,8 @@ export type ArticleSchemaInput = {
   publishedTime: Date;
   modifiedTime?: Date;
   imagePath?: string;
+  /** BlogPosting for blog posts; Article for knowledge base pages. */
+  articleType?: 'BlogPosting' | 'Article';
 };
 
 export type ProductSchemaInput = {
@@ -108,10 +110,11 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
 export function buildArticleSchema(input: ArticleSchemaInput) {
   const url = absoluteUrl(input.path);
   const image = absoluteUrl(input.imagePath ?? siteConfig.defaultOgImage);
+  const articleType = input.articleType ?? 'BlogPosting';
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': articleType,
     headline: input.title,
     description: input.description,
     url,
