@@ -75,7 +75,7 @@ const BreadcrumbListSchema = z.looseObject({
   '@type': z.literal('BreadcrumbList'),
   itemListElement: z
     .array(
-      z.object({
+      z.looseObject({
         '@type': z.literal('ListItem'),
         position: z.number().int().positive(),
         name: z.string().min(1),
@@ -85,7 +85,7 @@ const BreadcrumbListSchema = z.looseObject({
     .min(2),
 });
 
-function validateFile(filePath: string, distDir: string) {
+function validateFile(filePath: string, distRoot: string) {
   const html = readFileSync(filePath, 'utf-8');
   const dom = new JSDOM(html);
   const scripts = dom.window.document.querySelectorAll('script[type="application/ld+json"]');
@@ -99,9 +99,9 @@ function validateFile(filePath: string, distDir: string) {
     }
   });
 
-  const relativePath = filePath.replace(distDir, '');
+  const relativePath = filePath.replace(distRoot, '');
   const isHomePage = /^\/[a-z]{2}\/index\.html$/.test(relativePath);
-  const isBlogIndex = /^\/[a-z]{2}\/blog\/index\.html$/.test(relativePath);
+  const isBlogList = /^\/[a-z]{2}\/blog\/index\.html$/.test(relativePath);
   const isBlogPost = /^\/[a-z]{2}\/blog\/[^/]+\/index\.html$/.test(relativePath);
   const isKnowledgePost = /^\/[a-z]{2}\/knowledge\/[^/]+\/index\.html$/.test(relativePath);
 
@@ -119,7 +119,7 @@ function validateFile(filePath: string, distDir: string) {
     }
   }
 
-  if (isBlogIndex && !schemas.some((s) => s['@type'] === 'BreadcrumbList')) {
+  if (isBlogList && !schemas.some((s) => s['@type'] === 'BreadcrumbList')) {
     console.error(`[Error] Missing BreadcrumbList schema in ${filePath}`);
     process.exit(1);
   }
