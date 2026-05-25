@@ -11,9 +11,10 @@ import {
   collectionPath,
   isLocale,
   localeFromId,
-  stripLocaleFromId
+  stripLocaleFromId,
+  ui,
 } from '@/lib/i18n';
-import { buildArticleSchema, buildFaqSchema } from '@/utils/seo';
+import { buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -62,6 +63,7 @@ const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
 const ogImage = post.data.ogImage;
 const faq = post.data.faq ?? [];
+const copy = ui[lang];
 const structuredData = [
   buildArticleSchema({
     title: post.data.title,
@@ -72,6 +74,11 @@ const structuredData = [
     modifiedTime: post.data.updatedAt,
     imagePath: ogImage,
   }),
+  buildBreadcrumbSchema([
+    { name: copy.siteTitle, path: `/${lang}/` },
+    { name: copy.blog, path: `/${lang}/blog/` },
+    { name: post.data.title, path: canonicalPath },
+  ]),
   ...(faq.length > 0 ? [buildFaqSchema(faq)] : []),
 ];
 ---

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { buildBreadcrumbSchema } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -18,7 +19,15 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
 );
 ---
 
-<BaseLayout locale={lang} title={copy.blog} canonicalPath={`/${lang}/blog/`}>
+<BaseLayout
+  locale={lang}
+  title={copy.blog}
+  canonicalPath={`/${lang}/blog/`}
+  structuredData={buildBreadcrumbSchema([
+    { name: copy.siteTitle, path: `/${lang}/` },
+    { name: copy.blog, path: `/${lang}/blog/` },
+  ])}
+>
   <h1>{copy.blog}</h1>
   <div class="content-list">
     {
