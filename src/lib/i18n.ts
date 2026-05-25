@@ -20,7 +20,7 @@ export function stripLocaleFromId(id: string, locale: Locale) {
   return id.replace(new RegExp(`^${locale}/`), '').replace(/\/index$/, '');
 }
 
-export function collectionPath(locale: Locale, collection: 'blog' | 'knowledge', id: string) {
+export function collectionPath(locale: Locale, collection: 'blog' | 'knowledge' | 'product', id: string) {
   return `/${locale}/${collection}/${stripLocaleFromId(id, locale)}/`;
 }
 
@@ -47,7 +47,7 @@ export function buildHreflangAlternates(canonicalPath: string): { locale: Locale
 
 /** Hreflang alternates limited to locales where matching content exists. */
 export function buildContentAlternateLocales(
-  collection: 'blog' | 'knowledge',
+  collection: 'blog' | 'knowledge' | 'product',
   entryId: string,
   entryIds: Iterable<string>
 ): { locale: Locale; path: string }[] {
@@ -70,6 +70,7 @@ export const ui = {
     about: '关于',
     now: '现在',
     projects: '作品集',
+    products: '产品',
     blog: '博客',
     knowledge: '知识库',
     tools: '工具箱',
@@ -111,6 +112,7 @@ export const ui = {
     about: 'About',
     now: 'Now',
     projects: 'Projects',
+    products: 'Products',
     blog: 'Blog',
     knowledge: 'Knowledge Base',
     tools: 'Toolkit',
