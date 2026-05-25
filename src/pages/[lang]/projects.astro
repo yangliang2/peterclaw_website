@@ -32,10 +32,11 @@ const itemListSchema = {
     '@type': 'ListItem',
     position: index + 1,
     item: {
-      '@type': 'CreativeWork',
+      '@type': 'SoftwareApplication',
       name: project.title,
       description: project.description[lang],
       url: projectUrlForSchema(project.url),
+      applicationCategory: 'DeveloperApplication',
     },
   })),
 };
