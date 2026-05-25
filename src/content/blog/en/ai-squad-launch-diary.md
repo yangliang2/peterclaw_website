@@ -1,6 +1,6 @@
 ---
 title: "AI Squad Launch Diary Vol.1: From Personal Site to Public Collaboration"
-description: "How the PeterClaw website turned an AI team's collaboration process into product, content, and brand assets."
+description: "How PeterClaw turned website maintenance into a live experiment—running an AI agent team in public, with real commits, real merge conflicts, and real lessons for anyone building with AI."
 contentType: journal
 publishedAt: 2026-05-23
 cover: journal.svg
@@ -33,23 +33,25 @@ reviews:
 
 ## Why a personal site deserves an AI team building it in public
 
-Most personal sites face one of two fates: either they're forgotten after launch, or they stay "under construction" forever. Content updates depend on human time and mood, technical debt piles up unchecked, and SEO is never truly optimized.
+Most personal websites face one of two fates. Either they are abandoned shortly after launch, left to gather digital dust while the creator moves on to shinier projects. Or they remain perpetually "under construction," with a "Coming Soon" banner that stays up for years. Content updates depend on human time and motivation, technical debt accumulates unchecked, and SEO is never truly optimized.
 
-**PeterClaw chose the third path: automate the maintenance itself, and turn the automation process into content.**
+**PeterClaw chose a third path: automate the maintenance itself, and turn the automation process into content.**
 
-The idea came from a simple observation: by 2026, AI agents can already write code, open PRs, analyze search traffic, and draft blog posts. If these capabilities are real, why not validate them in a real project—and do it completely in public?
+The idea came from a simple observation. By 2026, AI agents can write code, open pull requests, analyze search traffic, and draft blog posts. If these capabilities are real—and they are—why not validate them in a real project? And why not do it completely in public, where every mistake, every fix, and every protocol adjustment is visible?
 
 A personal site is the ideal sandbox for this experiment, for three reasons:
 
-1. **Low risk.** If the site goes down, nobody gets hurt. A bad PR merge can be rolled back. This isn't a production financial system.
-2. **High observability.** Every line of code, every PR, every deployment is recorded. You can retroactively analyze it, and you can write articles about it.
-3. **High value density.** A well-run personal site is a business card, portfolio, and thought outlet rolled into one—if an AI team can make it work, the proof is far more convincing than any demo.
+1. **Low risk.** If the site goes down, nobody gets hurt. A bad PR merge can be rolled back. This is not a production financial system handling real money or sensitive data. The stakes are high enough to matter, low enough to experiment.
+2. **High observability.** Every line of code, every PR, every deployment is recorded in Git history. You can retroactively analyze what went wrong, and you can write articles about it. In a corporate environment, these details are often buried behind private repositories and NDAs.
+3. **High value density.** A well-run personal site functions as a business card, a portfolio, and a publishing platform all in one. If an AI team can successfully maintain and grow it, the proof is far more convincing than any polished demo or marketing slide.
+
+This approach also sits within a broader cultural shift. The "build in public" movement—popularized by indie hackers and solopreneurs on platforms like Twitter/X and Indie Hackers—has shown that transparency builds trust. Sharing your failures alongside your wins creates a narrative that pure success stories cannot match. We are applying that same philosophy to AI collaboration.
 
 ---
 
 ## AI squad members and their roles
 
-The current squad has five members, each responsible for a different track:
+The current squad has five members, each responsible for a different track. This is not a theoretical division of labor—it shows up directly in Git history, with each member operating in their own branch namespace and every commit referencing its issue number.
 
 | Member | Role | Primary Duties |
 |--------|------|----------------|
@@ -59,25 +61,29 @@ The current squad has five members, each responsible for a different track:
 | **Gemini 1** | Design System / Brand Tone | Design tokens, color system, dark theme, visual consistency |
 | **GPT-Boy** | Content Creation / Operations | English blog posts, social media content, audience analysis, backlink strategy |
 
-This isn't a theoretical division of labor—it shows up directly in Git history. Each member has their own branch namespace (`agent/claude-2/...`, `agent/cursor-1/...`), every commit references its issue number, and every PR requires review before merging.
+Each member has their own branch namespace (`agent/claude-2/...`, `agent/cursor-1/...`), and every PR requires review before merging. The human lead serves as the final gatekeeper, but the day-to-day work is driven by the agents themselves.
 
 ---
 
 ## What happened in week one
 
-The goal of Phase 1 (May 23, 2026) was simple: scaffold a working site on an empty repo, deployable and content-ready.
+The goal of Phase 1 (May 23, 2026) was straightforward: scaffold a working site on an empty repository, deployable and content-ready.
 
-By day one, a classic AI team coordination problem had already surfaced: **five agents started work simultaneously without a shared baseline, producing three incompatible Astro scaffolds.** Cursor 1 opened PR #2 while PR #1 was still unmerged, and PR #2 ultimately landed in an orphaned merge commit with no future.
+By day one, a classic AI team coordination problem had already surfaced. **Five agents started work simultaneously without a shared baseline, producing three incompatible Astro scaffolds.** Cursor 1 opened PR #2 while PR #1 was still unmerged, and PR #2 ultimately landed in an orphaned merge commit with no future in the main branch.
 
-These events aren't failures—they're data. AI teams and human teams face the same category of coordination problems; they just manifest differently. This series will document every mess, every rework, and every protocol fix.
+To a casual observer, this might look like chaos. But to anyone who has managed a real engineering team, it looks familiar. AI teams and human teams face the same fundamental category of coordination problems; they just manifest differently. Humans might wait for a standup meeting to discover conflicts. Agents discover them through Git merge failures and orphaned commits.
+
+This series will document every mess, every rework, and every protocol fix. The intent is not to present a polished success story, but to show the raw process of figuring out how AI teams actually work.
 
 ---
 
 ## Why it's worth following along
 
-If you're building any kind of AI-assisted development workflow, the records here may serve as a useful reference—not "best practices," but real firsthand experiences, including the failures.
+If you are building any kind of AI-assisted development workflow—whether you are a solo developer using Cursor, a startup experimenting with agent teams, or an engineering manager wondering how AI will reshape your org—the records here may serve as a useful reference.
 
-The update rhythm of this series is driven by the AI squad itself: when something worth writing about happens, the article appears. No fixed publishing schedule, but no indefinite shelving either.
+These are not "best practices." They are real firsthand experiences, including the failures. The kind of details that conference talks usually skip over because they are messy and embarrassing. We believe those messy details are where the real learning happens.
+
+The update rhythm of this series is driven by the AI squad itself. When something worth writing about happens, the article appears. There is no fixed publishing schedule, but no indefinite shelving either. The site maintenance generates the content, and the content drives the site forward.
 
 ## Related Reading
 
