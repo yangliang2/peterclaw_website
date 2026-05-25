@@ -61,7 +61,7 @@ We tried letting agents discuss "who should take this task" in comments. Each di
 
 > **Case study**: In PET-56, the CEO planned eight backlog issues at once, covering domain setup, SEO, performance, and content. Because priorities and owners were fixed in advance, agents pushed three tasks in parallel within six hours—without repeating the Phase 1 "three scaffolds" disaster.
 >
-> See: [From Reactive to Proactive: How Scheduled Tasks Stopped Our AI Squad from Waiting for Work](/en/blog/ai-squad-diary-03-workflow/)
+> See: [From Reactive to Proactive: How Scheduled Tasks Stopped Our AI Squad from Waiting for Work](/zh/blog/ai-squad-diary-03-workflow/)
 
 ---
 
@@ -148,7 +148,7 @@ Because Markdown is the native language of AI. Checkout → cat → comprehend: 
 
 > **Case study**: BACKLOG.md uses four symbols as a state machine: `[ ]` backlog, `[→]` todo, `[✓]` done, `[✗]` cancelled. When the auto-trigger scanner changes `[ ]` to `[→]`, it simultaneously runs `issue status <id> todo` in Multica. This file is the team's persistent memory.
 >
-> See: [When Seven AIs Form a Company: Real-World Multi-Agent Collaboration](/en/blog/ai-diary-005-multi-agent-collaboration/)
+> See: [When Seven AIs Form a Company: Real-World Multi-Agent Collaboration](/zh/blog/ai-diary-005-multi-agent-collaboration/)
 
 ---
 
@@ -192,7 +192,7 @@ Another hidden loop: autopilots counting themselves as "active tasks." Our auto-
 
 > **Case study**: This bug caused seven backlog tasks to pile up while the team sat effectively idle. The human owner discovered it 12 hours after it started.
 >
-> See: [When Autopilot Counted Itself as an Active Task](/en/blog/ai-diary-004-automation/)
+> See: [When Autopilot Counted Itself as an Active Task](/zh/blog/ai-diary-004-automation/)
 
 ---
 
@@ -283,7 +283,7 @@ We designed three authorization levels:
 
 > **Case study**: In PET-56, the human owner authorized the CEO to "approve Merge Requests." This authorization was not to increase the CEO's power, but to reduce blocking time waiting for human approval. The ultimate goal of system design is not to keep the CEO busier, but to make the CEO less of a bottleneck.
 >
-> See: [Boundaries and Trust in Human-AI Collaboration](/en/blog/ai-diary-007-boundaries-trust/)
+> See: [Boundaries and Trust in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/)
 
 ---
 
@@ -316,9 +316,9 @@ If you are about to build your own AI squad, do not hire seven agents at once. O
 
 - [AI Squad Launch Diary: From Personal Site to Public Collaboration](/en/blog/ai-squad-launch-diary/) — Background and motivation for building the squad
 - [Why Do AI Teams Get Blocked? A Serial Dispatch Post-Mortem](/en/blog/ai-squad-diary-02-serialization/) — Real-world lessons on parallel vs serial dispatch
-- [From Reactive to Proactive: How Scheduled Tasks Stopped Our AI Squad from Waiting for Work](/en/blog/ai-squad-diary-03-workflow/) — Evolution of the CEO model and batch backlog planning
-- [When Seven AIs Form a Company: Real-World Multi-Agent Collaboration](/en/blog/ai-diary-005-multi-agent-collaboration/) — Full collaboration chronicle of the seven-agent team
+- [From Reactive to Proactive: How Scheduled Tasks Stopped Our AI Squad from Waiting for Work](/zh/blog/ai-squad-diary-03-workflow/) — Evolution of the CEO model and batch backlog planning
+- [When Seven AIs Form a Company: Real-World Multi-Agent Collaboration](/zh/blog/ai-diary-005-multi-agent-collaboration/) — Full collaboration chronicle of the seven-agent team
 - [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Technical practices for natural-language-driven full-stack development
-- [When Autopilot Counted Itself as an Active Task](/en/blog/ai-diary-004-automation/) — Design flaws and fixes in automated patrol workflows
-- [Boundaries and Trust in Human-AI Collaboration](/en/blog/ai-diary-007-boundaries-trust/) — Authorization gradients and safety-valve design for human intervention
+- [When Autopilot Counted Itself as an Active Task](/zh/blog/ai-diary-004-automation/) — Design flaws and fixes in automated patrol workflows
+- [Boundaries and Trust in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — Authorization gradients and safety-valve design for human intervention
 - [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — How PeterClaw's content system is designed
