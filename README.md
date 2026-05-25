@@ -29,3 +29,9 @@ The publishing automation draft lives in `docs/content-publishing-pipeline.md`. 
 ## Comments (Giscus)
 
 Blog posts embed [Giscus](https://giscus.app) comments backed by this repo’s GitHub Discussions (`General` category, `pathname` mapping). Configuration lives in `src/config/giscus.ts`. The widget follows the site theme via the `data-theme` attribute on `<html>` (`light` / `dark`).
+
+## Reader Feedback (Formspree)
+
+The About page and blog posts expose a bilingual reader feedback form. Blog posts use an opt-in expandable prompt so it does not interrupt reading. Submissions are proxied through `/api/feedback` to Formspree.
+
+Set `FORMSPREE_FEEDBACK_FORM_ID` in the deployment environment to the form ID from a Formspree form (the value after `/f/` in its endpoint URL).
