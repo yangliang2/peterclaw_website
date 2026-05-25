@@ -2,12 +2,15 @@
 import type { CollectionEntry } from 'astro:content';
 import { collectionPath, type Locale } from '@/lib/i18n';
 
+type AnyCollectionEntry = CollectionEntry<'blog'> | CollectionEntry<'knowledge'> | CollectionEntry<'product'>;
+
 interface Props {
   locale: Locale;
-  posts: CollectionEntry<'blog'>[];
+  posts: AnyCollectionEntry[];
+  collection?: 'blog' | 'knowledge' | 'product';
 }
 
-const { locale, posts } = Astro.props;
+const { locale, posts, collection = 'blog' } = Astro.props;
 const heading = locale === 'zh' ? '相关文章' : 'Related posts';
 ---
 
@@ -17,8 +20,8 @@ const heading = locale === 'zh' ? '相关文章' : 'Related posts';
       <h2>{heading}</h2>
       <div class="related-list">
         {posts.map((post) => (
-          <a href={collectionPath(locale, 'blog', post.id)}>
-            <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+          <a href={collectionPath(locale, collection, post.id)}>
+            <span class="meta">{'publishedAt' in post.data && post.data.publishedAt ? post.data.publishedAt.toISOString().slice(0, 10) : ''}</span>
             <strong>{post.data.title}</strong>
           </a>
         ))}
