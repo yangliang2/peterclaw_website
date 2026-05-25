@@ -41,6 +41,16 @@ const PersonSchema = z.looseObject({
   url: z.url(),
 });
 
+const BreadcrumbListSchema = z.looseObject({
+  '@type': z.literal('BreadcrumbList'),
+  itemListElement: z.array(z.looseObject({
+    '@type': z.literal('ListItem'),
+    position: z.number().int().positive(),
+    name: z.string().min(1),
+    item: z.url(),
+  })).min(1),
+});
+
 function validateFile(filePath: string) {
   const html = readFileSync(filePath, 'utf-8');
   const dom = new JSDOM(html);
@@ -55,27 +65,41 @@ function validateFile(filePath: string) {
     }
   });
   
+  // Skip redirect pages that have no JSON-LD
+  if (schemas.length === 0) {
+    return;
+  }
+  
   // Identify if it's a home page (language root)
   const relativePath = filePath.replace(distDir, '');
   const isHomePage = /^\/[a-z]{2}\/index\.html$/.test(relativePath);
   const isBlogPost = /^\/[a-z]{2}\/blog\/[^/]+\/index\.html$/.test(relativePath);
+  const isKnowledgeArticle = /^\/[a-z]{2}\/knowledge\/[^/]+\/index\.html$/.test(relativePath);
+  const isArticlePage = isBlogPost || isKnowledgeArticle;
 
   if (isHomePage) {
     const hasWebSite = schemas.some(s => s['@type'] === 'WebSite');
-    const hasPerson = schemas.some(s => s['@type'] === 'Person');
     
     if (!hasWebSite) {
       console.error(`[Error] Missing WebSite schema in ${filePath}`);
       process.exit(1);
     }
-    if (!hasPerson) {
-      console.error(`[Error] Missing Person schema in ${filePath}`);
-      process.exit(1);
-    }
+  }
+
+  // All pages must have Person schema (added via BaseLayout)
+  const hasPerson = schemas.some(s => s['@type'] === 'Person');
+  if (!hasPerson) {
+    console.error(`[Error] Missing Person schema in ${filePath}`);
+    process.exit(1);
   }
 
   if (isBlogPost && !schemas.some(s => s['@type'] === 'BlogPosting')) {
     console.error(`[Error] Missing BlogPosting schema in ${filePath}`);
+    process.exit(1);
+  }
+
+  if (isArticlePage && !schemas.some(s => s['@type'] === 'BreadcrumbList')) {
+    console.error(`[Error] Missing BreadcrumbList schema in ${filePath}`);
     process.exit(1);
   }
 
@@ -87,6 +111,8 @@ function validateFile(filePath: string) {
         WebSiteSchema.parse(schema);
       } else if (schema['@type'] === 'Person') {
         PersonSchema.parse(schema);
+      } else if (schema['@type'] === 'BreadcrumbList') {
+        BreadcrumbListSchema.parse(schema);
       }
     } catch (e) {
       console.error(`Validation failed for ${schema['@type']} in ${filePath}`);

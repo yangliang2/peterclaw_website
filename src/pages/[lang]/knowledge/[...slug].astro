@@ -7,9 +7,10 @@ import {
   collectionPath,
   isLocale,
   localeFromId,
-  stripLocaleFromId
+  stripLocaleFromId,
+  ui
 } from '@/lib/i18n';
-import { buildArticleSchema } from '@/utils/seo';
+import { buildArticleSchema, buildBreadcrumbSchema } from '@/utils/seo';
 
 export async function getStaticPaths() {
   const articles = await getCollection('knowledge', ({ data }) => !data.draft);
@@ -53,15 +54,22 @@ const ogImage = article.data.ogImage;
   ogImage={ogImage}
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
-  structuredData={buildArticleSchema({
-    title: article.data.title,
-    description: article.data.description,
-    path: canonicalPath,
-    locale: lang,
-    publishedTime: article.data.publishedAt,
-    modifiedTime: article.data.updatedAt,
-    imagePath: ogImage,
-  })}
+  structuredData={[
+    buildArticleSchema({
+      title: article.data.title,
+      description: article.data.description,
+      path: canonicalPath,
+      locale: lang,
+      publishedTime: article.data.publishedAt,
+      modifiedTime: article.data.updatedAt,
+      imagePath: ogImage,
+    }),
+    buildBreadcrumbSchema([
+      { name: ui[lang].siteTitle, path: `/${lang}/` },
+      { name: ui[lang].knowledge, path: `/${lang}/knowledge/` },
+      { name: article.data.title, path: canonicalPath },
+    ]),
+  ]}
   alternateLocales={alternateLocales}
 >
   <article data-pagefind-body>

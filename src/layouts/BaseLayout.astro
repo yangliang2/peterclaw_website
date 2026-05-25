@@ -5,6 +5,7 @@ import Fonts from '@/components/Fonts.astro';
 import Footer from '@/components/Footer.astro';
 import Navbar from '@/components/Navbar.astro';
 import { ui, type Locale } from '@/lib/i18n';
+import { buildPersonSchema } from '@/utils/seo';
 import '@/styles/theme.css';
 
 interface Props {
@@ -78,7 +79,11 @@ const pageDescription = description ?? copy.tagline;
       ogImage={ogImage}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
-      structuredData={structuredData}
+      structuredData={structuredData
+        ? Array.isArray(structuredData)
+          ? [...structuredData, buildPersonSchema()]
+          : [structuredData, buildPersonSchema()]
+        : buildPersonSchema()}
       alternateLocales={alternateLocales}
       noindex={noindex}
     />
