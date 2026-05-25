@@ -18,6 +18,8 @@ import {
   buildArticleSchema,
   buildBreadcrumbSchema,
   buildDynamicOgImagePath,
+  buildFaqSchema,
+  buildHowToSchema,
 } from '@/utils/seo';
 import {
   estimateReadingMinutes,
@@ -109,6 +111,10 @@ const structuredData = [
     { name: copy.knowledge, path: `/${lang}/knowledge/` },
     { name: article.data.title, path: canonicalPath },
   ]),
+  ...(article.data.faq && article.data.faq.length > 0 ? [buildFaqSchema(article.data.faq)] : []),
+  ...(article.data.howTo && article.data.howTo.length > 0
+    ? [buildHowToSchema({ name: article.data.title, description: article.data.description, steps: article.data.howTo, imagePath: ogImage, locale: lang })]
+    : []),
 ];
 ---
 

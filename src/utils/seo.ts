@@ -64,7 +64,20 @@ export type ItemListSchemaInput = {
   }>;
 };
 
+export type FAQItem = {
+  question: string;
+  answer: string;
+};
+
+export type HowToStep = {
+  name: string;
+  text: string;
+  image?: string;
+  url?: string;
+};
+
 export function absoluteUrl(path = '/'): string {
+
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return new URL(normalized, getSiteUrl()).href;
 }
@@ -282,6 +295,30 @@ export function buildItemListSchema(input: ItemListSchemaInput) {
   };
 }
 
+export function buildHowToSchema(input: {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+  imagePath?: string;
+  locale: Locale;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: input.name,
+    description: input.description,
+    image: input.imagePath ? absoluteUrl(input.imagePath) : undefined,
+    inLanguage: input.locale,
+    step: input.steps.map((step) => ({
+      '@type': 'HowToStep',
+      name: step.name,
+      text: step.text,
+      image: step.image ? absoluteUrl(step.image) : undefined,
+      url: step.url ? absoluteUrl(step.url) : undefined,
+    })),
+  };
+}
+
 export type JsonLdSchema =
   | ReturnType<typeof buildWebSiteSchema>
   | ReturnType<typeof buildOrganizationSchema>
@@ -289,6 +326,7 @@ export type JsonLdSchema =
   | ReturnType<typeof buildBreadcrumbSchema>
   | ReturnType<typeof buildArticleSchema>
   | ReturnType<typeof buildFaqSchema>
+  | ReturnType<typeof buildHowToSchema>
   | ReturnType<typeof buildProductSchema>
   | ReturnType<typeof buildReviewSchema>
   | ReturnType<typeof buildItemListSchema>;
