@@ -385,6 +385,31 @@
 | 35 | 待写：误触发与运行实例浪费 | ⬜ 未使用 |
 | 36, 38 | 待写：自动化巡检的误判与反噬 | ⬜ 未使用 |
 | 37 | 待写：被催促后的行动核查 | ⬜ 未使用 |
+| 39 | 待写：平台速率限制与核心 Agent 冗余 | ⬜ 未使用 |
+| 40 | 待写：PR 链接校验与完工确认 | ⬜ 未使用 |
+
+### gemini 1号（COO / DevOps）
+
+#### 坑 40：将「创建 PR 的入口 URL」误报为「已提交的 PR」
+- **Issue**：PET-114
+- **现象**：gemini 1号 在评论中报告 "PR：https://github.com/yangliang2/peterclaw_website/pull/new/agent/gemini-1/1e418610"，并将 issue 状态改为 `in_review`。但该 URL 是 GitHub 创建 PR 的页面链接（`/pull/new/...`），并非实际存在的 PR。claude 2号 在 PR 巡检中发现并指出此问题（2026-05-25 15:35 UTC）。
+- **根因**：Agent 混淆了 `/pull/new/分支名`（创建页面）和 `/pull/数字`（实际 PR），将"可以创建 PR"误认为"已创建 PR"。
+- **后果**：任务看似已完成并进入 in_review，实际上没有 PR 可供 review 和合并，阻塞验收流程。
+- **修正**：gemini 1号 重新提交真正的 PR #132。
+- **教训**：**提交 PR 后必须确认 URL 格式为 `/pull/数字`，`/pull/new/...` 不代表 PR 已存在。**
+
+---
+
+### 跨 agent 失误
+
+#### 坑 39：核心 Agent 连环触发平台速率限制，团队核心角色集体失联
+- **Issue**：PET-30、PET-401
+- **Agent**：claude 2号、codex 2
+- **现象**：用户指出 11 个 in_review issue 未处理（PET-30，2026-05-25 15:53 UTC），claude 2号 被指派处理时于 15:55 触发平台 "You've hit your limit"；用户转而指派 codex 2，codex 2 于 15:56 也触发 "You've hit your usage limit"。团队 leader 和 QA 核心角色在数分钟内先后失联。
+- **根因**：Agent 无平台用量监控和预警机制，在高压工作下连续触发多个 issue 后耗尽配额；无自动降级或交接方案。
+- **后果**：11 个 in_review PR 无人处理，issue 积压；用户需手动逐个 @mention 备用 agent（Kimi 1号）接管；PET-401 Backlog 扫描中断悬空（in_progress 状态）；团队核心协调能力完全丧失。
+- **修正**：用户手动 @mention Kimi 1号 接管 PET-30 和 PET-401。
+- **教训**：**核心 agent 必须监控自身平台用量并提前交接；团队需要 agent 冗余和降级方案，不能假设 leader 永远可用。**
 
 ---
 
@@ -398,4 +423,6 @@
 *更新说明：新增 Kimi 1号 / cursor 1号 / 跨 agent 失误（坑 32~35）—— 需求编号识别错误、shell 特殊字符截断评论、重复实现产生冗余 PR、状态报告误触发浪费实例*
 *更新日期：2026-05-25*
 *更新说明：新增 claude 2号 / 跨 agent 失误（坑 36~38）—— PR巡检误报无PR导致重复PR、Agent被误催后未核查创建重复PR、Brainstorming未检查in-progress任务创建重复backlog*
+*更新日期：2026-05-25*
+*更新说明：新增 跨 agent 失误 / gemini 1号（坑 39~40）—— 核心 Agent 连环触发平台速率限制导致集体失联、Agent 误将创建 PR 页面 URL 当作已提交 PR*
 
