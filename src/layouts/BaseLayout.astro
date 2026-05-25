@@ -86,8 +86,9 @@ const pageDescription = description ?? copy.tagline;
     <BaseAnalytics />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">{copy.skipToContent}</a>
     <Navbar locale={locale} />
-    <main>
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <Footer locale={locale} />

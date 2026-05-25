@@ -58,7 +58,7 @@ const itemListSchema = {
   <section class="projects-section" aria-labelledby="projects-heading">
     <div class="section-header">
       <h2 id="projects-heading">{copy.pageTitle}</h2>
-      <div class="filters" aria-label={copy.filtersLabel}>
+      <div class="filters" role="group" aria-label={copy.filtersLabel}>
         <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">{copy.all}</button>
         {projectTags.map((tag) => <button class="filter" type="button" data-filter={tag} aria-pressed="false">{tag}</button>)}
       </div>

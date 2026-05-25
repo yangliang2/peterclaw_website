@@ -23,6 +23,7 @@
   --color-primary: #2563eb;
   --color-secondary: #7c3aed;
   --color-accent: #059669;
+  --color-action: #2563eb;
 
   /* Gradients */
   --gradient-ai: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #c026d3 100%);
@@ -143,6 +144,29 @@ a {
 
 a:hover {
   color: var(--color-secondary);
+}
+
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--space-md);
+  left: var(--space-md);
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-action);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(calc(-100% - 2rem));
+}
+
+.skip-link:focus-visible {
+  color: #fff;
+  transform: translateY(0);
 }
 
 p {
