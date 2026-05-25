@@ -1,7 +1,11 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { nowCopy } from '@/config/now';
+import { getRecentCommits, githubProfile } from '@/lib/github';
+import { getNowToolStack } from '@/lib/now-dynamic';
 import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+
+export const prerender = false;
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -15,9 +19,28 @@ if (!isLocale(lang)) {
 const copy = nowCopy[lang];
 const prefix = `/${lang}`;
 
+const [{ commits, fromCache }, toolStack] = await Promise.all([
+  getRecentCommits(),
+  Promise.resolve(getNowToolStack(lang)),
+]);
+
 const updatedAt = new Date().toLocaleDateString(
   lang === 'zh' ? 'zh-CN' : 'en-US',
   { year: 'numeric', month: 'long', day: 'numeric' }
+);
+
+function formatCommitDate(iso: string) {
+  return new Date(iso).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, s-maxage=900, stale-while-revalidate=3600'
 );
 ---
 
@@ -35,6 +58,68 @@ const updatedAt = new Date().toLocaleDateString(
       <span class="updated-label">{copy.updatedLabel}</span>
       <time datetime={new Date().toISOString()}>{updatedAt}</time>
     </p>
+  </section>
+
+  <section class="now-section now-dynamic" aria-labelledby="now-github-heading">
+    <div class="dynamic-header">
+      <div>
+        <h2 id="now-github-heading">{copy.dynamic.githubHeading}</h2>
+        <p class="dynamic-lede">
+          {copy.dynamic.githubLede}
+          {fromCache && <span class="cached-note">{copy.dynamic.cachedNote}</span>}
+        </p>
+      </div>
+      <a
+        class="dynamic-link"
+        href={githubProfile.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {copy.dynamic.githubProfile} &rarr;
+      </a>
+    </div>
+    <ol class="commit-list">
+      {
+        commits.map((commit) => (
+          <li>
+            <a class="commit-card glass-card" href={commit.html_url} target="_blank" rel="noopener noreferrer">
+              <div class="commit-meta">
+                <span class="commit-repo">{commit.repo}</span>
+                <code class="commit-sha">{commit.sha}</code>
+                <time datetime={commit.committed_at}>{formatCommitDate(commit.committed_at)}</time>
+              </div>
+              <p class="commit-message">{commit.message}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="now-section now-dynamic" aria-labelledby="now-toolkit-heading">
+    <div class="dynamic-header">
+      <div>
+        <h2 id="now-toolkit-heading">{copy.dynamic.toolkitHeading}</h2>
+        <p class="dynamic-lede">{copy.dynamic.toolkitLede}</p>
+      </div>
+      <a class="dynamic-link" href={`${prefix}/tools/`}>
+        {copy.dynamic.toolkitLink} &rarr;
+      </a>
+    </div>
+    <div class="tool-stack-grid">
+      {
+        toolStack.map((tool) => (
+          <article class="tool-stack-card glass-card">
+            <h3>
+              <a href={tool.url} target="_blank" rel="noopener noreferrer">
+                {tool.name}
+              </a>
+            </h3>
+            <p>{tool.description}</p>
+          </article>
+        ))
+      }
+    </div>
   </section>
 
   {
@@ -113,13 +198,142 @@ const updatedAt = new Date().toLocaleDateString(
     border-bottom: 1px solid var(--color-line);
   }
 
+  .now-dynamic h2 {
+    margin-bottom: var(--space-sm);
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .dynamic-header {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .dynamic-lede {
+    margin: 0;
+    max-width: 42rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .cached-note {
+    color: var(--color-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .dynamic-link {
+    align-self: end;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-primary);
+  }
+
+  .commit-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .commit-card {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .commit-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .commit-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .commit-repo {
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+
+  .commit-sha {
+    padding: 0.1rem 0.35rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 0.78rem;
+  }
+
+  .commit-message {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+
+  .tool-stack-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .tool-stack-card {
+    padding: var(--space-md);
+    display: grid;
+    gap: var(--space-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tool-stack-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .tool-stack-card h3 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .tool-stack-card h3 a {
+    color: inherit;
+  }
+
+  .tool-stack-card h3 a:hover {
+    color: var(--color-primary);
+  }
+
+  .tool-stack-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
   .now-grid {
     display: grid;
     gap: var(--space-md);
   }
 
   @media (min-width: 640px) {
+    .dynamic-header {
+      align-items: end;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
     .now-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tool-stack-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
@@ -127,6 +341,10 @@ const updatedAt = new Date().toLocaleDateString(
   @media (min-width: 960px) {
     .now-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .tool-stack-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 
