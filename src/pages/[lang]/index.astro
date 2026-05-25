@@ -24,6 +24,19 @@ const [blog, knowledge] = await Promise.all([
 const latest = [...blog, ...knowledge]
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
   .slice(0, 6);
+
+const heroCopy = {
+  zh: {
+    eyebrow: 'AI 原生协作实验',
+    explore: '阅读最新内容',
+    about: '认识团队'
+  },
+  en: {
+    eyebrow: 'AI-NATIVE COLLABORATION',
+    explore: 'Explore latest',
+    about: 'Meet the team'
+  }
+}[lang];
 ---
 
 <BaseLayout
@@ -31,13 +44,21 @@ const latest = [...blog, ...knowledge]
   canonicalPath={`/${lang}/`}
   structuredData={[buildWebSiteSchema(lang, copy.tagline), buildOrganizationSchema(), buildPersonSchema()]}
 >
-  <section class="hero">
-    <h1>{copy.siteTitle}</h1>
-    <p class="lede">{copy.tagline}</p>
+  <section class="hero home-hero">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="home-hero-content">
+      <p class="hero-eyebrow">{heroCopy.eyebrow}</p>
+      <h1 class="hero-title gradient-text">{copy.siteTitle}</h1>
+      <p class="lede hero-lede">{copy.tagline}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#latest">{heroCopy.explore}</a>
+        <a class="btn btn-secondary" href={`/${lang}/about/`}>{heroCopy.about}</a>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <h2>{copy.latest}</h2>
+  <section class="latest-section" id="latest">
+    <h2 class="section-title">{copy.latest}</h2>
     <div class="content-list">
       {
         latest.map((entry) => (
@@ -55,3 +76,157 @@ const latest = [...blog, ...knowledge]
 
   <EmailSignup locale={lang} />
 </BaseLayout>
+
+<style>
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: clamp(29rem, 61vh, 35rem);
+    display: flex;
+    align-items: center;
+    margin-bottom: clamp(3rem, 8vw, 5rem);
+    padding: clamp(4.5rem, 10vw, 7rem) clamp(1.25rem, 6vw, 4rem);
+    border: var(--border-glass);
+    border-radius: clamp(var(--radius-lg), 3vw, 1.75rem);
+    background:
+      radial-gradient(circle at 16% 18%, var(--color-primary-soft-bg), transparent 42%),
+      var(--gradient-glass);
+  }
+
+  .home-hero::after {
+    position: absolute;
+    z-index: -1;
+    right: clamp(-8rem, -10vw, -3rem);
+    bottom: clamp(-9rem, -13vw, -4rem);
+    width: clamp(17rem, 44vw, 29rem);
+    aspect-ratio: 1;
+    content: '';
+    border-radius: 999px;
+    background: var(--gradient-ai);
+    filter: blur(58px);
+    opacity: 0.18;
+  }
+
+  .hero-grid {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--color-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+    background-size: 3.25rem 3.25rem;
+    mask-image: radial-gradient(ellipse 64% 74% at 75% 54%, black, transparent);
+    opacity: 0.55;
+  }
+
+  .home-hero-content {
+    max-width: 46rem;
+  }
+
+  .hero-eyebrow {
+    margin: 0 0 1.25rem;
+    color: var(--color-secondary);
+    font: 700 0.78rem/1.4 var(--font-mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    margin-bottom: clamp(1.25rem, 4vw, 1.75rem);
+    font-size: clamp(3.1rem, 10vw, 6.25rem);
+    line-height: 0.96;
+    letter-spacing: -0.065em;
+  }
+
+  .hero-lede {
+    max-width: 36rem;
+    margin-bottom: clamp(2rem, 5vw, 2.75rem);
+    font-size: clamp(1.08rem, 2.3vw, 1.35rem);
+    line-height: 1.72;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .hero-actions .btn {
+    min-width: 9.25rem;
+    padding: 0.85rem 1.5rem;
+  }
+
+  .latest-section {
+    scroll-margin-top: 6rem;
+  }
+
+  .section-title {
+    margin-bottom: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.65rem, 4vw, 2.1rem);
+    letter-spacing: -0.04em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-eyebrow,
+    .hero-title,
+    .hero-lede,
+    .hero-actions {
+      animation: hero-rise 620ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    }
+
+    .hero-title {
+      animation-delay: 80ms;
+    }
+
+    .hero-lede {
+      animation-delay: 170ms;
+    }
+
+    .hero-actions {
+      animation-delay: 260ms;
+    }
+
+    .home-hero::after {
+      animation: hero-glow 8s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-glow {
+    to {
+      transform: translate(-1.4rem, -1rem) scale(1.08);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .home-hero {
+      min-height: 27rem;
+      padding: 3.25rem 1.25rem 3.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 18vw, 3.5rem);
+      letter-spacing: -0.055em;
+    }
+
+    .hero-lede {
+      line-height: 1.65;
+    }
+
+    .hero-actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>
