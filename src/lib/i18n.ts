@@ -87,7 +87,23 @@ export const ui = {
     newsletterSubmitting: '提交中…',
     newsletterSuccess: '订阅成功！请查收确认邮件。',
     newsletterErrorInvalid: '请输入有效的邮箱地址。',
-    newsletterErrorGeneric: '订阅失败，请稍后再试。'
+    newsletterErrorGeneric: '订阅失败，请稍后再试。',
+    feedbackTitle: '告诉我们你的想法',
+    feedbackDescription: '发现问题，或希望接下来看到什么内容？你的反馈会直接帮助这个站点迭代。',
+    feedbackPrompt: '反馈这篇文章',
+    feedbackTypeLabel: '反馈类型',
+    feedbackTypeSuggestion: '内容建议',
+    feedbackTypeBug: 'Bug 反馈',
+    feedbackTypeOther: '其他',
+    feedbackEmailLabel: '邮箱（选填）',
+    feedbackEmailPlaceholder: '如需回复，请留下邮箱',
+    feedbackMessageLabel: '反馈内容',
+    feedbackMessagePlaceholder: '请描述你的建议、遇到的问题，或想阅读的主题…',
+    feedbackSubmit: '发送反馈',
+    feedbackSubmitting: '发送中…',
+    feedbackSuccess: '感谢你的反馈！我们已收到。',
+    feedbackErrorInvalid: '请先选择类型并填写反馈内容。',
+    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -112,6 +128,22 @@ export const ui = {
     newsletterSubmitting: 'Submitting…',
     newsletterSuccess: 'You are subscribed! Check your inbox to confirm.',
     newsletterErrorInvalid: 'Please enter a valid email address.',
-    newsletterErrorGeneric: 'Subscription failed. Please try again later.'
+    newsletterErrorGeneric: 'Subscription failed. Please try again later.',
+    feedbackTitle: 'Share your feedback',
+    feedbackDescription: 'Found a problem or have an idea for what to publish next? Your input helps improve this site.',
+    feedbackPrompt: 'Give feedback on this post',
+    feedbackTypeLabel: 'Feedback type',
+    feedbackTypeSuggestion: 'Content suggestion',
+    feedbackTypeBug: 'Bug report',
+    feedbackTypeOther: 'Other',
+    feedbackEmailLabel: 'Email (optional)',
+    feedbackEmailPlaceholder: 'Leave an email if you would like a reply',
+    feedbackMessageLabel: 'Your feedback',
+    feedbackMessagePlaceholder: 'Describe your idea, the issue you found, or a topic you would like to read…',
+    feedbackSubmit: 'Send feedback',
+    feedbackSubmitting: 'Sending…',
+    feedbackSuccess: 'Thanks for your feedback! We received it.',
+    feedbackErrorInvalid: 'Select a type and enter your feedback first.',
+    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.'
   }
 } satisfies Record<Locale, Record<string, string>>;

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ReaderFeedback from '@/components/ReaderFeedback.astro';
 import { aboutCopy } from '@/config/about';
 import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
 import { buildPersonSchema } from '@/utils/seo';
@@ -58,6 +59,8 @@ const prefix = `/${lang}`;
       {copy.diaryCta}
     </a>
   </section>
+
+  <ReaderFeedback locale={lang} source={`${prefix}/about/`} />
 </BaseLayout>
 
 <style>

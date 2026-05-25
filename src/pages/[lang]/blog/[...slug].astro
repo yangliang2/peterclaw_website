@@ -4,6 +4,7 @@ import Giscus from '@/components/Giscus.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import EmailSignup from '@/components/EmailSignup.astro';
+import ReaderFeedback from '@/components/ReaderFeedback.astro';
 import {
   buildContentAlternateLocales,
   collectionPath,
@@ -73,6 +74,7 @@ const ogImage = post.data.ogImage;
     <Content />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
+  <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
   <Giscus locale={lang} />
 </BaseLayout>

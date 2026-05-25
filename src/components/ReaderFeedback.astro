@@ -1,0 +1,239 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  compact?: boolean;
+  source: string;
+}
+
+const { locale, compact = false, source } = Astro.props;
+const copy = ui[locale];
+const Container = compact ? 'details' : 'section';
+---
+
+<Container
+  class:list={['reader-feedback', 'glass-card', { 'reader-feedback-compact': compact }]}
+  aria-labelledby={!compact ? 'reader-feedback-title' : undefined}
+>
+  {compact && <summary>{copy.feedbackPrompt}</summary>}
+  <div class="reader-feedback-body">
+    <h2 id={!compact ? 'reader-feedback-title' : undefined}>{copy.feedbackTitle}</h2>
+    <p>{copy.feedbackDescription}</p>
+    <form class="reader-feedback-form" data-feedback-form novalidate>
+      <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="source" value={source} />
+      <fieldset class="reader-feedback-fieldset">
+        <legend>{copy.feedbackTypeLabel}</legend>
+        <div class="reader-feedback-types">
+          <label><input type="radio" name="type" value="content_suggestion" required /> {copy.feedbackTypeSuggestion}</label>
+          <label><input type="radio" name="type" value="bug_report" /> {copy.feedbackTypeBug}</label>
+          <label><input type="radio" name="type" value="other" /> {copy.feedbackTypeOther}</label>
+        </div>
+      </fieldset>
+      <label class="reader-feedback-field">
+        <span>{copy.feedbackEmailLabel}</span>
+        <input name="email" type="email" autocomplete="email" placeholder={copy.feedbackEmailPlaceholder} />
+      </label>
+      <label class="reader-feedback-field">
+        <span>{copy.feedbackMessageLabel}</span>
+        <textarea name="message" required rows="5" placeholder={copy.feedbackMessagePlaceholder}></textarea>
+      </label>
+      <label class="reader-feedback-honeypot" aria-hidden="true">
+        Do not fill this out
+        <input name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+      </label>
+      <button class="btn btn-primary" type="submit">{copy.feedbackSubmit}</button>
+    </form>
+    <p class="reader-feedback-status" data-feedback-status role="status" aria-live="polite" hidden></p>
+  </div>
+</Container>
+
+<script is:inline define:vars={{ messages: {
+  submitting: copy.feedbackSubmitting,
+  success: copy.feedbackSuccess,
+  invalid: copy.feedbackErrorInvalid,
+  generic: copy.feedbackErrorGeneric,
+  defaultLabel: copy.feedbackSubmit,
+} }}>
+  document.querySelectorAll('[data-feedback-form]').forEach((element) => {
+    if (!(element instanceof HTMLFormElement) || element.dataset.ready === 'true') {
+      return;
+    }
+
+    element.dataset.ready = 'true';
+    const form = element;
+    const status = form.parentElement?.querySelector('[data-feedback-status]');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    if (!(status instanceof HTMLParagraphElement) || !(submitButton instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.hidden = true;
+      status.className = 'reader-feedback-status';
+
+      if (!form.checkValidity()) {
+        status.textContent = messages.invalid;
+        status.classList.add('is-error');
+        status.hidden = false;
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = messages.submitting;
+
+      try {
+        const response = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (response.ok && payload.ok) {
+          status.textContent = messages.success;
+          status.classList.add('is-success');
+          form.reset();
+        } else if (response.status === 400) {
+          status.textContent = messages.invalid;
+          status.classList.add('is-error');
+        } else {
+          status.textContent = messages.generic;
+          status.classList.add('is-error');
+        }
+      } catch {
+        status.textContent = messages.generic;
+        status.classList.add('is-error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = messages.defaultLabel;
+        status.hidden = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .reader-feedback {
+    max-width: 720px;
+    margin: var(--space-xl) auto 0;
+    padding: var(--space-lg);
+  }
+
+  .reader-feedback-compact {
+    padding: 0;
+  }
+
+  .reader-feedback-compact summary {
+    cursor: pointer;
+    padding: var(--space-lg);
+    color: var(--color-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    list-style-position: inside;
+  }
+
+  .reader-feedback-compact[open] summary {
+    border-bottom: var(--border-glass);
+  }
+
+  .reader-feedback-compact .reader-feedback-body {
+    padding: var(--space-lg);
+  }
+
+  .reader-feedback-body h2 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1.5rem;
+  }
+
+  .reader-feedback-body > p {
+    margin: 0 0 var(--space-lg);
+    color: var(--color-text-muted);
+  }
+
+  .reader-feedback-form {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .reader-feedback-fieldset {
+    display: grid;
+    gap: var(--space-sm);
+    border: 0;
+  }
+
+  .reader-feedback-fieldset legend,
+  .reader-feedback-field span {
+    color: var(--color-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .reader-feedback-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    color: var(--color-text-muted);
+  }
+
+  .reader-feedback-types label {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .reader-feedback-field {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .reader-feedback-field input,
+  .reader-feedback-field textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    resize: vertical;
+  }
+
+  .reader-feedback-types input:focus-visible,
+  .reader-feedback-field input:focus,
+  .reader-feedback-field textarea:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .reader-feedback-form .btn {
+    justify-self: start;
+  }
+
+  .reader-feedback-form .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .reader-feedback-honeypot {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .reader-feedback-status {
+    margin: var(--space-md) 0 0;
+    font-size: 0.95rem;
+  }
+
+  .reader-feedback-status.is-success {
+    color: var(--color-accent);
+  }
+
+  .reader-feedback-status.is-error {
+    color: #f87171;
+  }
+</style>
