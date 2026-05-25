@@ -16,7 +16,13 @@ import {
   stripLocaleFromId,
   ui,
 } from '@/lib/i18n';
-import { buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema } from '@/utils/seo';
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+  buildReviewSchema,
+  type JsonLdSchema,
+} from '@/utils/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -66,7 +72,7 @@ const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString(
 const ogImage = post.data.ogImage;
 const faq = post.data.faq ?? [];
 const copy = ui[lang];
-const structuredData = [
+const structuredData: JsonLdSchema[] = [
   buildArticleSchema({
     title: post.data.title,
     description: post.data.description,
@@ -83,6 +89,23 @@ const structuredData = [
   ]),
   ...(faq.length > 0 ? [buildFaqSchema(faq)] : []),
 ];
+
+if (
+  post.data.contentType === 'review' &&
+  post.data.recommendation &&
+  post.data.reviewedProduct
+) {
+  structuredData.push(
+    buildReviewSchema({
+      title: post.data.title,
+      description: post.data.description,
+      path: canonicalPath,
+      publishedTime: post.data.publishedAt,
+      rating: post.data.recommendation,
+      itemReviewed: post.data.reviewedProduct,
+    })
+  );
+}
 ---
 
 <BaseLayout

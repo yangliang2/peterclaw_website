@@ -14,6 +14,9 @@ series: "AI 工具评测专栏"
 # seriesNumber should match the public review sequence.
 seriesNumber: 1
 recommendation: 4
+reviewedProduct:
+  name: "工具名称"
+  url: https://example.com
 draft: true
 ---
 

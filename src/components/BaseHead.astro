@@ -1,6 +1,6 @@
 ---
 import { siteConfig } from '@/config/site';
-import { absoluteUrl } from '@/utils/seo';
+import { absoluteUrl, type JsonLdSchema } from '@/utils/seo';
 import { buildHreflangAlternates, defaultLocale, localePath, type Locale } from '@/lib/i18n';
 import SpeedInsights from '@vercel/speed-insights/astro';
 
@@ -13,7 +13,7 @@ interface Props {
   ogImage?: string;
   publishedTime?: string;
   modifiedTime?: string;
-  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  structuredData?: JsonLdSchema | JsonLdSchema[];
   alternateLocales?: { locale: Locale; path: string }[];
   noindex?: boolean;
 }

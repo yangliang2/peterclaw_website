@@ -31,6 +31,31 @@ export type FaqItem = {
   answer: string;
 };
 
+export type ReviewedProduct = {
+  name: string;
+  url: string;
+};
+
+export type ReviewSchemaInput = {
+  title: string;
+  description: string;
+  path: string;
+  publishedTime: Date;
+  rating: number;
+  itemReviewed: ReviewedProduct;
+};
+
+export type ItemListSchemaInput = {
+  name: string;
+  description: string;
+  path: string;
+  items: Array<{
+    name: string;
+    description: string;
+    url: string;
+  }>;
+};
+
 export function absoluteUrl(path = '/'): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return new URL(normalized, getSiteUrl()).href;
@@ -179,3 +204,65 @@ export function buildProductSchema(input: ProductSchemaInput) {
       : {}),
   };
 }
+
+export function buildReviewSchema(input: ReviewSchemaInput) {
+  const url = absoluteUrl(input.path);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    name: input.title,
+    reviewBody: input.description,
+    url,
+    datePublished: input.publishedTime.toISOString(),
+    author: {
+      '@type': 'Person',
+      name: siteConfig.author.name,
+      url: siteConfig.author.url,
+      sameAs: Object.values(siteConfig.author.social),
+    },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: input.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    itemReviewed: {
+      '@type': 'SoftwareApplication',
+      name: input.itemReviewed.name,
+      url: input.itemReviewed.url,
+    },
+  };
+}
+
+export function buildItemListSchema(input: ItemListSchemaInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: input.name,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    itemListElement: input.items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'SoftwareApplication',
+        name: item.name,
+        description: item.description,
+        url: item.url,
+        applicationCategory: 'DeveloperApplication',
+      },
+    })),
+  };
+}
+
+export type JsonLdSchema =
+  | ReturnType<typeof buildWebSiteSchema>
+  | ReturnType<typeof buildOrganizationSchema>
+  | ReturnType<typeof buildPersonSchema>
+  | ReturnType<typeof buildBreadcrumbSchema>
+  | ReturnType<typeof buildArticleSchema>
+  | ReturnType<typeof buildFaqSchema>
+  | ReturnType<typeof buildProductSchema>
+  | ReturnType<typeof buildReviewSchema>
+  | ReturnType<typeof buildItemListSchema>;
