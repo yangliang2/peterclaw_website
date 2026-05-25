@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import ArticleChat from '@/components/ArticleChat.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
@@ -71,4 +72,5 @@ const ogImage = article.data.ogImage;
     <Content />
     <SocialShare title={article.data.title} url={Astro.url.href} />
   </article>
+  <ArticleChat locale={lang} articleContent={article.body ?? ''} />
 </BaseLayout>

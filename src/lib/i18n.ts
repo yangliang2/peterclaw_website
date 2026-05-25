@@ -106,7 +106,17 @@ export const ui = {
     feedbackSubmitting: '发送中…',
     feedbackSuccess: '感谢你的反馈！我们已收到。',
     feedbackErrorInvalid: '请先选择类型并填写反馈内容。',
-    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。'
+    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。',
+    chatTitle: '问问 AI',
+    chatDescription: '基于本文内容的 AI 问答，有任何疑问随时提问。',
+    chatPrompt: '问问 AI 关于本文的问题',
+    chatPlaceholder: '输入你的问题…',
+    chatSubmit: '提问',
+    chatSubmitting: '思考中…',
+    chatReset: '清除',
+    chatErrorInvalid: '请输入你的问题。',
+    chatErrorRateLimit: '提问太频繁，请稍后再试。',
+    chatErrorGeneric: '出了点问题，请稍后再试。'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -150,6 +160,16 @@ export const ui = {
     feedbackSubmitting: 'Sending…',
     feedbackSuccess: 'Thanks for your feedback! We received it.',
     feedbackErrorInvalid: 'Select a type and enter your feedback first.',
-    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.'
+    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.',
+    chatTitle: 'Ask AI',
+    chatDescription: 'AI-powered Q&A based on this article. Ask anything about the content.',
+    chatPrompt: 'Ask AI about this article',
+    chatPlaceholder: 'Type your question…',
+    chatSubmit: 'Ask',
+    chatSubmitting: 'Thinking…',
+    chatReset: 'Clear',
+    chatErrorInvalid: 'Please enter your question.',
+    chatErrorRateLimit: 'Too many requests. Please wait a moment.',
+    chatErrorGeneric: 'Something went wrong. Please try again.'
   }
 } satisfies Record<Locale, Record<string, string>>;
