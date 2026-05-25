@@ -1,0 +1,47 @@
+name: Content Health
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "15 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  content-health:
+    name: Link and Content Health
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Markdown links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --root-dir .
+            --no-progress
+            './**/*.md'
+            './**/*.mdx'
+          fail: true
+          failIfEmpty: false
+          format: markdown
+          jobSummary: true
+          output: lychee-report.md
+
+      - name: Scan content publishing state
+        if: always()
+        run: node scripts/content-health-report.mjs >> "$GITHUB_STEP_SUMMARY"
