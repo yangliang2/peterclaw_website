@@ -9,6 +9,13 @@ tags:
   - reusable patterns
 area: operations
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
 > **Target audience**: Indie developers and solopreneurs who want to build their own AI agent teams.

@@ -9,6 +9,13 @@ tags:
   - 可复用模式
 area: operations
 draft: false
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-25"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-25"
 ---
 
 > **目标读者**：有兴趣构建自己 AI 小队的中文独立开发者。
