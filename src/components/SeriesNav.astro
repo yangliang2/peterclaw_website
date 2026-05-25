@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { getSeriesForPost, seriesArchivePath } from '@/config/series';
+import { collectionPath, type Locale } from '@/lib/i18n';
+import { findAdjacentInSeries, postsInSeries } from '@/lib/series';
+
+interface Props {
+  locale: Locale;
+  post: CollectionEntry<'blog'>;
+}
+
+const { locale, post } = Astro.props;
+const series = getSeriesForPost(post.data.series, locale);
+
+if (!series) {
+  return null;
+}
+
+const allPosts = await getCollection('blog');
+const ordered = postsInSeries(allPosts, series, locale);
+const { previous, next } = findAdjacentInSeries(ordered, post.id);
+const archiveHref = seriesArchivePath(locale, series.slug);
+const seriesTitle = series.title[locale];
+const vol = post.data.seriesNumber;
+const volLine =
+  locale === 'zh'
+    ? vol
+      ? `本篇为「${seriesTitle}」第 ${vol} 篇`
+      : `本篇属于「${seriesTitle}」系列`
+    : vol
+      ? `Part of ${seriesTitle} · Vol. ${vol}`
+      : `Part of ${seriesTitle}`;
+---
+
+<aside class="series-nav" aria-label={locale === 'zh' ? '系列导航' : 'Series navigation'}>
+  <p class="series-nav-label">
+    <a href={archiveHref}>{volLine}</a>
+  </p>
+  <nav class="series-nav-links">
+    {
+      previous ? (
+        <a class="series-nav-prev" href={collectionPath(locale, 'blog', previous.id)}>
+          {locale === 'zh' ? '← 上一篇' : '← Previous'}
+          <span class="series-nav-title">{previous.data.title}</span>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next ? (
+        <a class="series-nav-next" href={collectionPath(locale, 'blog', next.id)}>
+          {locale === 'zh' ? '下一篇 →' : 'Next →'}
+          <span class="series-nav-title">{next.data.title}</span>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+  </nav>
+</aside>
+
+<style>
+  .series-nav {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .series-nav-label {
+    margin: 0 0 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .series-nav-label a {
+    font-weight: 600;
+  }
+
+  .series-nav-links {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .series-nav-links {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .series-nav-prev,
+  .series-nav-next {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .series-nav-next {
+    text-align: right;
+  }
+
+  .series-nav-title {
+    color: var(--muted);
+    font-weight: 400;
+  }
+</style>

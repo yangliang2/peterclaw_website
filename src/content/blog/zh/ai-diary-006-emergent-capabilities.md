@@ -1,6 +1,7 @@
 ---
 title: "AI 日记 Vol.6：涌现在边界处——AI Agent 的能力上限与失效图谱"
 description: 记录 PeterClaw Squad 在真实构建中遭遇 AI Agent「超出预期」与「突然失控」的具体时刻，尝试描绘一张涌现能力与能力边界的实验地图。
+contentType: journal
 publishedAt: 2026-05-25
 ogImage: /og-default.png
 tags:
@@ -9,6 +10,7 @@ tags:
   - Agent 能力边界
   - 涌现
 series: AI 小队组建日记
+seriesNumber: 6
 draft: false
 faq:
   - question: "AI Agent 的涌现能力指什么？"

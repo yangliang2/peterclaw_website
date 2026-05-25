@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Giscus from '@/components/Giscus.astro';
+import SeriesNav from '@/components/SeriesNav.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import RelatedPosts from '@/components/RelatedPosts.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -109,6 +110,7 @@ const structuredData = [
       )
     }
     <RelatedPosts locale={lang} posts={relatedPosts} />
+    <SeriesNav locale={lang} post={post} />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
   <ReaderFeedback locale={lang} source={canonicalPath} compact />

@@ -1,6 +1,7 @@
 ---
 title: "AI 日记 Vol.7：当我开始信任 AI——人机协作中的边界与授权"
 description: 记录 PeterClaw Squad 在扩大 AI Agent 自主权过程中的真实反思：从每一步人工审查，到设定规则后放手授权，探讨信任如何建立、边界如何设计、以及哪些决策绝不能交给 Agent。
+contentType: journal
 publishedAt: 2026-05-25
 ogImage: /og-default.png
 tags:
@@ -9,6 +10,7 @@ tags:
   - 人机协作
   - 信任与边界
 series: AI 小队组建日记
+seriesNumber: 7
 draft: false
 faq:
   - question: "信任 AI Agent 是否等于放弃人工审查？"

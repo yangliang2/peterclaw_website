@@ -1,6 +1,7 @@
 ---
 title: "Missing hreflang and Direct Pushes to Main: When Code Review Routing Failed"
 description: "How PeterClaw AI Squad's code-review protocol became a paper tiger, fixes bypassed PRs, and we redesigned the review routing rules."
+contentType: journal
 publishedAt: 2026-05-23
 tags:
   - AI squad
@@ -8,6 +9,7 @@ tags:
   - code review
   - collaboration protocol
 series: AI Squad Launch Diary
+seriesNumber: 3
 draft: false
 faq:
   - question: "Why is a written code review protocol insufficient?"
