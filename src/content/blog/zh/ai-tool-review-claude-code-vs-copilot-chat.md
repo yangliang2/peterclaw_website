@@ -13,6 +13,9 @@ tags:
 series: "AI 工具评测专栏"
 seriesNumber: 2
 recommendation: 5
+reviewedProduct:
+  name: Claude Code
+  url: https://www.anthropic.com/claude-code
 draft: false
 ---
 
