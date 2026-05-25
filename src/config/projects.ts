@@ -7,7 +7,7 @@ import type { Locale } from '@/lib/i18n';
 import type { ImageMetadata } from 'astro';
 
 export type ProjectTag = 'AI' | 'Web' | 'Tool';
-export type ProjectStatus = 'shipped' | 'experiment';
+export type ProjectStatus = 'building' | 'shipped' | 'experiment';
 
 export interface Project {
   title: string;
@@ -38,6 +38,7 @@ export const projectsCopy = {
     github: 'GitHub',
     visit: '查看项目',
     status: {
+      building: '构建中',
       shipped: '已发布',
       experiment: '实验中',
     },
@@ -61,6 +62,7 @@ export const projectsCopy = {
     github: 'GitHub',
     visit: 'View project',
     status: {
+      building: 'Building',
       shipped: 'Shipped',
       experiment: 'Experiment',
     },
