@@ -11,7 +11,7 @@ tags:
   - 工作流自动化
 series: AI 小队组建日记
 seriesNumber: 5
-draft: false
+draft: true
 faq:
   - question: "多智能体团队相比单 Agent 的优势是什么？"
     answer: "不同角色可以并行承担开发、内容和评审工作，并通过共同协议让长期项目持续积累成果。"

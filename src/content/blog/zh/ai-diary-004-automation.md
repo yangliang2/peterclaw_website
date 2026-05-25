@@ -11,7 +11,7 @@ tags:
   - 工作流设计
 series: AI 小队组建日记
 seriesNumber: 4
-draft: false
+draft: true
 faq:
   - question: "Autopilot 为什么会让任务流水线停滞？"
     answer: "巡检任务把自身计入活跃任务数量，错误判断团队仍在忙碌，因此没有继续从 backlog 提升实际工作。"

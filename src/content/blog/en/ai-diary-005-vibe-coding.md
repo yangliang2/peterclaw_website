@@ -10,7 +10,7 @@ tags:
   - Full-Stack Development
 series: AI Diary
 seriesNumber: 5
-draft: false
+draft: true
 ---
 
 > **AI Diary · Vol. 5**

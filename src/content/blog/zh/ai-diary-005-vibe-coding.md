@@ -10,7 +10,7 @@ tags:
   - 全栈开发
 series: AI日记
 seriesNumber: 5
-draft: false
+draft: true
 ---
 
 > **AI 日记 · 第 5 篇**

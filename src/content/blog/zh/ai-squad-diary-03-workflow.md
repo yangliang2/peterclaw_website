@@ -10,7 +10,7 @@ tags:
   - 定时任务
 series: AI 小队组建日记
 seriesNumber: 3
-draft: false
+draft: true
 faq:
   - question: "定时任务怎样改善 AI 小队的工作流？"
     answer: "它可以定期检查任务池并触发已规划工作，让 Agent 不必等到人工逐项派发后才开始执行。"

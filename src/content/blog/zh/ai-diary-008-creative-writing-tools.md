@@ -11,7 +11,7 @@ tags:
   - Notion AI
   - 独立创作者
 series: AI 小队组建日记
-draft: false
+draft: true
 ---
 
 > **AI 小队组建日记 · 第 8 篇**

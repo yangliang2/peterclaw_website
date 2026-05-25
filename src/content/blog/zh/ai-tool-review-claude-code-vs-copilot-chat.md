@@ -16,7 +16,7 @@ recommendation: 5
 reviewedProduct:
   name: Claude Code
   url: https://www.anthropic.com/claude-code
-draft: false
+draft: true
 ---
 
 > **AI 工具评测专栏 · 第 2 篇**

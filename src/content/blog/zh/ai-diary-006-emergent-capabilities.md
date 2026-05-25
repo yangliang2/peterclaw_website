@@ -11,7 +11,7 @@ tags:
   - 涌现
 series: AI 小队组建日记
 seriesNumber: 6
-draft: false
+draft: true
 faq:
   - question: "AI Agent 的涌现能力指什么？"
     answer: "它指 Agent 在任务执行中表现出未被逐项指定的有用行为，例如主动发现依赖或改善组件一致性。"
