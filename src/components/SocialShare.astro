@@ -42,7 +42,7 @@ const platforms = [
           data-url={url}
           aria-label="Copy link to clipboard"
         >
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
             <path d={platform.icon} />
           </svg>
           <span class="copy-success-tip">Copied!</span>
@@ -56,7 +56,7 @@ const platforms = [
           data-platform={platform.name}
           aria-label={`Share on ${platform.name}`}
         >
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
             <path d={platform.icon} />
           </svg>
         </a>
