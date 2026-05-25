@@ -6,7 +6,25 @@ const contentRoot = path.join(repoRoot, 'src', 'content');
 const publicRoot = path.join(repoRoot, 'public');
 const collections = ['blog', 'knowledge'];
 const requiredFrontmatter = ['title', 'description', 'publishedAt', 'tags'];
-const staticRoutes = new Set(['/', '/zh', '/zh/', '/en', '/en/', '/zh/about', '/zh/about/', '/en/about', '/en/about/']);
+const staticRoutes = new Set([
+  '/',
+  '/zh', '/zh/',
+  '/en', '/en/',
+  '/zh/about', '/zh/about/',
+  '/en/about', '/en/about/',
+  '/zh/now', '/zh/now/',
+  '/en/now', '/en/now/',
+  '/zh/projects', '/zh/projects/',
+  '/en/projects', '/en/projects/',
+  '/zh/tools', '/zh/tools/',
+  '/en/tools', '/en/tools/',
+  '/zh/search', '/zh/search/',
+  '/en/search', '/en/search/',
+  '/zh/blog', '/zh/blog/',
+  '/en/blog', '/en/blog/',
+  '/zh/knowledge', '/zh/knowledge/',
+  '/en/knowledge', '/en/knowledge/',
+]);
 const errors = [];
 const warnings = [];
 const externalChecks = [];
