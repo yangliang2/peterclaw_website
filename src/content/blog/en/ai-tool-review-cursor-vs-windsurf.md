@@ -152,7 +152,7 @@ Cursor's team features (shared context, team knowledge base, centralized billing
 
 ## Further Reading
 
-- [AI Diary Vol.7: When I Started Trusting AI — Boundaries and Authorization in Human-AI Collaboration](/en/blog/ai-diary-007-boundaries-trust/) — How we allocate AI tool usage permissions in PeterClaw Squad
+- [AI Diary Vol.7: When I Started Trusting AI — Boundaries and Authorization in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — How we allocate AI tool usage permissions in PeterClaw Squad
 - [PeterClaw Toolbox](/en/tools/) — Our daily development tool inventory
 - [Cursor Official Docs](https://cursor.com/docs)
 - [Windsurf Official Docs](https://docs.windsurf.com/)
