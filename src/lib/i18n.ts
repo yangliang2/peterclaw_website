@@ -106,7 +106,16 @@ export const ui = {
     feedbackSubmitting: '发送中…',
     feedbackSuccess: '感谢你的反馈！我们已收到。',
     feedbackErrorInvalid: '请先选择类型并填写反馈内容。',
-    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。'
+    feedbackErrorGeneric: '暂时无法发送反馈，请稍后再试。',
+    aiChatPrompt: '向 AI 提问',
+    aiChatTitle: 'AI 问答',
+    aiChatDescription: '基于本文内容提问，获得 AI 即时解答。',
+    aiChatPlaceholder: '输入你的问题…',
+    aiChatSubmit: '提问',
+    aiChatSubmitting: '思考中…',
+    aiChatErrorGeneric: '请求失败，请稍后再试。',
+    aiChatErrorRateLimit: '提问太频繁，请稍等片刻再试。',
+    aiChatPoweredBy: '由 Claude AI 提供支持'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -150,6 +159,15 @@ export const ui = {
     feedbackSubmitting: 'Sending…',
     feedbackSuccess: 'Thanks for your feedback! We received it.',
     feedbackErrorInvalid: 'Select a type and enter your feedback first.',
-    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.'
+    feedbackErrorGeneric: 'Feedback could not be sent. Please try again later.',
+    aiChatPrompt: 'Ask AI about this article',
+    aiChatTitle: 'AI Q&A',
+    aiChatDescription: 'Ask a question about this article and get an instant AI answer.',
+    aiChatPlaceholder: 'Enter your question…',
+    aiChatSubmit: 'Ask',
+    aiChatSubmitting: 'Thinking…',
+    aiChatErrorGeneric: 'Request failed. Please try again later.',
+    aiChatErrorRateLimit: 'Too many requests. Please wait a moment.',
+    aiChatPoweredBy: 'Powered by Claude AI'
   }
 } satisfies Record<Locale, Record<string, string>>;

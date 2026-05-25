@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import SocialShare from '@/components/SocialShare.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import AiChat from '@/components/AiChat.astro';
 import {
   buildContentAlternateLocales,
   collectionPath,
@@ -71,4 +72,5 @@ const ogImage = article.data.ogImage;
     <Content />
     <SocialShare title={article.data.title} url={Astro.url.href} />
   </article>
+  <AiChat locale={lang} title={article.data.title} description={article.data.description} body={article.body} />
 </BaseLayout>

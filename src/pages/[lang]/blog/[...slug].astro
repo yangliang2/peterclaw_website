@@ -6,6 +6,7 @@ import RelatedPosts from '@/components/RelatedPosts.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import EmailSignup from '@/components/EmailSignup.astro';
 import ReaderFeedback from '@/components/ReaderFeedback.astro';
+import AiChat from '@/components/AiChat.astro';
 import {
   buildContentAlternateLocales,
   collectionPath,
@@ -111,6 +112,7 @@ const structuredData = [
     <RelatedPosts locale={lang} posts={relatedPosts} />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
+  <AiChat locale={lang} title={post.data.title} description={post.data.description} body={post.body} />
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
   <Giscus locale={lang} />

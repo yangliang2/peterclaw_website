@@ -1,0 +1,252 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  body?: string;
+}
+
+const { locale, title, description, body } = Astro.props;
+const copy = ui[locale];
+
+// Build article context for RAG, capped to avoid large payloads
+const articleContent = `# ${title}\n\n${description}\n\n${body ?? ''}`.slice(0, 10000);
+---
+
+<details class="ai-chat glass-card" aria-label={copy.aiChatTitle}>
+  <summary>{copy.aiChatPrompt}</summary>
+  <div class="ai-chat-body">
+    <p class="ai-chat-desc">{copy.aiChatDescription}</p>
+    <div class="ai-chat-messages" data-ai-messages role="log" aria-live="polite" aria-label={copy.aiChatTitle}></div>
+    <form class="ai-chat-form" data-ai-form novalidate>
+      <div class="ai-chat-input-row">
+        <input
+          class="ai-chat-input"
+          name="question"
+          type="text"
+          maxlength="500"
+          placeholder={copy.aiChatPlaceholder}
+          autocomplete="off"
+          required
+        />
+        <button class="btn btn-primary ai-chat-submit" type="submit">{copy.aiChatSubmit}</button>
+      </div>
+    </form>
+    <p class="ai-chat-powered">{copy.aiChatPoweredBy}</p>
+  </div>
+</details>
+
+<script is:inline define:vars={{ articleContent, locale, copy: {
+  submitting: copy.aiChatSubmitting,
+  errorGeneric: copy.aiChatErrorGeneric,
+  errorRateLimit: copy.aiChatErrorRateLimit,
+  submit: copy.aiChatSubmit,
+} }}>
+  document.querySelectorAll('[data-ai-form]').forEach((el) => {
+    if (!(el instanceof HTMLFormElement) || el.dataset.ready === 'true') return;
+    el.dataset.ready = 'true';
+
+    const form = el;
+    const messagesEl = form.closest('.ai-chat-body')?.querySelector('[data-ai-messages]');
+    const input = form.querySelector('input[name="question"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (!(messagesEl instanceof HTMLElement) || !(input instanceof HTMLInputElement) || !(submitBtn instanceof HTMLButtonElement)) return;
+
+    function appendMessage(role, text) {
+      const div = document.createElement('div');
+      div.className = 'ai-chat-message ai-chat-message-' + role;
+      div.textContent = text;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return div;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const question = input.value.trim();
+      if (!question) return;
+
+      input.value = '';
+      input.disabled = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = copy.submitting;
+
+      appendMessage('user', question);
+      const answerDiv = appendMessage('assistant', '');
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, articleContent, locale }),
+        });
+
+        if (response.status === 429) {
+          answerDiv.textContent = copy.errorRateLimit;
+          answerDiv.classList.add('is-error');
+          return;
+        }
+
+        if (!response.ok || !response.body) {
+          answerDiv.textContent = copy.errorGeneric;
+          answerDiv.classList.add('is-error');
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split('\n');
+          buf = lines.pop() ?? '';
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const data = line.slice(6).trim();
+            if (data === '[DONE]') break;
+            try {
+              const event = JSON.parse(data);
+              if (event.text) {
+                answerDiv.textContent += event.text;
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+              }
+            } catch {}
+          }
+        }
+
+        if (!answerDiv.textContent) {
+          answerDiv.textContent = copy.errorGeneric;
+          answerDiv.classList.add('is-error');
+        }
+      } catch {
+        answerDiv.textContent = copy.errorGeneric;
+        answerDiv.classList.add('is-error');
+      } finally {
+        input.disabled = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = copy.submit;
+        input.focus();
+      }
+    });
+  });
+</script>
+
+<style>
+  .ai-chat {
+    max-width: 720px;
+    margin: var(--space-xl) auto 0;
+    padding: 0;
+  }
+
+  .ai-chat summary {
+    cursor: pointer;
+    padding: var(--space-lg);
+    color: var(--color-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    list-style-position: inside;
+  }
+
+  .ai-chat[open] summary {
+    border-bottom: var(--border-glass);
+  }
+
+  .ai-chat-body {
+    padding: var(--space-lg);
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .ai-chat-desc {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .ai-chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-height: 360px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .ai-chat-messages:empty {
+    display: none;
+  }
+
+  .ai-chat-message {
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ai-chat-message-user {
+    background: var(--color-primary-soft-bg);
+    color: var(--color-heading);
+    align-self: flex-end;
+    max-width: 85%;
+  }
+
+  .ai-chat-message-assistant {
+    background: var(--color-soft-bg);
+    color: var(--color-text);
+    align-self: flex-start;
+    max-width: 95%;
+  }
+
+  .ai-chat-message-assistant.is-error {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.08);
+  }
+
+  .ai-chat-input-row {
+    display: flex;
+    gap: var(--space-sm);
+  }
+
+  .ai-chat-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    min-width: 0;
+  }
+
+  .ai-chat-input:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .ai-chat-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .ai-chat-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .ai-chat-powered {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: right;
+  }
+</style>
