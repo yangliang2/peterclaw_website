@@ -1,0 +1,211 @@
+---
+import { getFeaturedRepositories, githubProfile } from '@/lib/github';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const repositories = await getFeaturedRepositories();
+const copy = {
+  zh: {
+    eyebrow: 'GitHub 动态',
+    title: '持续构建中的公开项目',
+    description: '过去 52 周的贡献记录，以及按 star 和最近更新筛选的公开仓库。',
+    chartAlt: `${githubProfile.user} 过去 52 周的 GitHub 贡献热力图`,
+    chartCaption: '过去 52 周贡献记录',
+    projects: '热门公开项目',
+    profile: '查看 GitHub 主页',
+    stars: 'stars',
+    language: '其他',
+  },
+  en: {
+    eyebrow: 'GitHub Activity',
+    title: 'Open-source work in progress',
+    description: 'Contributions over the last 52 weeks and public repositories ranked by stars and recency.',
+    chartAlt: `${githubProfile.user}'s GitHub contribution graph for the last 52 weeks`,
+    chartCaption: 'Contributions in the last 52 weeks',
+    projects: 'Featured public repositories',
+    profile: 'View GitHub profile',
+    stars: 'stars',
+    language: 'Other',
+  },
+}[locale];
+---
+
+<section class="github-activity" aria-labelledby="github-heading">
+  <div class="activity-header">
+    <div>
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h2 id="github-heading">{copy.title}</h2>
+      <p class="description">{copy.description}</p>
+    </div>
+    <a class="profile-link" href={githubProfile.url} target="_blank" rel="noopener noreferrer">{copy.profile} &rarr;</a>
+  </div>
+
+  <figure class="chart-card glass-card">
+    <figcaption>{copy.chartCaption}</figcaption>
+    <div class="chart-scroll">
+      <img
+        src={githubProfile.contributionChartUrl}
+        width="663"
+        height="104"
+        loading="lazy"
+        decoding="async"
+        alt={copy.chartAlt}
+      />
+    </div>
+  </figure>
+
+  <h3 class="repositories-heading">{copy.projects}</h3>
+  <div class="repositories">
+    {
+      repositories.map((repository) => (
+        <a class="repository glass-card" href={repository.html_url} target="_blank" rel="noopener noreferrer">
+          <div class="repository-title">
+            <h4>{repository.name}</h4>
+            {repository.fork && <span class="fork">Fork</span>}
+          </div>
+          <p>{repository.description ?? repository.name}</p>
+          <div class="repository-meta">
+            <span>{repository.language ?? copy.language}</span>
+            <span aria-label={`${repository.stargazers_count} ${copy.stars}`}>&#9733; {repository.stargazers_count}</span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .github-activity {
+    margin: var(--space-xl) 0;
+  }
+
+  .activity-header {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .activity-header h2 {
+    margin-bottom: var(--space-sm);
+    font-size: clamp(1.75rem, 4vw, 2.45rem);
+  }
+
+  .description {
+    max-width: 42rem;
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .profile-link {
+    align-self: end;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .chart-card {
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .chart-card figcaption {
+    margin-bottom: var(--space-md);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .chart-scroll {
+    overflow-x: auto;
+    padding-bottom: 0.15rem;
+  }
+
+  .chart-scroll img {
+    display: block;
+    width: max(100%, 663px);
+    height: auto;
+    min-height: 104px;
+  }
+
+  .repositories-heading {
+    margin: 0 0 var(--space-md);
+    font-size: 1.2rem;
+  }
+
+  .repositories {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .repository {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    color: inherit;
+  }
+
+  .repository:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .repository-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .repository h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .fork {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.4rem;
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+  }
+
+  .repository p {
+    min-height: 3.1rem;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .repository-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  @media (min-width: 640px) {
+    .activity-header {
+      align-items: end;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .repositories {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
