@@ -118,7 +118,8 @@ export const ui = {
     chatErrorRateLimit: '提问太频繁，请稍后再试。',
     chatErrorGeneric: '出了点问题，请稍后再试。',
     tocTitle: '目录',
-    tocToggle: '展开文章目录'
+    tocToggle: '展开文章目录',
+    popular: '热门文章'
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -174,6 +175,7 @@ export const ui = {
     chatErrorRateLimit: 'Too many requests. Please wait a moment.',
     chatErrorGeneric: 'Something went wrong. Please try again.',
     tocTitle: 'On this page',
-    tocToggle: 'Show table of contents'
+    tocToggle: 'Show table of contents',
+    popular: 'Popular'
   }
 } satisfies Record<Locale, Record<string, string>>;
