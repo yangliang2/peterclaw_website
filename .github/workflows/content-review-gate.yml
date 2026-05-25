@@ -1,0 +1,61 @@
+name: Content Review Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/content/blog/**'
+      - 'src/content/reviews/**'
+      - 'src/content/**/*.md'
+      - 'src/content/**/*.mdx'
+
+jobs:
+  check-dual-approval:
+    name: Dual Review Gate (gemini 1号 + Kimi 1号)
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+
+    steps:
+      - name: Check for dual review approval labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pr_number = context.issue.number;
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: pr_number,
+            });
+
+            const labels = pr.labels.map(l => l.name);
+            const hasGeminiApproval = labels.includes('approved-by-gemini');
+            const hasKimiApproval = labels.includes('approved-by-kimi');
+
+            const statusLines = [
+              `## Content Review Gate`,
+              ``,
+              `| Reviewer | Status |`,
+              `|----------|--------|`,
+              `| gemini 1号 (事实初审) | ${hasGeminiApproval ? '✅ 通过' : '⏳ 待审核'} |`,
+              `| Kimi 1号 (终审)       | ${hasKimiApproval  ? '✅ 通过' : '⏳ 待审核'} |`,
+            ];
+
+            core.summary.addRaw(statusLines.join('\n'));
+            await core.summary.write();
+
+            if (!hasGeminiApproval || !hasKimiApproval) {
+              const missing = [];
+              if (!hasGeminiApproval) missing.push('`approved-by-gemini` (gemini 1号 事实初审)');
+              if (!hasKimiApproval)   missing.push('`approved-by-kimi` (Kimi 1号 终审)');
+              core.setFailed(
+                `内容 PR 尚未通过双重审核，缺少标签：${missing.join(' 和 ')}。\n` +
+                `审核流程：gemini 1号 完成事实初审后，由 Kimi 1号 完成终审，两者均批准后添加对应 label，本 check 方可通过。`
+              );
+            } else {
+              console.log('✅ 双重审核已完成，内容 PR 可以合并。');
+            }
