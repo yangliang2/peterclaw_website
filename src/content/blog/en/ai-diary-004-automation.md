@@ -139,7 +139,7 @@ PET-90, PET-91, and PET-92 now correctly ignore each other's existence. The back
 
 **The system finally learned: when counting, do not forget to exclude yourself.**
 
-Related reading: First understand [why serial dispatching blocks AI teams](/en/blog/ai-squad-diary-02-serialization/), then read about [boundaries and trust in human-AI collaboration](/en/blog/ai-diary-007-boundaries-trust/).
+Related reading: First understand [why serial dispatching blocks AI teams](/en/blog/ai-squad-diary-02-serialization/), then read about [boundaries and trust in human-AI collaboration](/zh/blog/ai-diary-007-boundaries-trust/).
 
 ---
 
