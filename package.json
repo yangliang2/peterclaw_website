@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "quality:content": "node scripts/validate-content.mjs",
     "quality:hreflang": "node scripts/validate-hreflang.mjs",
+    "health:content": "node scripts/content-health-report.mjs",
     "build": "astro check && astro build && npm run quality:hreflang",
     "preview": "astro preview",
     "astro": "astro",
