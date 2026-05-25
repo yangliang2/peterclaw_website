@@ -5,7 +5,7 @@ import { z } from 'astro/zod';
 const sharedContentSchema = z.object({
   title: z.string(),
   description: z.string(),
-  contentType: z.enum(['journal', 'tutorial', 'toolbox', 'case-study']).optional(),
+  contentType: z.enum(['journal', 'tutorial', 'toolbox', 'case-study', 'review']).optional(),
   publishedAt: z.date(),
   updatedAt: z.date().optional(),
   tags: z.array(z.string()).default([]),
