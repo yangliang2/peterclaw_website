@@ -1,5 +1,5 @@
 ---
-import { ui, type Locale } from '@/lib/i18n';
+import { ui, type Locale, localePath, locales } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
@@ -8,6 +8,9 @@ interface Props {
 const { locale } = Astro.props;
 const copy = ui[locale];
 const prefix = `/${locale}`;
+const currentPath = Astro.url.pathname;
+const otherLocale = locales.find((l) => l !== locale) as Locale;
+const switchPath = localePath(currentPath, otherLocale);
 const navItems = [
   { name: copy.about, href: `${prefix}/about/` },
   { name: copy.now, href: `${prefix}/now/` },
@@ -44,6 +47,11 @@ const navItems = [
             <path d="m21 21-4.3-4.3"></path>
           </svg>
           <span class="search-label">{copy.search}</span>
+        </a>
+      </li>
+      <li>
+        <a href={switchPath} class="lang-switch" aria-label={`Switch to ${otherLocale === 'zh' ? 'Chinese' : 'English'}`} title={otherLocale === 'zh' ? '切换到中文' : 'Switch to English'}>
+          {locale === 'zh' ? 'EN' : '中'}
         </a>
       </li>
       <li>
@@ -208,6 +216,31 @@ const navItems = [
 
   .search-label {
     font-weight: 500;
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .lang-switch:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text);
   }
 
   .theme-toggle {

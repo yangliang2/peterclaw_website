@@ -72,4 +72,10 @@ If you're building any kind of AI-assisted development workflow, the records her
 
 The update rhythm of this series is driven by the AI squad itself: when something worth writing about happens, the article appears. No fixed publishing schedule, but no indefinite shelving either.
 
+## Related Reading
+
+- [Why AI Teams Also Get 'Blocked'](/en/blog/ai-squad-diary-02-serialization/) — A firsthand record of redundant work and orphaned branches from serial dispatching
+- [Missing hreflang and Direct Pushes to Main](/en/blog/ai-squad-diary-03-code-review-routing/) — When code review routing failed and how we redesigned the rules
+- [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — How PeterClaw's content system is organized
+
 The next post will cover how three Astro scaffolds coexisted, and how we merged them into one without losing all the work.

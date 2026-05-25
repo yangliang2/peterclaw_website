@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { toolsCopy, toolsLastUpdated } from '@/config/tools';
-import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
-import { absoluteUrl } from '@/utils/seo';
+import { buildHreflangAlternates, isLocale, ui } from '@/lib/i18n';
+import { buildBreadcrumbSchema, buildItemListSchema, type JsonLdSchema } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -14,6 +14,7 @@ if (!isLocale(lang)) {
 }
 
 const copy = toolsCopy[lang];
+const siteCopy = ui[lang];
 const prefix = `/${lang}`;
 
 const updatedAt = new Date(toolsLastUpdated).toLocaleDateString(
@@ -21,36 +22,26 @@ const updatedAt = new Date(toolsLastUpdated).toLocaleDateString(
   { year: 'numeric', month: 'long', day: 'numeric' }
 );
 
-function buildItemListSchema() {
-  let position = 0;
-  const itemListElement = copy.categories.flatMap((category) =>
-    category.items.map((tool) => {
-      position += 1;
-      return {
-        '@type': 'ListItem',
-        position,
-        item: {
-          '@type': 'SoftwareApplication',
-          name: tool.name,
-          description: tool.description,
-          url: tool.url,
-          applicationCategory: 'DeveloperApplication',
-        },
-      };
-    })
-  );
+const toolsListSchema = buildItemListSchema({
+  name: copy.heroTitle,
+  description: copy.metaDescription,
+  path: `${prefix}/tools/`,
+  items: copy.categories.flatMap((category) =>
+    category.items.map((tool) => ({
+      name: tool.name,
+      description: tool.description,
+      url: tool.url,
+    }))
+  ),
+});
 
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: copy.heroTitle,
-    description: copy.metaDescription,
-    url: absoluteUrl(`${prefix}/tools/`),
-    itemListElement,
-  };
-}
-
-const itemListSchema = buildItemListSchema();
+const structuredData: JsonLdSchema[] = [
+  toolsListSchema,
+  buildBreadcrumbSchema([
+    { name: siteCopy.siteTitle, path: `${prefix}/` },
+    { name: siteCopy.tools, path: `${prefix}/tools/` },
+  ]),
+];
 ---
 
 <BaseLayout
@@ -59,7 +50,7 @@ const itemListSchema = buildItemListSchema();
   description={copy.metaDescription}
   canonicalPath={`${prefix}/tools/`}
   alternateLocales={buildHreflangAlternates('/tools/')}
-  structuredData={itemListSchema}
+  structuredData={structuredData}
 >
   <section class="hero">
     <h1>{copy.heroTitle}</h1>

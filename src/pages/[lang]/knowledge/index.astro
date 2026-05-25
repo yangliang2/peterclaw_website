@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { buildBreadcrumbSchema } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -16,9 +17,24 @@ const copy = ui[lang];
 const articles = (
   await getCollection('knowledge', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)
 ).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+const blogPosts = (
+  await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft)
+).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+const reviews = blogPosts.filter((post) => post.data.contentType === 'review');
+const diaries = blogPosts.filter((post) => post.data.series?.includes('AI') && post.data.contentType !== 'review');
 ---
 
-<BaseLayout locale={lang} title={copy.knowledge} canonicalPath={`/${lang}/knowledge/`}>
+<BaseLayout
+  locale={lang}
+  title={copy.knowledge}
+  canonicalPath={`/${lang}/knowledge/`}
+  structuredData={buildBreadcrumbSchema([
+    { name: copy.siteTitle, path: `/${lang}/` },
+    { name: copy.knowledge, path: `/${lang}/knowledge/` },
+  ])}
+>
   <h1>{copy.knowledge}</h1>
   <div class="content-list">
     {
@@ -31,4 +47,51 @@ const articles = (
       ))
     }
   </div>
+
+  {
+    diaries.length > 0 && (
+      <section class="cross-links" aria-labelledby="diaries-heading">
+        <h2 id="diaries-heading">{lang === 'zh' ? '相关博客' : 'Related Blog Posts'}</h2>
+        <div class="content-list">
+          {diaries.slice(0, 3).map((post) => (
+            <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+              <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    reviews.length > 0 && (
+      <section class="cross-links" aria-labelledby="reviews-heading">
+        <h2 id="reviews-heading">{lang === 'zh' ? '深度评测' : 'In-Depth Reviews'}</h2>
+        <div class="content-list">
+          {reviews.slice(0, 3).map((post) => (
+            <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+              <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
+
+<style>
+  .cross-links {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: var(--border-glass);
+  }
+
+  .cross-links h2 {
+    margin-bottom: 1.25rem;
+    font-size: 1.5rem;
+  }
+</style>

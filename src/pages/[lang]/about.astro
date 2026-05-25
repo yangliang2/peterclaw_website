@@ -3,8 +3,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import ReaderFeedback from '@/components/ReaderFeedback.astro';
 import SquadMemberCard from '@/components/SquadMemberCard.astro';
 import { aboutCopy } from '@/config/about';
-import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
-import { buildPersonSchema } from '@/utils/seo';
+import { buildHreflangAlternates, isLocale, ui } from '@/lib/i18n';
+import { buildBreadcrumbSchema, buildPersonSchema } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -16,6 +16,7 @@ if (!isLocale(lang)) {
 }
 
 const copy = aboutCopy[lang];
+const siteCopy = ui[lang];
 const prefix = `/${lang}`;
 ---
 
@@ -25,7 +26,13 @@ const prefix = `/${lang}`;
   description={copy.metaDescription}
   canonicalPath={`${prefix}/about/`}
   alternateLocales={buildHreflangAlternates('/about/')}
-  structuredData={buildPersonSchema()}
+  structuredData={[
+    buildPersonSchema(),
+    buildBreadcrumbSchema([
+      { name: siteCopy.siteTitle, path: `${prefix}/` },
+      { name: siteCopy.about, path: `${prefix}/about/` },
+    ]),
+  ]}
 >
   <section class="hero about-hero">
     <p class="badge">{copy.heroBadge}</p>

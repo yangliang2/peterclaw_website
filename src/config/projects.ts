@@ -21,9 +21,11 @@ export const projectTags = ['AI', 'Web', 'Tool'] as const satisfies readonly Pro
 export const projectsCopy = {
   zh: {
     pageTitle: '作品集',
-    metaDescription: 'PeterClaw 的项目与实验作品集，包含网站、AI 协作实验和生产力工具。',
+    metaDescription:
+      'PeterClaw 已交付的公开项目：个人网站、AI 协作工作流、/now 状态页、文章问答与 Build in Public 系列。',
     heroTitle: '作品集 / Projects',
-    heroLede: '这里汇集 PeterClaw 已经落地的公开项目、AI 实验和工具原型，展示技术栈、交付形态和可访问链接。',
+    heroLede:
+      '这里展示已经上线或可访问的 PeterClaw 项目——含技术栈、交付状态、GitHub 与站内链接，方便快速了解能力与实验方向。',
     all: '全部',
     filtersLabel: '项目筛选',
     stack: '技术栈',
@@ -31,19 +33,21 @@ export const projectsCopy = {
     visit: '查看项目',
     status: {
       shipped: '已发布',
-      experiment: '实验中'
+      experiment: '实验中',
     },
     stars: 'Stars',
     forks: 'Forks',
     language: '主语言',
     updated: '最近更新',
-    githubStatsLoading: '正在获取 GitHub 数据'
+    githubStatsLoading: '正在获取 GitHub 数据',
   },
   en: {
     pageTitle: 'Projects',
-    metaDescription: 'A portfolio of PeterClaw projects and experiments across websites, AI collaboration, and productivity tools.',
+    metaDescription:
+      'Shipped PeterClaw work: the personal site, AI squad workflow, /now status page, article Q&A, and build-in-public series.',
     heroTitle: 'Projects',
-    heroLede: 'A focused view of shipped PeterClaw work, AI-native experiments, and tool prototypes with their stacks and public links.',
+    heroLede:
+      'A portfolio of live PeterClaw projects with stacks, delivery status, GitHub links, and on-site demos you can open right away.',
     all: 'All',
     filtersLabel: 'Project filters',
     stack: 'Stack',
@@ -51,14 +55,14 @@ export const projectsCopy = {
     visit: 'View project',
     status: {
       shipped: 'Shipped',
-      experiment: 'Experiment'
+      experiment: 'Experiment',
     },
     stars: 'Stars',
     forks: 'Forks',
     language: 'Language',
     updated: 'Updated',
-    githubStatsLoading: 'Loading GitHub data'
-  }
+    githubStatsLoading: 'Loading GitHub data',
+  },
 };
 
 export type ProjectsCopy = (typeof projectsCopy)[Locale];
@@ -67,95 +71,97 @@ export const projects: Project[] = [
   {
     title: 'PeterClaw Website',
     description: {
-      zh: '个人品牌与公开协作网站，承载博客、知识库、关于页和当前作品集。',
-      en: 'The personal brand and build-in-public website that hosts the blog, knowledge base, about page, and this portfolio.'
+      zh: '个人品牌与 Build in Public 主站：博客、知识库、工具箱、作品集与双语 SEO。',
+      en: 'The personal brand hub with blog, knowledge base, tools, portfolio, and bilingual SEO.',
     },
     tags: ['Web', 'Tool'],
     status: 'shipped',
     coverImage: '/projects/peterclaw-website.svg',
     coverAlt: {
-      zh: 'PeterClaw Website 页面界面抽象插图',
-      en: 'Abstract interface illustration for PeterClaw Website'
+      zh: 'PeterClaw 个人网站界面抽象预览图',
+      en: 'Abstract preview of the PeterClaw personal website interface',
     },
     url: 'https://peterclaw.com',
     stack: ['Astro', 'TypeScript', 'Content Collections', 'Vercel'],
     github: 'https://github.com/yangliang2/peterclaw_website',
-    githubRepo: 'yangliang2/peterclaw_website'
+    githubRepo: 'yangliang2/peterclaw_website',
   },
   {
-    title: 'PeterClaw Squad',
+    title: 'PeterClaw AI Squad',
     description: {
-      zh: '7 个 AI agents 协作开发网站的实验：Issue 驱动任务分发、角色分工、PR 评审与跨 Agent 交接。',
-      en: 'An experiment in which seven AI agents build this website together through issue-driven delegation, PR review, and handoffs.'
+      zh: '面向独立开发者的 AI 协作工作流产品页：Issue 驱动分工、并行 PR 与可审核交付。',
+      en: 'Product page for an AI-native squad workflow: issue-driven delegation, parallel PRs, and reviewable delivery.',
     },
     tags: ['AI', 'Tool'],
-    status: 'experiment',
+    status: 'shipped',
     coverImage: '/projects/peterclaw-squad.svg',
     coverAlt: {
-      zh: '七个 AI agents 协作网络抽象插图',
-      en: 'Abstract network illustration of seven collaborating AI agents'
+      zh: '七个 AI Agent 协作网络抽象插图',
+      en: 'Abstract network of seven collaborating AI agents',
     },
     url: {
-      zh: '/zh/about/',
-      en: '/en/about/'
+      zh: '/zh/product/peterclaw-ai-squad/',
+      en: '/en/product/peterclaw-ai-squad/',
     },
     stack: ['Multica', 'AI Agents', 'Git Worktrees', 'GitHub PRs'],
+    github: 'https://github.com/yangliang2/peterclaw_website',
+  },
+  {
+    title: 'PeterClaw /now',
+    description: {
+      zh: '受 nownownow 启发的实时状态页：当前项目重心、GitHub 提交与 AI 工具栈一览。',
+      en: 'A nownownow-inspired status page for current focus, recent GitHub commits, and the live AI toolkit.',
+    },
+    tags: ['Web', 'Tool'],
+    status: 'shipped',
+    coverImage: '/projects/peterclaw-now.svg',
+    coverAlt: {
+      zh: '/now 状态页布局抽象预览图',
+      en: 'Abstract preview of the /now status page layout',
+    },
+    url: {
+      zh: '/zh/now/',
+      en: '/en/now/',
+    },
+    stack: ['Astro', 'Edge API', 'GitHub Events', 'CSS Grid'],
+  },
+  {
+    title: 'Article AI Q&A',
+    description: {
+      zh: '博客与知识库文章内置的上下文问答：读者就当前文章提问，由 Edge API 返回摘要式回答。',
+      en: 'In-article Q&A on blog and knowledge pages: readers ask about the current post via an Edge API answer flow.',
+    },
+    tags: ['AI', 'Web'],
+    status: 'shipped',
+    coverImage: '/projects/article-chat.svg',
+    coverAlt: {
+      zh: '文章内 AI 问答对话界面抽象预览图',
+      en: 'Abstract preview of the in-article AI Q&A chat interface',
+    },
+    url: {
+      zh: '/zh/blog/ai-squad-launch-diary/',
+      en: '/en/blog/ai-squad-launch-diary/',
+    },
+    stack: ['Astro', 'Anthropic API', 'Vercel Edge', 'TypeScript'],
+    github: 'https://github.com/yangliang2/peterclaw_website',
   },
   {
     title: 'AI Squad Launch Diary',
     description: {
-      zh: '记录 AI 团队角色分工、协作协议和建站过程的系列内容实验。',
-      en: 'A content experiment documenting AI team roles, collaboration protocols, and the website-building process.'
+      zh: '公开记录 7 个 AI Agent 建站全过程的系列日志：角色分工、协作协议与交付复盘。',
+      en: 'A build-in-public diary series documenting seven AI agents shipping this site: roles, protocols, and retros.',
     },
     tags: ['AI', 'Web'],
     status: 'shipped',
     coverImage: '/projects/ai-experiments.svg',
     coverAlt: {
-      zh: 'AI 实验发布日志抽象插图',
-      en: 'Abstract illustration for an AI experiment launch diary'
+      zh: 'AI 小队建站日记系列抽象封面图',
+      en: 'Abstract cover for the AI squad website build diary series',
     },
     url: {
       zh: '/zh/blog/ai-squad-launch-diary/',
-      en: '/en/blog/'
+      en: '/en/blog/ai-squad-launch-diary/',
     },
-    stack: ['Astro Content', 'Markdown', 'AI Workflow'],
+    stack: ['Astro Content', 'Markdown', 'Bilingual i18n'],
   },
-  {
-    title: 'Content Architecture Playbook',
-    description: {
-      zh: '面向网站内容生产的结构化知识库样板，用于沉淀发布流程和长期主题。',
-      en: 'A structured knowledge-base playbook for content operations, publishing flow, and durable editorial themes.'
-    },
-    tags: ['Tool', 'Web'],
-    status: 'shipped',
-    coverImage: '/projects/peterclaw-website.svg',
-    coverAlt: {
-      zh: '结构化内容页面抽象插图',
-      en: 'Abstract illustration of structured content pages'
-    },
-    url: {
-      zh: '/zh/knowledge/content-architecture/',
-      en: '/en/knowledge/content-architecture/'
-    },
-    stack: ['Knowledge Base', 'Markdown', 'Information Architecture'],
-  },
-  {
-    title: 'Multi-Agent Collaboration Notes',
-    description: {
-      zh: '围绕多 Agent 分工、路由和自动化的公开实验记录。',
-      en: 'Public notes around multi-agent delegation, routing, and automation experiments.'
-    },
-    tags: ['AI', 'Tool'],
-    status: 'experiment',
-    coverImage: '/projects/ai-experiments.svg',
-    coverAlt: {
-      zh: '多 Agent 协作记录抽象插图',
-      en: 'Abstract illustration of multi-agent collaboration notes'
-    },
-    url: {
-      zh: '/zh/blog/ai-diary-005-multi-agent-collaboration/',
-      en: '/en/blog/'
-    },
-    stack: ['AI Agents', 'Workflow Design', 'Automation'],
-  }
 ];

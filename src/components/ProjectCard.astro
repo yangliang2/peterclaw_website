@@ -78,6 +78,18 @@ const projectUrl = typeof project.url === 'string' ? project.url : project.url[l
     max-width: none;
     padding: var(--space-md);
     margin: 0;
+    transition:
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      background 0.25s ease;
+  }
+
+  .project-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgb(15 24 43 / 18%);
+    background: var(--color-surface-hover, var(--gradient-glass));
   }
 
   .project-cover {
@@ -214,12 +226,15 @@ const projectUrl = typeof project.url === 'string' ? project.url : project.url[l
   }
 
   .stack li {
-    padding: 0.35rem 0.65rem;
+    padding: 0.35rem 0.7rem;
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    color: var(--color-text-muted);
-    background: var(--color-soft-bg);
-    font-size: 0.9rem;
+    border-radius: 999px;
+    color: var(--color-text);
+    background: var(--color-primary-soft-bg);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
 
   .project-links {
@@ -234,8 +249,7 @@ const projectUrl = typeof project.url === 'string' ? project.url : project.url[l
 
   @media (min-width: 760px) {
     .project-card {
-      min-height: 35rem;
-      align-content: space-between;
+      align-content: start;
       padding: var(--space-lg);
     }
   }

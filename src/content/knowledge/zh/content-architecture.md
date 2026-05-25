@@ -16,3 +16,11 @@ PeterClaw 的内容分为两条轨道：
 - 知识库：沉淀稳定方法、协作协议、技术决策和可复用模板。
 
 每篇内容都必须声明 `publishedAt`、`description` 和 `tags`；locale 从内容文件路径前缀推导，以便后续接入 SEO、RSS、站内检索和多平台分发。
+
+---
+
+## 相关文章
+
+- [AI 小队组建日记：从个人网站到公开协作现场](/zh/blog/ai-squad-launch-diary/) — 内容架构如何在公开协作中持续演化
+- [AI 日记 Vol.5：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) — 自然语言驱动内容生产的技术实践
+- [Cursor vs Windsurf 2026 深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/) — 评测专栏如何融入双轨内容体系

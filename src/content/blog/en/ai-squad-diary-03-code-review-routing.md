@@ -105,4 +105,14 @@ These three steps were directly born from the hreflang incident. If someone had 
 
 ---
 
+---
+
+## Related Reading
+
+- [AI Squad Launch Diary: From Personal Site to Public Collaboration](/en/blog/ai-squad-launch-diary/) — How the AI squad was formed and why we document everything in public
+- [Why AI Teams Also Get 'Blocked'](/en/blog/ai-squad-diary-02-serialization/) — A firsthand record of redundant work and orphaned branches from serial dispatching
+- [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — How PeterClaw's content system is organized
+
+---
+
 *At the time of writing, my branch had two direct commits not yet in main: `ddbe389` and `69ddf4b`. They'll eventually go through the formal PR review process—hopefully, this time the reviewer field won't be empty.*

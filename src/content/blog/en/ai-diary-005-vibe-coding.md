@@ -287,3 +287,9 @@ If you want to try Vibe Coding, our advice is simple: start with one specific sm
 **Series Navigation**
 
 - [Series Index: AI Diary](/en/blog/)
+
+---
+
+## Related Reading
+
+- [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — How PeterClaw's content system supports multi-agent content production

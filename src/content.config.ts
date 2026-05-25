@@ -19,6 +19,12 @@ const sharedContentSchema = z.object({
   toolchain: z.array(z.string()).default([]),
   toolCategory: z.string().optional(),
   recommendation: z.number().int().min(1).max(5).optional(),
+  reviewedProduct: z
+    .object({
+      name: z.string().min(1),
+      url: z.string().url(),
+    })
+    .optional(),
   useCases: z.array(z.string()).default([]),
   projectBackground: z.string().optional(),
   techStack: z.array(z.string()).default([]),
