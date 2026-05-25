@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import { projects, projectsCopy, projectTags } from '@/config/projects';
 import { buildHreflangAlternates, isLocale } from '@/lib/i18n';
+import { absoluteUrl } from '@/utils/seo';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -15,6 +16,29 @@ if (!isLocale(lang)) {
 
 const copy = projectsCopy[lang];
 const prefix = `/${lang}`;
+
+function projectUrlForSchema(url: string | Record<string, string>) {
+  const value = typeof url === 'string' ? url : url[lang];
+  return value.startsWith('http') ? value : absoluteUrl(value);
+}
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: copy.pageTitle,
+  description: copy.metaDescription,
+  url: absoluteUrl(`${prefix}/projects/`),
+  itemListElement: projects.map((project, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: project.title,
+      description: project.description[lang],
+      url: projectUrlForSchema(project.url),
+    },
+  })),
+};
 ---
 
 <BaseLayout
@@ -23,6 +47,7 @@ const prefix = `/${lang}`;
   description={copy.metaDescription}
   canonicalPath={`${prefix}/projects/`}
   alternateLocales={buildHreflangAlternates('/projects/')}
+  structuredData={itemListSchema}
 >
   <section class="hero">
     <h1>{copy.heroTitle}</h1>
@@ -177,6 +202,7 @@ const prefix = `/${lang}`;
   .projects-grid {
     display: grid;
     gap: var(--space-md);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   @media (min-width: 760px) {
@@ -188,6 +214,11 @@ const prefix = `/${lang}`;
     .projects-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
 
+  @media (min-width: 1200px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 </style>
