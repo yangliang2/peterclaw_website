@@ -18,7 +18,7 @@ const navItems = [
 ];
 ---
 
-<nav class="navbar" aria-label="Primary" data-pagefind-ignore="all">
+<nav class="navbar" aria-label="Primary" data-pagefind-ignore="all" transition:persist="navbar">
   <div class="container">
     <a href={`${prefix}/`} class="logo">
       <span class="gradient-text">{copy.siteTitle}</span>
@@ -92,7 +92,7 @@ const navItems = [
 </nav>
 
 <script>
-  (() => {
+  function initThemeToggle() {
     const storageKey = 'peterclaw-theme';
     const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
 
@@ -106,7 +106,8 @@ const navItems = [
       toggle?.setAttribute('aria-pressed', String(theme === 'dark'));
     }
 
-    if (toggle) {
+    if (toggle && toggle.dataset.bound !== 'true') {
+      toggle.dataset.bound = 'true';
       const currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
       toggle.setAttribute('aria-pressed', String(currentTheme === 'dark'));
       toggle.addEventListener('click', () => {
@@ -114,7 +115,10 @@ const navItems = [
         setTheme(nextTheme);
       });
     }
-  })();
+  }
+
+  initThemeToggle();
+  document.addEventListener('astro:page-load', initThemeToggle);
 </script>
 
 <style>

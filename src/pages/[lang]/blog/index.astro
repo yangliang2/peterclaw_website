@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { collectionPath, isLocale, localeFromId, stripLocaleFromId, ui } from '@/lib/i18n';
 
 export function getStaticPaths() {
   return ['zh', 'en'].map((lang) => ({ params: { lang } }));
@@ -22,13 +22,30 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
   <h1>{copy.blog}</h1>
   <div class="content-list">
     {
-      posts.map((post) => (
-        <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
-          <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.description}</p>
-        </a>
-      ))
+      posts.map((post) => {
+        const slug = stripLocaleFromId(post.id, lang);
+        return (
+          <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
+            {post.data.ogImage && (
+              <img
+                src={post.data.ogImage}
+                alt=""
+                class="content-hero-image"
+                width="720"
+                height="380"
+                loading="lazy"
+                decoding="async"
+                transition:name={`blog-hero-${slug}`}
+              />
+            )}
+            <span class="meta" transition:name={`blog-meta-${slug}`}>
+              {post.data.publishedAt.toISOString().slice(0, 10)}
+            </span>
+            <h2 transition:name={`blog-title-${slug}`}>{post.data.title}</h2>
+            <p transition:name={`blog-desc-${slug}`}>{post.data.description}</p>
+          </a>
+        );
+      })
     }
   </div>
 </BaseLayout>

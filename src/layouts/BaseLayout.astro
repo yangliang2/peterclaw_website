@@ -6,6 +6,9 @@ import Footer from '@/components/Footer.astro';
 import Navbar from '@/components/Navbar.astro';
 import { ui, type Locale } from '@/lib/i18n';
 import '@/styles/theme.css';
+import { ClientRouter, fade } from 'astro:transitions';
+
+const pageFade = fade({ duration: '250ms' });
 
 interface Props {
   title?: string;
@@ -83,10 +86,11 @@ const pageDescription = description ?? copy.tagline;
       noindex={noindex}
     />
     <BaseAnalytics />
+    <ClientRouter />
   </head>
   <body>
     <Navbar locale={locale} />
-    <main>
+    <main transition:animate={pageFade}>
       <slot />
     </main>
     <Footer locale={locale} />
@@ -148,6 +152,20 @@ const pageDescription = description ?? copy.tagline;
   .content-item h3 {
     margin: 0;
     font-size: 1.5rem;
+  }
+
+  .content-hero-image {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-bottom: 0.75rem;
+    border: var(--border-glass);
+  }
+
+  article > .content-hero-image {
+    max-height: 280px;
+    margin-bottom: 1.25rem;
   }
 
   .meta {

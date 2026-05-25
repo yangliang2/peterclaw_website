@@ -83,6 +83,21 @@
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
+/* View Transitions — site-wide page fade (250ms) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

@@ -41,6 +41,7 @@ if (!isLocale(lang)) {
 }
 
 const { Content } = await render(post);
+const slug = stripLocaleFromId(post.id, lang);
 const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
@@ -68,9 +69,22 @@ const ogImage = post.data.ogImage;
   alternateLocales={alternateLocales}
 >
   <article data-pagefind-body>
-    <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
-    <h1>{post.data.title}</h1>
-    <p class="lede">{post.data.description}</p>
+    {ogImage && (
+      <img
+        src={ogImage}
+        alt=""
+        class="content-hero-image"
+        width="720"
+        height="380"
+        decoding="async"
+        transition:name={`blog-hero-${slug}`}
+      />
+    )}
+    <p class="meta" transition:name={`blog-meta-${slug}`}>
+      {post.data.publishedAt.toISOString().slice(0, 10)}
+    </p>
+    <h1 transition:name={`blog-title-${slug}`}>{post.data.title}</h1>
+    <p class="lede" transition:name={`blog-desc-${slug}`}>{post.data.description}</p>
     <Content />
     <SocialShare title={post.data.title} url={Astro.url.href} />
   </article>
