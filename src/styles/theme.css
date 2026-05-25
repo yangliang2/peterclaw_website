@@ -1,21 +1,35 @@
 :root {
   /* AI-Native Design Tokens */
-  color-scheme: dark;
+  color-scheme: light;
 
   /* Colors */
-  --color-bg: #050505;
-  --color-surface: #0f1117;
-  --color-text: #f0f0f0;
-  --color-text-muted: #a0a0a0;
-  --color-line: rgba(255, 255, 255, 0.1);
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #172033;
+  --color-text-muted: #5f6b7a;
+  --color-heading: #0f172a;
+  --color-article: #273449;
+  --color-line: rgba(15, 23, 42, 0.12);
+  --color-navbar-bg: rgba(248, 250, 252, 0.86);
+  --color-surface-hover: rgba(15, 23, 42, 0.04);
+  --color-soft-bg: rgba(15, 23, 42, 0.035);
+  --color-primary-soft-bg: rgba(37, 99, 235, 0.1);
+  --color-input-bg: rgba(255, 255, 255, 0.78);
+  --color-code-bg: #111827;
+  --color-code-inline-bg: rgba(37, 99, 235, 0.1);
+  --color-button-text: #ffffff;
 
-  --color-primary: #3b82f6;
-  --color-secondary: #8b5cf6;
-  --color-accent: #10b981;
+  --color-primary: #2563eb;
+  --color-secondary: #7c3aed;
+  --color-accent: #059669;
 
   /* Gradients */
-  --gradient-ai: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #d946ef 100%);
-  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --gradient-ai: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #c026d3 100%);
+  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.68) 100%);
+  --gradient-page:
+    radial-gradient(circle at 20% 0%, rgba(37, 99, 235, 0.12), transparent 34rem),
+    radial-gradient(circle at 85% 10%, rgba(124, 58, 237, 0.1), transparent 30rem),
+    var(--color-bg);
 
   /* Typography */
   --font-sans: "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -33,6 +47,39 @@
   --radius-md: 8px;
   --radius-lg: 16px;
   --border-glass: 1px solid var(--color-line);
+  --shadow-glass: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #050505;
+  --color-surface: #0f1117;
+  --color-text: #f0f0f0;
+  --color-text-muted: #a0a0a0;
+  --color-heading: #ffffff;
+  --color-article: #e0e0e0;
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-navbar-bg: rgba(5, 5, 5, 0.78);
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-soft-bg: rgba(255, 255, 255, 0.03);
+  --color-primary-soft-bg: rgba(59, 130, 246, 0.1);
+  --color-input-bg: rgba(255, 255, 255, 0.05);
+  --color-code-bg: #0d1117;
+  --color-code-inline-bg: rgba(255, 255, 255, 0.08);
+  --color-button-text: #ffffff;
+
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+  --color-accent: #10b981;
+
+  --gradient-ai: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #d946ef 100%);
+  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --gradient-page:
+    radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.18), transparent 34rem),
+    radial-gradient(circle at 85% 10%, rgba(139, 92, 246, 0.14), transparent 30rem),
+    var(--color-bg);
+
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
@@ -48,10 +95,7 @@ html {
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.18), transparent 34rem),
-    radial-gradient(circle at 85% 10%, rgba(139, 92, 246, 0.14), transparent 30rem),
-    var(--color-bg);
+  background: var(--gradient-page);
   color: var(--color-text);
   font-family: var(--font-sans);
   line-height: 1.6;
@@ -64,7 +108,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: #fff;
+  color: var(--color-heading);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
@@ -121,7 +165,7 @@ p {
 
 .btn-primary {
   background: var(--gradient-ai);
-  color: #fff;
+  color: var(--color-button-text);
 }
 
 .btn-primary:hover {
@@ -136,6 +180,6 @@ p {
 }
 
 .btn-secondary:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: var(--color-primary-soft-bg);
   transform: translateY(-2px);
 }
