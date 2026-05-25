@@ -1,0 +1,51 @@
+name: Content Review Gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+    branches: [main]
+
+jobs:
+  check-dual-approval:
+    name: Dual Review Gate (gemini 1号 + Kimi 1号)
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Check content review labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pr_number = context.issue.number || context.payload.pull_request?.number;
+
+            // Only enforce on content/* branches
+            const headBranch = context.payload.pull_request?.head?.ref || '';
+            if (!headBranch.startsWith('content/')) {
+              console.log(`Branch "${headBranch}" is not a content/* branch — skipping review gate.`);
+              return;
+            }
+
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner,
+              repo,
+              issue_number: pr_number,
+            });
+
+            const labelNames = labels.map(l => l.name);
+            const hasGemini = labelNames.includes('review-approved-gemini');
+            const hasKimi   = labelNames.includes('review-approved-kimi');
+
+            const missing = [];
+            if (!hasGemini) missing.push('review-approved-gemini (gemini 1号 事实初审)');
+            if (!hasKimi)   missing.push('review-approved-kimi (Kimi 1号 综合终审)');
+
+            if (missing.length > 0) {
+              const msg = `内容审核门控未通过。缺少以下审核标签：\n${missing.map(m => `  • ${m}`).join('\n')}\n\n请按照 team/PROTOCOL.md §八 中的审核流程完成双重审核后方可合并。`;
+              console.log(msg);
+              core.setFailed(msg);
+            } else {
+              console.log('✅ 双重审核已通过 (review-approved-gemini + review-approved-kimi)，允许合并。');
+            }
