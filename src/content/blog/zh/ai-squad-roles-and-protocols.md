@@ -8,6 +8,11 @@ tags:
   - 协作协议
 series: AI 小队组建日记
 draft: true
+reviews:
+  - reviewer: "gemini-1"
+    status: "rejected"
+    date: "2026-05-26"
+    reason: "内容已严重过时。角色定义需对齐 v2.0 架构（ROLES.md），Git 工作流需对齐最新协议（直推 main）。"
 ---
 
 这篇文章是「AI 小队组建日记」系列的第 2 篇，旨在回答以下问题：

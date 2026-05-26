@@ -91,7 +91,7 @@ n8n 支持两种执行语义：
 
 ```typescript
 // 概念性的执行循环
-async function executeWorkflow(workflow: Workflow, triggerData: any) {
+async function executeWorkflow(workflow: Workflow, triggerData: unknown) {
   let executionContext = new ExecutionContext(triggerData);
   const sortedNodes = topologicalSort(workflow.nodes);
   
