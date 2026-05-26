@@ -20,6 +20,7 @@ const navItems = [
   { name: copy.knowledge, href: `${prefix}/knowledge/` },
   { name: copy.tools, href: `${prefix}/tools/` }
 ];
+const isCurrentPath = (href: string) => currentPath === href || currentPath.startsWith(href);
 ---
 
 <nav class="navbar" aria-label={copy.primaryNavigation} data-pagefind-ignore="all">
@@ -28,9 +29,9 @@ const navItems = [
       <span class="gradient-text">{copy.siteTitle}</span>
     </a>
     <ul class="nav-links">
-      {navItems.map((item) => <li><a href={item.href}>{item.name}</a></li>)}
+      {navItems.map((item) => <li><a href={item.href} aria-current={isCurrentPath(item.href) ? 'page' : undefined}>{item.name}</a></li>)}
       <li>
-        <a href={`${prefix}/search/`} class="search-link" aria-label={copy.search}>
+        <a href={`${prefix}/search/`} class="search-link" aria-label={copy.search} aria-current={isCurrentPath(`${prefix}/search/`) ? 'page' : undefined}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -206,6 +207,11 @@ const navItems = [
 
   .nav-links a:hover {
     color: var(--color-text);
+  }
+
+  .nav-links a[aria-current='page'] {
+    color: var(--color-heading);
+    font-weight: 700;
   }
 
   .search-link {
