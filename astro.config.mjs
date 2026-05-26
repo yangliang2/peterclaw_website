@@ -12,6 +12,14 @@ function isLocalePrefixedPage(page) {
 export default defineConfig({
   site: 'https://peterclaw-website.vercel.app',
   output: 'static',
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+    },
+  },
   integrations: [
     sitemap({
       filter: isLocalePrefixedPage,
