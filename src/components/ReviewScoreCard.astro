@@ -34,18 +34,27 @@ const {
   tableLabels = defaultTableLabels,
 } = Astro.props;
 
-assertReviewDimensions(dimensions);
+assertReviewDimensions(dimensions, maxScore, totalScore);
 
 const weightedTotal = computeWeightedTotal(dimensions, maxScore, totalScore);
 const displayTotal = weightedTotal.toFixed(1);
 const count = dimensions.length;
-const center = 120;
-const radius = 88;
-const angleStep = (Math.PI * 2) / count;
+
+// Bigger viewBox + overflow visible to prevent label裁切（clipping）。
+const viewSize = 280;
+const center = viewSize / 2;
+const radius = 100;
+const lineHeight = 11;
+
 const startAngle = -Math.PI / 2;
+const axisAngles =
+  count === 2
+    ? // 2 维雷达退化（两个轴相对会导致多边形面积为 0），这里用 90deg 分离的“V 形”兜底。
+      [-3 * Math.PI / 4, -Math.PI / 4]
+    : Array.from({ length: count }, (_, index) => startAngle + (index * Math.PI * 2) / count);
 
 function axisPoint(index: number, scale: number) {
-  const angle = startAngle + index * angleStep;
+  const angle = axisAngles[index] ?? startAngle;
   const r = radius * scale;
   return {
     x: center + r * Math.cos(angle),
@@ -53,24 +62,60 @@ function axisPoint(index: number, scale: number) {
   };
 }
 
-const dataPoints = dimensions
-  .map((dimension, index) => {
-    const max = dimension.maxScore ?? maxScore;
-    const scale = max > 0 ? Math.min(dimension.score / max, 1) : 0;
-    const { x, y } = axisPoint(index, scale);
-    return `${x},${y}`;
-  })
-  .join(' ');
+function wrapLabel(label: string, maxLen = 16): string[] {
+  const text = label.trim();
+  if (!text) return [''];
+  if (/\s/.test(text)) {
+    const words = text.split(/\s+/).filter(Boolean);
+    const lines: string[] = [];
+    let cur = '';
+    for (const w of words) {
+      const next = cur ? `${cur} ${w}` : w;
+      if (next.length > maxLen && cur) {
+        lines.push(cur);
+        cur = w;
+      } else {
+        cur = next;
+      }
+    }
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [text];
+  }
+
+  // 对于中文等“无空格”长文本：按字符数切分，保证在 viewBox 内可读。
+  if (text.length <= maxLen) return [text];
+  const lines: string[] = [];
+  for (let i = 0; i < text.length; i += maxLen) {
+    lines.push(text.slice(i, i + maxLen));
+  }
+  return lines.length ? lines : [text];
+}
+
+const axisPointsAtScore = dimensions.map((dimension, index) => {
+  const max = dimension.maxScore ?? maxScore;
+  const scale = max > 0 ? Math.min(dimension.score / max, 1) : 0;
+  return axisPoint(index, scale);
+});
+
+const dataPoints = (() => {
+  if (count === 2) {
+    const p0 = axisPointsAtScore[0];
+    const p1 = axisPointsAtScore[1];
+    return `${p0.x},${p0.y} ${p1.x},${p1.y} ${center},${center}`;
+  }
+  return axisPointsAtScore.map((p) => `${p.x},${p.y}`).join(' ');
+})();
 
 const gridLevels = [0.25, 0.5, 0.75, 1];
-const gridPolygons = gridLevels.map((level) =>
-  dimensions
-    .map((_, index) => {
-      const { x, y } = axisPoint(index, level);
-      return `${x},${y}`;
-    })
-    .join(' '),
-);
+const gridPolygons = gridLevels.map((level) => {
+  const points = dimensions.map((_, index) => axisPoint(index, level));
+  if (count === 2) {
+    const p0 = points[0];
+    const p1 = points[1];
+    return `${p0.x},${p0.y} ${p1.x},${p1.y} ${center},${center}`;
+  }
+  return points.map((p) => `${p.x},${p.y}`).join(' ');
+});
 
 const axisLines = dimensions.map((_, index) => {
   const { x, y } = axisPoint(index, 1);
@@ -80,8 +125,20 @@ const axisLines = dimensions.map((_, index) => {
 const labels = dimensions.map((dimension, index) => {
   const { x, y } = axisPoint(index, 1.12);
   const anchor =
-    Math.abs(x - center) < 8 ? 'middle' : x > center ? 'start' : 'end';
-  return { name: dimension.name, x, y, anchor };
+    Math.abs(x - center) < 8 ? 'middle' : x > center ? 'end' : 'start';
+
+  const lines = wrapLabel(dimension.name);
+  const firstDy =
+    lines.length <= 1 ? 0 : -((lines.length - 1) / 2) * lineHeight;
+  const dys = lines.map((_, idx) => (idx === 0 ? firstDy : lineHeight));
+  return {
+    name: dimension.name,
+    lines,
+    dys,
+    x,
+    y,
+    anchor,
+  };
 });
 
 const radarLabel = `${title} — ${displayTotal}/${maxScore}`;
@@ -100,9 +157,10 @@ const radarLabel = `${title} — ${displayTotal}/${maxScore}`;
     <figure class="radar-wrap" aria-hidden="true">
       <svg
         class="radar-chart"
-        viewBox="0 0 240 240"
+        viewBox={`0 0 ${viewSize} ${viewSize}`}
         role="img"
         aria-label={radarLabel}
+        overflow="visible"
       >
         {gridPolygons.map((points) => (
           <polygon class="radar-grid" points={points} />
@@ -132,7 +190,11 @@ const radarLabel = `${title} — ${displayTotal}/${maxScore}`;
             text-anchor={label.anchor}
             dominant-baseline="middle"
           >
-            {label.name}
+            {label.lines.map((line, idx) => (
+              <tspan x={label.x} dy={label.dys[idx]}>
+                {line}
+              </tspan>
+            ))}
           </text>
         ))}
       </svg>
