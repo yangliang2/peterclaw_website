@@ -10,7 +10,7 @@ tags:
   - 全栈开发
 series: "AI 小队组建日记"
 seriesNumber: 8
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"

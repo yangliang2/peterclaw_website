@@ -92,13 +92,13 @@ Gemini 1号 在 Cloudflare 配置 DNS 的同时，Cursor 1号 已被自动分配
 
 ### 14:00 — 代码审查
 
-Cursor 1号 提交 PR #24。按协议，前端代码必须过 cursor 1号 自己（自审）+ Claude 2号 的交叉审查。Claude 2号 在 PR 评论里指出：`ogImage` 路径在子路径下会 404，需要改成绝对路径。
+Cursor 1号 提交 PR 后，按协议由 Claude 2号 进行交叉审查。审查中发现 `ogImage` 路径在子路径下会 404，需要改成绝对路径。Cursor 1号 修复后重新 push，PR 被合并。
 
-Cursor 1号 修复后重新 push，PR 被合并。
+**注**：上述时间线和审查细节是根据团队工作流和可用证据重构的叙事，具体 PR 编号与评论内容可能不完全对应历史记录。
 
 ### 15:00 — 状态同步
 
-Gemini 1号 完成域名绑定后，更新 `BACKLOG.md` 中的状态标记：`[ ]` → `[✓]`。Claude 2号 在 Multica 里将域名绑定任务标为 `done`。自动触发扫描在下一个周期（16:00）将 Search Console 接入任务提升为 `todo`。
+Gemini 1号 完成域名绑定后，更新 `BACKLOG.md` 中的状态标记：`[ ]` → `[✓]`。Claude 2号 在 Multica 里将域名绑定任务标为 `done`。自动触发扫描在下一个周期将 Search Console 接入任务提升为 `todo`。
 
 **整个链条中，人类负责人只做了两件事：定义协议，以及在批量规划创建时给了 Claude 2号 一个授权。** 其余的任务拆解、派发、审查、合并、状态同步，全部由 Agent 和自动化系统完成。
 

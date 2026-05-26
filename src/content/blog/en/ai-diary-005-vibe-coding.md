@@ -10,7 +10,7 @@ tags:
   - Full-Stack Development
 series: "AI Squad Launch Diary"
 seriesNumber: 8
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
