@@ -7,163 +7,118 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  statuses: read
 
 jobs:
-  preview:
-    name: Deploy Preview
+  preview-comment:
+    name: Preview Comment
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      # Keep one stable PR comment so reviewers always have the latest preview state.
-      - name: Comment pending preview status
+      # Vercel's GitHub App owns the deployment; this workflow mirrors its
+      # commit status into a stable reviewer-facing PR comment.
+      - name: Upsert Vercel preview comment
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const marker = '<!-- vercel-preview-deployment -->';
-            const body = [
-              marker,
-              '## Vercel Preview Deployment',
-              '',
-              '| Field | Value |',
-              '| --- | --- |',
-              '| Status | pending |',
-              '| Preview URL | Deploying |',
-              '| Build time | In progress |',
-              '',
-              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
-            ].join('\n');
-
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number,
-              per_page: 100
-            });
-            const previous = comments.find((comment) =>
-              comment.user.type === 'Bot' && comment.body.includes(marker)
-            );
+            const headSha = context.payload.pull_request.head.sha;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const startedAt = new Date();
 
-            if (previous) {
-              await github.rest.issues.updateComment({ owner, repo, comment_id: previous.id, body });
-            } else {
-              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            const upsertComment = async ({ status, previewUrl, buildTime, detail }) => {
+              const previewCell = previewUrl ? `[${previewUrl}](${previewUrl})` : 'Unavailable';
+              const body = [
+                marker,
+                '## Vercel Preview Deployment',
+                '',
+                '| Field | Value |',
+                '| --- | --- |',
+                `| Status | ${status} |`,
+                `| Preview URL | ${previewCell} |`,
+                `| Build time | ${buildTime} |`,
+                `| Started at | ${startedAt.toISOString()} |`,
+                '',
+                `Workflow run: ${runUrl}`,
+                detail ? `Detail: ${detail}` : ''
+              ].filter(Boolean).join('\n');
+
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number,
+                per_page: 100
+              });
+              const previous = comments.find((comment) =>
+                comment.user.type === 'Bot' && comment.body.includes(marker)
+              );
+
+              if (previous) {
+                await github.rest.issues.updateComment({ owner, repo, comment_id: previous.id, body });
+              } else {
+                await github.rest.issues.createComment({ owner, repo, issue_number, body });
+              }
+            };
+
+            await upsertComment({
+              status: 'pending',
+              previewUrl: '',
+              buildTime: 'In progress',
+              detail: 'Waiting for the Vercel GitHub App deployment status.'
+            });
+
+            const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            const timeoutMs = 10 * 60 * 1000;
+            const intervalMs = 15 * 1000;
+            const deadline = Date.now() + timeoutMs;
+            let vercelStatus;
+
+            while (Date.now() < deadline) {
+              const { data } = await github.rest.repos.getCombinedStatusForRef({
+                owner,
+                repo,
+                ref: headSha
+              });
+
+              vercelStatus = data.statuses.find((status) =>
+                status.context.toLowerCase() === 'vercel'
+              );
+
+              if (vercelStatus && vercelStatus.state !== 'pending') {
+                break;
+              }
+
+              await sleep(intervalMs);
             }
 
-      - name: Deploy Vercel preview
-        id: vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          set +e
+            const elapsedSeconds = Math.max(0, Math.round((Date.now() - startedAt.getTime()) / 1000));
 
-          started_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-          start_seconds="$(date +%s)"
-          status="success"
-          preview_url=""
-
-          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
-            status="failed"
-            failure_reason="Missing one or more required Vercel secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID."
-          else
-            npx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
-            pull_status=$?
-
-            if [ "$pull_status" -eq 0 ]; then
-              deploy_output="$(npx vercel@latest deploy --yes --token="$VERCEL_TOKEN" 2>&1)"
-              deploy_status=$?
-              printf '%s\n' "$deploy_output"
-              preview_url="$(printf '%s\n' "$deploy_output" | grep -Eo 'https://[^[:space:]]+' | tail -n 1)"
-            else
-              deploy_status="$pull_status"
-            fi
-
-            if [ "$deploy_status" -eq 0 ] && [ -n "$preview_url" ]; then
-              npx vercel@latest inspect "$preview_url" --wait --timeout=10m --token="$VERCEL_TOKEN"
-              inspect_status=$?
-              if [ "$inspect_status" -ne 0 ]; then
-                status="failed"
-                failure_reason="Vercel deployment inspection failed or timed out."
-              fi
-            else
-              status="failed"
-              failure_reason="Vercel preview deployment failed."
-            fi
-          fi
-
-          end_seconds="$(date +%s)"
-          build_seconds="$((end_seconds - start_seconds))"
-
-          {
-            echo "status=$status"
-            echo "preview_url=$preview_url"
-            echo "started_at=$started_at"
-            echo "build_seconds=$build_seconds"
-            echo "failure_reason=${failure_reason:-}"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Update preview comment
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const marker = '<!-- vercel-preview-deployment -->';
-            const status = '${{ steps.vercel.outputs.status }}' || 'failed';
-            const previewUrl = '${{ steps.vercel.outputs.preview_url }}' || 'Unavailable';
-            const buildSeconds = '${{ steps.vercel.outputs.build_seconds }}' || '0';
-            const startedAt = '${{ steps.vercel.outputs.started_at }}' || 'Unavailable';
-            const failureReason = `${{ steps.vercel.outputs.failure_reason }}`;
-            const statusLabel = status === 'success' ? 'success' : status === 'pending' ? 'pending' : 'failed';
-            const previewCell = previewUrl === 'Unavailable' ? previewUrl : `[${previewUrl}](${previewUrl})`;
-            const body = [
-              marker,
-              '## Vercel Preview Deployment',
-              '',
-              '| Field | Value |',
-              '| --- | --- |',
-              `| Status | ${statusLabel} |`,
-              `| Preview URL | ${previewCell} |`,
-              `| Build time | ${buildSeconds}s |`,
-              `| Started at | ${startedAt} |`,
-              '',
-              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              failureReason ? `Failure detail: ${failureReason}` : ''
-            ].filter(Boolean).join('\n');
-
-            const { owner, repo } = context.repo;
-            const issue_number = context.issue.number;
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number,
-              per_page: 100
-            });
-            const previous = comments.find((comment) =>
-              comment.user.type === 'Bot' && comment.body.includes(marker)
-            );
-
-            if (previous) {
-              await github.rest.issues.updateComment({ owner, repo, comment_id: previous.id, body });
-            } else {
-              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            if (!vercelStatus) {
+              await upsertComment({
+                status: 'failed',
+                previewUrl: '',
+                buildTime: `${elapsedSeconds}s`,
+                detail: 'No Vercel commit status was published before timeout.'
+              });
+              core.setFailed('No Vercel commit status was published before timeout.');
+              return;
             }
 
-      - name: Fail when preview deployment fails
-        if: steps.vercel.outputs.status == 'failed'
-        run: exit 1
+            const finalStatus = vercelStatus.state === 'success'
+              ? 'success'
+              : vercelStatus.state === 'pending'
+                ? 'pending'
+                : 'failed';
+
+            await upsertComment({
+              status: finalStatus,
+              previewUrl: vercelStatus.target_url || '',
+              buildTime: `${elapsedSeconds}s`,
+              detail: vercelStatus.description || ''
+            });
+
+            if (finalStatus === 'failed') {
+              core.setFailed(vercelStatus.description || 'Vercel preview deployment failed.');
+            }
