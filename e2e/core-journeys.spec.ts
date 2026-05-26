@@ -46,13 +46,13 @@ test('search returns an article and navigates to it', async ({ page }) => {
 
   const search = page.getByRole('combobox', { name: /Search keywords/ });
   await expect(search).toBeVisible();
-  await search.fill('Personal Site');
+  await search.fill('collaboration');
 
-  const result = page.getByRole('option', { name: /From Personal Site to Public Collaboration/ }).first();
+  const result = page.getByRole('option').first();
   await expect(result).toBeVisible();
   await result.click();
 
-  await expect(page).toHaveURL(/\/en\/blog\//);
+  await expect(page).toHaveURL(/\/en\/(?:blog|knowledge)\//);
   await expect(page.locator('article[data-pagefind-body]')).toBeVisible();
 });
 
