@@ -10,6 +10,7 @@ tags:
   - Python
 draft: true
 ogImage: /og-default.png
+cover: tutorial.svg
 difficultyLevel: intermediate
 prerequisites:
   - 基础 Python 编程

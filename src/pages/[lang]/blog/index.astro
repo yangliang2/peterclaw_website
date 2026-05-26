@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import BlogPostCard from '@/components/BlogPostCard.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
 import { buildBreadcrumbSchema } from '@/utils/seo';
@@ -29,15 +30,30 @@ const posts = (await getCollection('blog', (entry) => localeFromId(entry.id) ===
   ])}
 >
   <h1>{copy.blog}</h1>
-  <div class="content-list">
-    {
-      posts.map((post) => (
-        <a class="content-item" href={collectionPath(lang, 'blog', post.id)}>
-          <span class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</span>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.description}</p>
-        </a>
-      ))
-    }
+  <div class="blog-post-grid">
+    {posts.map((post) => (
+      <BlogPostCard post={post} locale={lang} href={collectionPath(lang, 'blog', post.id)} />
+    ))}
   </div>
 </BaseLayout>
+
+<style>
+  .blog-post-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .blog-post-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .blog-post-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
