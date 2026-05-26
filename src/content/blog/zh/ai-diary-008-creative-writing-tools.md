@@ -12,7 +12,7 @@ tags:
   - 独立创作者
 series: "AI 工具评测专栏"
 seriesNumber: 3
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"

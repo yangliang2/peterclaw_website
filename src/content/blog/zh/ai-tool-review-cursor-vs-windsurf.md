@@ -26,7 +26,7 @@ recommendation: 5
 reviewedProduct:
   name: Cursor
   url: https://cursor.com
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
