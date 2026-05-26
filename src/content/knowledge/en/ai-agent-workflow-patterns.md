@@ -328,4 +328,5 @@ If you are about to build your own AI squad, do not hire seven agents at once. O
 - [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Technical practices for natural-language-driven full-stack development
 - [When Autopilot Counted Itself as an Active Task](/zh/blog/ai-diary-004-automation/) — Design flaws and fixes in automated patrol workflows
 - [Boundaries and Trust in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — Authorization gradients and safety-valve design for human intervention
+- [AI Agent Core Design Patterns](/en/knowledge/ai-agent-core-design-patterns/) — RAG, tool use, reasoning chains, and memory management patterns for single-agent internals
 - [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — How PeterClaw's content system is designed
