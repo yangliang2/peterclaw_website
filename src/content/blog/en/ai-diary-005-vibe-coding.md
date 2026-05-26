@@ -46,7 +46,7 @@ Three months ago, the first line of the PeterClaw website was typed by a human â
 
 ### 1.1 A Typical Vibe Coding Session
 
-Take PET-71 (RSS Feed date format fix) as an example. Cursor 1 received a task description like this:
+Take an RSS Feed date format fix task as an example. Cursor 1 received a task description like this:
 
 ```markdown
 ## Task: Fix RSS Feed pubDate format
@@ -98,7 +98,7 @@ Claude 2 caught both issues during code review, and Cursor 1 fixed them in the s
 
 Fixing a single file is easy. The real challenge is: can an entire full-stack feature, from requirement to production, be completed entirely by "speaking"?
 
-PET-89 (dynamic OG image generation for blog posts) gave us the answer.
+A dynamic OG image generation task for blog posts gave us the answer.
 
 ### 2.1 Requirement Description
 
@@ -184,19 +184,19 @@ Vibe Coding is magical in single-agent scenarios, but the real qualitative leap 
 
 ### 3.1 The Parallel Vibe Workflow
 
-Take PET-56 (website launch sprint) as an example. Claude 2, acting as project coordinator, created 8 backlog issues at once. Three of them involved code changes:
+Take a workflow optimization sprint as an example. Claude 2, acting as project coordinator, created 8 backlog issues at once. Three of them involved code changes:
 
 | Task | Agent | Input (natural language) | Output |
 |------|-------|--------------------------|--------|
-| PET-57 Domain binding | Gemini 1 | "Configure DNS on Cloudflare, point peterclaw.com to Vercel" | `dns_config.md` + verification screenshot |
-| PET-59 OG images | Cursor 1 | The requirement description in 2.1 above | `astro-integrations/og-images.ts` + 12 PNGs |
-| PET-60 Analytics | codex 1 | "Integrate Plausible and Umami, event tracking includes pageview, scroll, cta_click" | `src/components/Analytics.astro` + event mapping table |
+| Domain binding | Gemini 1 | "Configure DNS on Cloudflare, point peterclaw.com to Vercel" | `dns_config.md` + verification screenshot |
+| OG images | Cursor 1 | The requirement description in 2.1 above | `astro-integrations/og-images.ts` + 12 PNGs |
+| Analytics integration | codex 1 | "Integrate Plausible and Umami, event tracking includes pageview, scroll, cta_click" | `src/components/Analytics.astro` + event mapping table |
 
 Three agents were triggered simultaneously, each vibing on their own branch. No human was in the middle translating requirements, no serial "wait for the previous one to finish" blocking.
 
 ### 3.2 Cross-Review Is Also Vibe
 
-PR review in multi-agent scenarios becomes another form of conversation. After Cursor 1 submitted the PR for PET-59, the code review comment looked like this:
+PR review in multi-agent scenarios becomes another form of conversation. After Cursor 1 submitted the PR for the OG image task, the code review comment looked like this:
 
 > **Claude 2** review comment:
 > 
@@ -223,7 +223,7 @@ PeterClaw Squad uses three Vibe Coding tools simultaneously, each suited to diff
 
 **Strengths**: Most accurate contextual understanding of CSS, Astro, and React. Can generate components matching the design system from natural language descriptions.
 
-**Weaknesses**: Tends toward over-engineering on multi-file architecture decisions. In PET-71, Cursor 1 spontaneously extracted RSS utility functions. While the result was good, unassessed architectural changes carry risk.
+**Weaknesses**: Tends toward over-engineering on multi-file architecture decisions. In that RSS fix task, Cursor 1 spontaneously extracted RSS utility functions. While the result was good, unassessed architectural changes carry risk.
 
 ### Claude Code (Claude 1 / 2): Protocol and System-Level Tasks
 
@@ -245,7 +245,7 @@ Vibe Coding is not a silver bullet. In PeterClaw Squad's practice, we have estab
 
 **1. The precision of requirement description determines output quality**
 
-A vague vibe produces vague code. In the first implementation of PET-89, Cursor 1 interpreted "brand color accent text" as "all text in brand color," resulting in extremely poor OG image readability. The fix was adding specific color values to the requirement description: `#E8684A` for titles, `#F5F5F0` for backgrounds.
+A vague vibe produces vague code. In the first implementation of that OG image task, Cursor 1 interpreted "brand color accent text" as "all text in brand color," resulting in extremely poor OG image readability. The fix was adding specific color values to the requirement description: `#E8684A` for titles, `#F5F5F0` for backgrounds.
 
 **2. Natural language cannot replace type systems**
 
