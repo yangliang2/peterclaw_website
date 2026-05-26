@@ -6,7 +6,7 @@ test.describe('blog reading journey', () => {
     await page.getByRole('link', { name: 'Blog', exact: true }).click();
     await expect(page).toHaveURL(/\/en\/blog\/$/);
 
-    await page.getByRole('link', { name: /Cursor vs Windsurf/ }).first().click();
+    await page.getByRole('link', { name: /From Personal Site to Public Collaboration/ }).first().click();
     await expect(page.locator('article[data-pagefind-body]')).toBeVisible();
 
     const progress = page.locator('[data-reading-progress-bar]');
@@ -35,7 +35,7 @@ test.describe('blog reading journey', () => {
       });
     });
 
-    await page.goto('/en/blog/ai-tool-review-cursor-vs-windsurf/');
+    await page.goto('/en/blog/ai-squad-launch-diary/');
 
     await expect(page.locator('.giscus-host iframe.giscus-frame')).toBeVisible();
   });
@@ -46,9 +46,9 @@ test('search returns an article and navigates to it', async ({ page }) => {
 
   const search = page.getByRole('combobox', { name: /Search keywords/ });
   await expect(search).toBeVisible();
-  await search.fill('Cursor');
+  await search.fill('Personal Site');
 
-  const result = page.getByRole('option', { name: /Cursor vs Windsurf/ }).first();
+  const result = page.getByRole('option', { name: /From Personal Site to Public Collaboration/ }).first();
   await expect(result).toBeVisible();
   await result.click();
 
