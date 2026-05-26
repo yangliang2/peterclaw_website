@@ -1,0 +1,169 @@
+name: Vercel Preview
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: vercel-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Deploy Preview and Comment
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Comment pending preview status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- vercel-preview-deployment -->';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              marker,
+              '## Vercel Preview Deployment',
+              '',
+              '| Field | Value |',
+              '| --- | --- |',
+              '| Status | pending |',
+              '| Preview URL | Deploying... |',
+              '| Build time | Running... |',
+              `| Workflow | [Run #${context.runNumber}](${runUrl}) |`,
+              '',
+              'This comment is updated automatically by GitHub Actions.'
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker)
+            );
+
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      - name: Deploy Vercel preview
+        id: deploy
+        run: |
+          set -euo pipefail
+
+          if [ -z "${VERCEL_TOKEN}" ] || [ -z "${VERCEL_ORG_ID}" ] || [ -z "${VERCEL_PROJECT_ID}" ]; then
+            echo "missing_secrets=true" >> "$GITHUB_OUTPUT"
+            echo "VERCEL_TOKEN, VERCEL_ORG_ID, and VERCEL_PROJECT_ID secrets are required." >&2
+            exit 1
+          fi
+
+          start_epoch="$(date +%s)"
+
+          # Existing CI remains the content gate; this job only builds and deploys the preview.
+          npx --yes vercel pull --yes --environment=preview --token="${VERCEL_TOKEN}"
+          npx --yes vercel build --token="${VERCEL_TOKEN}"
+          deploy_output="$(npx --yes vercel deploy --prebuilt --token="${VERCEL_TOKEN}")"
+          printf '%s\n' "${deploy_output}"
+          preview_url="$(printf '%s\n' "${deploy_output}" | grep -Eo 'https://[^[:space:]]+' | tail -n 1)"
+
+          if [ -z "${preview_url}" ]; then
+            echo "Vercel deploy completed without a parseable preview URL." >&2
+            exit 1
+          fi
+
+          end_epoch="$(date +%s)"
+          build_seconds="$((end_epoch - start_epoch))"
+
+          echo "preview_url=${preview_url}" >> "$GITHUB_OUTPUT"
+          echo "build_seconds=${build_seconds}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment final preview status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- vercel-preview-deployment -->';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const status = '${{ steps.deploy.outcome }}' === 'success' ? 'success' : 'failed';
+            const previewUrl = '${{ steps.deploy.outputs.preview_url }}' || 'Unavailable';
+            const buildSeconds = '${{ steps.deploy.outputs.build_seconds }}';
+            const buildTime = buildSeconds ? `${buildSeconds}s` : 'Unavailable';
+            const missingSecrets = '${{ steps.deploy.outputs.missing_secrets }}' === 'true';
+            const previewCell = previewUrl === 'Unavailable' ? previewUrl : `[${previewUrl}](${previewUrl})`;
+            const bodyLines = [
+              marker,
+              '## Vercel Preview Deployment',
+              '',
+              '| Field | Value |',
+              '| --- | --- |',
+              `| Status | ${status} |`,
+              `| Preview URL | ${previewCell} |`,
+              `| Build time | ${buildTime} |`,
+              `| Workflow | [Run #${context.runNumber}](${runUrl}) |`
+            ];
+
+            if (missingSecrets) {
+              bodyLines.push(
+                '',
+                'Vercel repository secrets are missing: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID`.'
+              );
+            }
+
+            bodyLines.push('', 'This comment is updated automatically by GitHub Actions.');
+            const body = bodyLines.join('\n');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker)
+            );
+
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
