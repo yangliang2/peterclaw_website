@@ -295,6 +295,17 @@
 - **修正**：Brainstorming 创建新 backlog 前，必须扫描所有非 done/cancelled 的 issue，确保不重复创建。
 - **教训**：**创建新任务前必须检查"是否已在进行中"，backlog 不是无限空间。**
 
+#### 坑 44：PR 巡检连续多轮系统性漏报 in_review issue
+- **Issue**：PET-619、PET-629、PET-638、PET-647
+- **Agent**：claude 2号
+- **现象**：02:00~05:00 的四轮 PR 巡检（PET-619/629/638/647）均报告「当前无 in-review 状态的 issue，无需操作」。但同期 workspace 中始终存在多个 in_review 任务（PET-556、PET-557、PET-558、PET-560 等，其 PR 分别于 00:11~01:08 提交，状态早已变更为 in_review）。PET-610（01:00 巡检）成功找到并合并了 2 个 in_review issue，证明命令本身可用。
+- **根因**：疑似 Agent 在执行巡检逻辑时将「无满足合并条件的 PR」误判为「无 in_review issue」；或在解析 `multica issue list --status in_review` 输出时出现逻辑错误，导致连续 4 轮漏报。
+- **后果**：多个已就绪的 PR 在数小时内无人 review 和合并，任务卡在 in_review；PR 巡检形同虚设。
+- **修正**：尚无。
+- **教训**：**自动化巡检的「零结果」报告不可盲信。** 必须定期人工抽查验证，或在巡检逻辑中增加「发现的 issue 列表」输出，以便核对是否遗漏。
+
+> **补充**：PET-647 的 issue 描述中明确要求「如果 PR 存在但有问题，通知对应 assignee；如果 issue 没有 PR，催 assignee 尽快提交」，但实际输出仅有「无 in-review issue」一句，说明 Agent 可能未执行完整巡检步骤。
+
 ### codex 1号 / cursor 1号（工程实现 Agent）
 
 #### 坑 31：完成代码/PR 后未更新 issue 状态，触发重复催动与重复 PR
@@ -389,6 +400,8 @@
 | 40 | 待写：PR 链接校验与完工确认 | ⬜ 未使用 |
 | 41 | 待写：已完成任务的重复激活与 Backlog 扫描盲区 | ⬜ 未使用 |
 | 42 | 待写：自动化巡检的虚假报告与执行验证缺失 | ⬜ 未使用 |
+| 43 | 待写：PR 流程硬门槛与直接 push 风险 | ⬜ 未使用 |
+| 44 | 待写：自动化巡检的零结果漏报与验证机制 | ⬜ 未使用 |
 
 ### gemini 1号（COO / DevOps）
 
@@ -399,6 +412,17 @@
 - **后果**：任务看似已完成并进入 in_review，实际上没有 PR 可供 review 和合并，阻塞验收流程。
 - **修正**：gemini 1号 重新提交真正的 PR #132。
 - **教训**：**提交 PR 后必须确认 URL 格式为 `/pull/数字`，`/pull/new/...` 不代表 PR 已存在。**
+
+#### 坑 43：任务明确要求提交 PR，Agent 却直接 push 到 main
+- **Issue**：PET-559
+- **Agent**：gemini 1号
+- **现象**：Issue 描述和激活评论均明确要求「完成后请务必向 https://github.com/yangliang2/peterclaw_website 提交 PR」。但 gemini 1号 完成 Google Search Console 数据读取报告后，**直接将报告 push 到 main 分支**，未创建任何 PR。用户审阅后明确指出：「原始指示要求提交 PR，本次直接 push 到 main。后续请遵守 PR 流程。」
+- **根因**：Agent 将「完成代码/报告」等同于「交付」，未将「创建 PR」作为完工的必要步骤。缺少「PR 是代码进入主干的唯一通道」这一流程认知。
+- **后果**：代码/报告绕过 review 和 QA 门禁直接进入 main，破坏质量管控流程；同时 issue 状态虽被改为 in_review，但实际上无 PR 可审。
+- **修正**：用户口头提醒，后续需强制执行 PR 流程。
+- **教训**：**PR 流程不是可选项，而是质量门禁。任务描述中的「提交 PR」必须作为硬门槛纳入完工 checklist。**
+
+> **补充**：同日 PET-564 中 gemini 1号 再次误报 `/pull/new/...` 为已提交 PR（坑 40 的复发），说明 gemini 1号 对 PR 流程的理解仍未完全纠正。
 
 ---
 
@@ -451,4 +475,6 @@
 *更新说明：新增 跨 agent 失误 / gemini 1号（坑 39~40）—— 核心 Agent 连环触发平台速率限制导致集体失联、Agent 误将创建 PR 页面 URL 当作已提交 PR*
 *更新日期：2026-05-26*
 *更新说明：新增 claude 2号 / gemini 1号（坑 41~42）—— 已完成任务被 Backlog 扫描错误重新激活、PR 巡检虚假报告执行结果*
+*更新日期：2026-05-26*
+*更新说明：新增 gemini 1号 / claude 2号（坑 43~44）—— 任务明确要求 PR 却直接 push 到 main、PR 巡检连续多轮系统性漏报 in_review issue*
 
