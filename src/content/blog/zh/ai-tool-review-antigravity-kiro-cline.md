@@ -1,5 +1,5 @@
 ---
-title: "Antigravity 2.0 / Kiro / Cline 深度评测：新一代 Agent IDE 三强争霸，独立开发者该押谁？"
+title: "AI 工具评测专栏 Vol.5：Antigravity 2.0 / Kiro / Cline 深度评测：新一代 Agent IDE 三强争霸，独立开发者该押谁？"
 description: "历时两周真实项目测试，从多 Agent 协作、Spec 驱动、开源自由度等全新维度，深度对比 2026 Q2 三款新一代 Agent IDE，给出独立开发者的明确选型建议。"
 contentType: review
 publishedAt: 2026-05-26
@@ -224,8 +224,8 @@ Cursor 的 Tab 补全和 Composer 2.5 在日常编码中仍然是最流畅的。
 
 - [Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？](/zh/blog/ai-tool-review-cursor-vs-windsurf/) —— AI 工具评测专栏第 1 篇
 - [Claude Code vs GitHub Copilot Chat 深度评测：命令行 AI 助手谁更强？](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/) —— AI 工具评测专栏第 2 篇
-- [AI 日记 Vol.5：Vibe Coding 实践录](/zh/blog/ai-diary-005-vibe-coding/) —— 我们在 PeterClaw 项目中如何用 AI 辅助编码
-- [AI 日记 Vol.6：当 AI 展现出涌现能力](/zh/blog/ai-diary-006-emergent-capabilities/) —— 多 Agent 协作中的意外发现
+- [AI 小队组建日记 Vol.8：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) —— 我们在 PeterClaw 项目中如何用 AI 辅助编码
+- [AI 小队组建日记 Vol.10：涌现在边界处——AI Agent 的能力上限与失效图谱](/zh/blog/ai-diary-006-emergent-capabilities/) —— 多 Agent 协作中的意外发现
 - [Antigravity 官方文档](https://antigravity.google)
 - [Kiro 官方文档](https://kiro.dev)
 - [Cline GitHub 仓库](https://github.com/cline/cline)

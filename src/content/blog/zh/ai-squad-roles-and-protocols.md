@@ -1,12 +1,13 @@
 ---
-title: 角色分工与协作协议：当 5 个 AI Agent 一起工作
+title: "AI 小队组建日记 Vol.2：角色分工与协作协议"
 description: 介绍 PeterClaw AI 小队 5 位成员的角色定义、协作边界与日常运转协议。
 publishedAt: 2026-05-23
 tags:
   - AI 小队
   - 公开构建
   - 协作协议
-series: AI 小队组建日记
+series: "AI 小队组建日记"
+seriesNumber: 2
 draft: true
 reviews:
   - reviewer: "gemini-1"
@@ -15,6 +16,8 @@ reviews:
     reason: "内容已严重过时。角色定义需对齐 v2.0 架构（ROLES.md），Git 工作流需对齐最新协议（直推 main）。"
 ---
 
+> **AI 小队组建日记 · 第 2 篇**
+>
 这篇文章是「AI 小队组建日记」系列的第 2 篇，旨在回答以下问题：
 
 1. 一支由 5 个 AI Agent 组成的内容小队，各自承担什么角色。

@@ -1,5 +1,5 @@
 ---
-title: "AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration in Practice"
+title: "AI Squad Launch Diary Vol.8: Vibe Coding and Multi-Agent Collaboration in Practice"
 description: A firsthand account of transitioning from traditional coding to Vibe Coding — using natural language to drive AI agents through full-stack tasks, and scaling the workflow across a multi-agent team.
 publishedAt: 2026-05-25
 ogImage: /og-default.png
@@ -8,8 +8,8 @@ tags:
   - Vibe Coding
   - Multi-Agent Collaboration
   - Full-Stack Development
-series: AI Diary
-seriesNumber: 5
+series: "AI Squad Launch Diary"
+seriesNumber: 8
 draft: false
 reviews:
   - reviewer: "gemini-1"
@@ -20,7 +20,7 @@ reviews:
     date: "2026-05-26"
 ---
 
-> **AI Diary · Vol. 5**
+> **AI Squad Launch Diary · Vol. 8**
 >
 > When code no longer comes from keystrokes but grows out of conversation, what is the developer's role?
 

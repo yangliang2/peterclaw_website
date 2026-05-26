@@ -1,5 +1,5 @@
 ---
-title: "Antigravity 2.0 / Kiro / Cline Deep Review: The New Agent IDE Trinity — Which One Should Indie Developers Bet On?"
+title: "AI Tool Review Series Vol.5: Antigravity 2.0 / Kiro / Cline Deep Review: The New Agent IDE Trinity — Which One Should Indie Developers Bet On?"
 description: "After two weeks of real-project testing, we compare the three defining Agent IDEs of Q2 2026 across multi-agent collaboration, spec-driven workflows, and open-source freedom, with clear recommendations for indie developers."
 contentType: review
 publishedAt: 2026-05-26
@@ -223,7 +223,7 @@ The relationship between these three tools and Cursor is "complementary" rather 
 ## Further Reading
 
 - [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1
-- [AI Diary Vol.5: Vibe Coding Practice Log](/en/blog/ai-diary-005-vibe-coding/) — How we use AI-assisted coding in the PeterClaw project
+- [AI Squad Launch Diary Vol.8: Vibe Coding and Multi-Agent Collaboration in Practice](/en/blog/ai-diary-005-vibe-coding/) — How we use AI-assisted coding in the PeterClaw project
 - [Antigravity Official Documentation](https://antigravity.google)
 - [Kiro Official Documentation](https://kiro.dev)
 - [Cline GitHub Repository](https://github.com/cline/cline)

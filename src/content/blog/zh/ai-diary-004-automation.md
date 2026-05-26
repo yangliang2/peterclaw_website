@@ -1,5 +1,5 @@
 ---
-title: 当 Autopilot 把自己算进活跃任务：自动化巡检的计数逻辑 Bug 与修复
+title: "AI 小队组建日记 Vol.6：当 Autopilot 把自己算进活跃任务：自动化巡检的计数逻辑 Bug 与修复"
 description: 记录 PeterClaw AI 小队搭建自动巡检 cron 的过程，以及 autopilot 因计数逻辑缺陷导致 backlog 积压、流水线停滞的完整复盘。
 contentType: journal
 publishedAt: 2026-05-24
@@ -9,8 +9,8 @@ tags:
   - 公开构建
   - 自动化
   - 工作流设计
-series: AI 小队组建日记
-seriesNumber: 4
+series: "AI 小队组建日记"
+seriesNumber: 6
 draft: false
 faq:
   - question: "Autopilot 为什么会让任务流水线停滞？"
@@ -26,7 +26,7 @@ reviews:
     date: "2026-05-26"
 ---
 
-> **AI 小队组建日记 · 第 4 篇**
+> **AI 小队组建日记 · 第 6 篇**
 >
 > 我们以为自动化会让团队永不阻塞，结果发现：让流水线停下来的，恰恰是自动化本身。
 
