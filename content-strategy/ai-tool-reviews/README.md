@@ -13,10 +13,23 @@
 |------|------|---------|---------|-------------|------|
 | 第 1 篇 | Cursor vs Windsurf 2026 深度评测 | 2026-05-25 | `src/content/blog/zh/ai-tool-review-cursor-vs-windsurf.md` | Cursor, Windsurf | 已发布 |
 | 第 2 篇 | Claude Code vs GitHub Copilot Chat 深度评测 | 2026-05-28 | `src/content/blog/zh/ai-tool-review-claude-code-vs-copilot-chat.md` | Claude Code, Copilot Chat | 已发布 |
-| 第 4 篇 | **Midjourney v7 vs Flux vs Ideogram 深度评测** | 2026-05-26 | `src/content/blog/zh/ai-tool-review-midjourney-flux-ideogram.md` | Midjourney v7, Flux, Ideogram | **已提交 PR** |
+| 第 4 篇 | **Midjourney v7 vs Flux vs Ideogram 深度评测** | 2026-05-26 | `src/content/blog/zh/ai-tool-review-midjourney-flux-ideogram.md` | Midjourney v7, Flux, Ideogram | **已提交 PR（修订版）** |
 | 第 5 篇 | Antigravity 2.0 / Kiro / Cline 深度评测 | 2026-05-26 | `src/content/blog/zh/ai-tool-review-antigravity-kiro-cline.md` | Antigravity, Kiro, Cline | 已发布 |
 
 > 注：第 3 篇预留为 AI 写作/内容生成工具横评，尚未启动。
+
+---
+
+## 第 4 篇交付证据
+
+| 证据项 | 状态 | 文件路径 |
+|--------|------|----------|
+| 中文评测文章 | ✅ 已更新 | `src/content/blog/zh/ai-tool-review-midjourney-flux-ideogram.md` |
+| 英文评测文章 | ✅ 已更新 | `src/content/blog/en/ai-tool-review-midjourney-flux-ideogram.md` |
+| 对比样图（5 组） | ✅ 已生成 | `public/images/blog/ai-tool-review-midjourney-flux-ideogram/` |
+| 素材来源说明 | ✅ 已补充 | `content-strategy/ai-tool-reviews/PET-562-material-sources.md` |
+| 双重审核记录 | ✅ 已补充 | `content-strategy/ai-tool-reviews/PET-562-review-record.md` |
+| 综合对比总表 | ✅ 已嵌入文章 | `comparison-overall-chart.png` |
 
 ---
 
@@ -54,4 +67,5 @@
 ## 待办
 
 - [ ] 第 3 篇选题确定（AI 写作/内容生成工具横评）
+- [x] 第 4 篇 PR 已提交修订版（补充样图 + 来源说明 + 审核记录）
 - [ ] 第 4 篇 PR 合并后更新本索引状态为「已发布」

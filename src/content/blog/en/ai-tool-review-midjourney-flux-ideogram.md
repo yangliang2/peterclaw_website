@@ -60,6 +60,8 @@ This review is based on the following sources:
 
 Target readers: designers, content creators, indie developers, and e-commerce operators who need AI-generated images for real work.
 
+> 📎 **Full methodology and source documentation**: See [`content-strategy/ai-tool-reviews/PET-562-material-sources.md`](https://github.com/yangliang2/peterclaw_website/blob/main/content-strategy/ai-tool-reviews/PET-562-material-sources.md)
+
 ---
 
 ## Review Dimensions
@@ -208,6 +210,9 @@ Ideogram was founded in 2022 by four ex-Google Brain researchers (Mohammad Norou
 
 The following four comparisons describe stable characteristics across multiple generations with identical prompts. Due to the stochastic nature of AI image generation, these reflect **consistent patterns** rather than single-result anomalies.
 
+> 📊 **Overall Comparison Chart** (click to enlarge):
+> ![AI Image Generator Overall Comparison Chart](/images/blog/ai-tool-review-midjourney-flux-ideogram/comparison-overall-chart.png)
+
 ### Comparison 1: Product Photography (Precise Scene Control)
 
 **Prompt**:
@@ -230,6 +235,8 @@ The following four comparisons describe stable characteristics across multiple g
 - Earbud matte texture leans "plastic"; copper accents lack metallic luster
 - Background gradient is relatively flat
 - If prompt included product name text (e.g., "SonicPro X1"), Ideogram could render it correctly — a weakness for the other two tools
+
+![Comparison 1: Product Photography](/images/blog/ai-tool-review-midjourney-flux-ideogram/comparison-scenario-1-product-photography.png)
 
 **Winner**: Flux (precise adherence + realistic texture)
 
@@ -259,6 +266,8 @@ The following four comparisons describe stable characteristics across multiple g
 - Phoenix and architectural detail density lower than Midjourney
 - If the image needs poem or title text, Ideogram is the only reliable choice
 
+![Comparison 2: Illustration / Concept Art](/images/blog/ai-tool-review-midjourney-flux-ideogram/comparison-scenario-2-illustration-concept.png)
+
 **Winner**: Midjourney v7 (highest aesthetic ceiling)
 
 ---
@@ -285,6 +294,8 @@ The following four comparisons describe stable characteristics across multiple g
 - Text "START BEFORE YOU'RE READY" correct in all 5 generations
 - Font style, shadow effect, and centered layout fully match prompt description
 - Can be downloaded and posted to Instagram directly with zero post-processing
+
+![Comparison 3: Social Media Graphic](/images/blog/ai-tool-review-midjourney-flux-ideogram/comparison-scenario-3-social-media.png)
 
 **Winner**: Ideogram 3.0 (only tool meeting core requirement)
 
@@ -314,6 +325,8 @@ The following four comparisons describe stable characteristics across multiple g
 - **Chinese text "龙年大吉" rendering success rate ~85-90%**, the only "usable" option among the three tools
 - Font style, size, and position control are precise
 - Conclusion: ready for WeChat sharing without post-processing
+
+![Comparison 4: Chinese Content](/images/blog/ai-tool-review-midjourney-flux-ideogram/comparison-scenario-4-chinese-scene.png)
 
 **Winner**: Ideogram 3.0 (decisive advantage in Chinese text support)
 
