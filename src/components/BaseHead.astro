@@ -13,6 +13,7 @@ interface Props {
   ogImage?: string;
   publishedTime?: string;
   modifiedTime?: string;
+  keywords?: string[];
   structuredData?: JsonLdSchema | JsonLdSchema[];
   alternateLocales?: { locale: Locale; path: string }[];
   noindex?: boolean;
@@ -27,6 +28,7 @@ const {
   ogImage = siteConfig.defaultOgImage,
   publishedTime,
   modifiedTime,
+  keywords,
   structuredData,
   alternateLocales = [],
   noindex = false,
@@ -47,6 +49,9 @@ const schemas = structuredData
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{keywords && keywords.length > 0 && (
+  <meta name="keywords" content={keywords.join(', ')} />
+)}
 <link rel="canonical" href={canonicalUrl} />
 {
   hreflangAlternates.map(({ locale: altLocale, path }) => (

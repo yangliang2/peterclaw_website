@@ -17,6 +17,7 @@ interface Props {
   ogImage?: string;
   publishedTime?: string;
   modifiedTime?: string;
+  keywords?: string[];
   structuredData?: JsonLdSchema | JsonLdSchema[];
   alternateLocales?: { locale: Locale; path: string }[];
   noindex?: boolean;
@@ -31,6 +32,7 @@ const {
   ogImage,
   publishedTime,
   modifiedTime,
+  keywords,
   structuredData,
   alternateLocales,
   noindex,
@@ -80,6 +82,7 @@ const pageDescription = description ?? copy.tagline;
       ogImage={ogImage}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
+      keywords={keywords}
       structuredData={structuredData}
       alternateLocales={alternateLocales}
       noindex={noindex}

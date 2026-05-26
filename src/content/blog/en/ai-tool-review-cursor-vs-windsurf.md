@@ -12,6 +12,16 @@ tags:
   - AI Coding
 series: "AI Tool Review Series"
 seriesNumber: 1
+keywords:
+  - Cursor
+  - Windsurf
+  - AI code editor
+  - AI coding
+  - code completion
+  - AI tool review
+  - editor comparison
+  - Cursor vs Windsurf
+  - best AI code editor
 recommendation: 5
 reviewedProduct:
   name: Cursor

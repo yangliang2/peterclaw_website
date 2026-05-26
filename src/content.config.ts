@@ -18,6 +18,7 @@ const sharedContentSchema = z.object({
   stepCount: z.number().int().positive().optional(),
   toolchain: z.array(z.string()).default([]),
   toolCategory: z.string().optional(),
+  keywords: z.array(z.string()).default([]),
   recommendation: z.number().int().min(1).max(5).optional(),
   reviewedProduct: z
     .object({
