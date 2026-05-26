@@ -1,0 +1,309 @@
+---
+import type { ReviewScoreDimension } from '@/types/review-score';
+import { assertReviewDimensions, computeWeightedTotal } from '@/types/review-score';
+
+interface TableLabels {
+  dimension: string;
+  max: string;
+  score: string;
+  weight: string;
+}
+
+interface Props {
+  title: string;
+  dimensions: ReviewScoreDimension[];
+  totalScore?: number;
+  showRadar?: boolean;
+  maxScore?: number;
+  tableLabels?: TableLabels;
+}
+
+const defaultTableLabels: TableLabels = {
+  dimension: '维度',
+  max: '满分',
+  score: '得分',
+  weight: '权重',
+};
+
+const {
+  title,
+  dimensions,
+  totalScore,
+  showRadar = true,
+  maxScore = 5,
+  tableLabels = defaultTableLabels,
+} = Astro.props;
+
+assertReviewDimensions(dimensions);
+
+const weightedTotal = computeWeightedTotal(dimensions, maxScore, totalScore);
+const displayTotal = weightedTotal.toFixed(1);
+const count = dimensions.length;
+const center = 120;
+const radius = 88;
+const angleStep = (Math.PI * 2) / count;
+const startAngle = -Math.PI / 2;
+
+function axisPoint(index: number, scale: number) {
+  const angle = startAngle + index * angleStep;
+  const r = radius * scale;
+  return {
+    x: center + r * Math.cos(angle),
+    y: center + r * Math.sin(angle),
+  };
+}
+
+const dataPoints = dimensions
+  .map((dimension, index) => {
+    const max = dimension.maxScore ?? maxScore;
+    const scale = max > 0 ? Math.min(dimension.score / max, 1) : 0;
+    const { x, y } = axisPoint(index, scale);
+    return `${x},${y}`;
+  })
+  .join(' ');
+
+const gridLevels = [0.25, 0.5, 0.75, 1];
+const gridPolygons = gridLevels.map((level) =>
+  dimensions
+    .map((_, index) => {
+      const { x, y } = axisPoint(index, level);
+      return `${x},${y}`;
+    })
+    .join(' '),
+);
+
+const axisLines = dimensions.map((_, index) => {
+  const { x, y } = axisPoint(index, 1);
+  return { x1: center, y1: center, x2: x, y2: y };
+});
+
+const labels = dimensions.map((dimension, index) => {
+  const { x, y } = axisPoint(index, 1.12);
+  const anchor =
+    Math.abs(x - center) < 8 ? 'middle' : x > center ? 'start' : 'end';
+  return { name: dimension.name, x, y, anchor };
+});
+
+const radarLabel = `${title} — ${displayTotal}/${maxScore}`;
+---
+
+<article class="review-score-card glass-card">
+  <header class="card-header">
+    <h3 class="card-title">{title}</h3>
+    <p class="card-total" aria-label={radarLabel}>
+      <span class="total-value">{displayTotal}</span>
+      <span class="total-scale">/ {maxScore}</span>
+    </p>
+  </header>
+
+  {showRadar && (
+    <figure class="radar-wrap" aria-hidden="true">
+      <svg
+        class="radar-chart"
+        viewBox="0 0 240 240"
+        role="img"
+        aria-label={radarLabel}
+      >
+        {gridPolygons.map((points) => (
+          <polygon class="radar-grid" points={points} />
+        ))}
+        {axisLines.map((line) => (
+          <line
+            class="radar-axis"
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+          />
+        ))}
+        <polygon class="radar-fill" points={dataPoints} />
+        <polygon class="radar-stroke" points={dataPoints} />
+        {dimensions.map((dimension, index) => {
+          const max = dimension.maxScore ?? maxScore;
+          const scale = max > 0 ? Math.min(dimension.score / max, 1) : 0;
+          const { x, y } = axisPoint(index, scale);
+          return <circle class="radar-dot" cx={x} cy={y} r="3.5" />;
+        })}
+        {labels.map((label) => (
+          <text
+            class="radar-label"
+            x={label.x}
+            y={label.y}
+            text-anchor={label.anchor}
+            dominant-baseline="middle"
+          >
+            {label.name}
+          </text>
+        ))}
+      </svg>
+    </figure>
+  )}
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{tableLabels.dimension}</th>
+          <th scope="col">{tableLabels.max}</th>
+          <th scope="col">{tableLabels.score}</th>
+          <th scope="col">{tableLabels.weight}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {dimensions.map((dimension) => {
+          const max = dimension.maxScore ?? maxScore;
+          const weightPct = `${Math.round(dimension.weight * 100)}%`;
+          return (
+            <tr>
+              <th scope="row">{dimension.name}</th>
+              <td>{max}</td>
+              <td>{dimension.score}</td>
+              <td>{weightPct}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+    {dimensions.some((d) => d.note) && (
+      <ul class="dimension-notes">
+        {dimensions
+          .filter((d) => d.note)
+          .map((d) => (
+            <li>
+              <strong>{d.name}:</strong> {d.note}
+            </li>
+          ))}
+      </ul>
+    )}
+  </div>
+</article>
+
+<style>
+  .review-score-card {
+    margin: 0;
+    max-width: none;
+    padding: clamp(1rem, 2.5vw, 1.35rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+
+  .card-total {
+    margin: 0;
+    font-family: var(--font-mono);
+    line-height: 1;
+  }
+
+  .total-value {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient-ai);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .total-scale {
+    margin-left: 0.15rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .radar-wrap {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .radar-chart {
+    width: min(100%, 280px);
+    height: auto;
+  }
+
+  .radar-grid {
+    fill: none;
+    stroke: var(--color-line);
+    stroke-width: 1;
+  }
+
+  .radar-axis {
+    stroke: var(--color-line);
+    stroke-width: 1;
+  }
+
+  .radar-fill {
+    fill: color-mix(in srgb, var(--color-primary) 28%, transparent);
+    stroke: none;
+  }
+
+  .radar-stroke {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+
+  .radar-dot {
+    fill: var(--color-secondary);
+    stroke: var(--color-surface);
+    stroke-width: 1.5;
+  }
+
+  .radar-label {
+    fill: var(--color-text-muted);
+    font-size: 9px;
+    font-family: var(--font-sans);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .review-score-card table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .review-score-card th,
+  .review-score-card td {
+    padding: 0.55rem 0.65rem;
+    border-bottom: 1px solid var(--color-line);
+    text-align: left;
+  }
+
+  .review-score-card thead th {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: var(--color-soft-bg);
+  }
+
+  .dimension-notes {
+    margin: var(--space-sm) 0 0;
+    padding-left: 1.1rem;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .dimension-notes li {
+    margin-bottom: 0.35rem;
+  }
+</style>

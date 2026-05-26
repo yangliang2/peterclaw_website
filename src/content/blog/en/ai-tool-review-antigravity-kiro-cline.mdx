@@ -27,6 +27,8 @@ reviews:
     date: "2026-05-25"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI Tool Review Series · Issue 5**
 >
 > When AI coding tools evolve from "smart autocomplete" to "multi-agent autonomous collaboration," the logic for choosing tools has changed — you're no longer picking a faster input method, but a more reliable "virtual technical co-founder."
@@ -150,18 +152,56 @@ Cline (formerly Claude Dev) is the most popular open-source AI Agent extension i
 
 ## Comparison Matrix
 
-| Dimension | Antigravity 2.0 | Kiro | Cline | Notes |
-|-----------|-----------------|------|-------|-------|
-| Multi-Agent Parallelism | ★★★★★ | ★★★☆☆ | ★★★★☆ | Antigravity native 5-way; Cline supported but needs config |
-| Spec / Plan-Driven | ★★★☆☆ | ★★★★★ | ★★★★☆ | Kiro's spec workflow is most complete; Cline Plan mode is flexible |
-| Model Freedom | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline supports any model; Antigravity mainly tied to Gemini |
-| Code Generation Quality | ★★★★★ | ★★★★☆ | ★★★★☆ | Antigravity's Gemini 3.5 Flash excels in both speed and quality |
-| Ecosystem Integration | ★★★★☆ | ★★★★★ | ★★★★☆ | Kiro's AWS integration is unmatched; Antigravity strong on Google stack |
-| Response Speed | ★★★★★ | ★★★★☆ | ★★★★☆ | Gemini 3.5 Flash at ~289 tokens/s, clearly leading |
-| Price Friendliness | ★★★☆☆ | ★★★☆☆ | ★★★★★ | Cline free BYOK; Antigravity and Kiro lean toward enterprise pricing |
-| China Accessibility | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline + domestic API best; Kiro via AWS acceptable; Antigravity mediocre |
-| Learning Curve | ★★★★☆ | ★★★☆☆ | ★★★★☆ | Kiro's spec culture requires team adaptation |
-| Open Source / Auditable | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline fully open; Kiro based on Code OSS; Antigravity proprietary |
+Score cards below cover 8 core dimensions (weighted total + radar). See the article body for learning curve and open-source notes.
+
+<div class="review-score-grid">
+
+<ReviewScoreCard
+  title="Antigravity 2.0"
+  tableLabels={{ dimension: 'Dimension', max: 'Max', score: 'Score', weight: 'Weight' }}
+  dimensions={[
+    { name: 'Multi-Agent Parallelism', score: 5, weight: 0.125, note: 'Native 5-way parallelism' },
+    { name: 'Spec / Plan-Driven', score: 3.5, weight: 0.125 },
+    { name: 'Model Freedom', score: 3, weight: 0.125, note: 'Mainly tied to Gemini' },
+    { name: 'Code Generation Quality', score: 5, weight: 0.125, note: 'Gemini 3.5 Flash speed + quality' },
+    { name: 'Ecosystem Integration', score: 4.5, weight: 0.125, note: 'Strong on Google stack' },
+    { name: 'Response Speed', score: 5, weight: 0.125, note: '~289 tokens/s' },
+    { name: 'Price Friendliness', score: 3.5, weight: 0.125 },
+    { name: 'China Accessibility', score: 3.5, weight: 0.125 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Kiro"
+  tableLabels={{ dimension: 'Dimension', max: 'Max', score: 'Score', weight: 'Weight' }}
+  dimensions={[
+    { name: 'Multi-Agent Parallelism', score: 3.5, weight: 0.125 },
+    { name: 'Spec / Plan-Driven', score: 5, weight: 0.125, note: 'Most complete spec workflow' },
+    { name: 'Model Freedom', score: 4.5, weight: 0.125 },
+    { name: 'Code Generation Quality', score: 4.5, weight: 0.125 },
+    { name: 'Ecosystem Integration', score: 5, weight: 0.125, note: 'AWS integration unmatched' },
+    { name: 'Response Speed', score: 4.5, weight: 0.125 },
+    { name: 'Price Friendliness', score: 3.5, weight: 0.125 },
+    { name: 'China Accessibility', score: 4.5, weight: 0.125, note: 'AWS access acceptable' },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Cline"
+  tableLabels={{ dimension: 'Dimension', max: 'Max', score: 'Score', weight: 'Weight' }}
+  dimensions={[
+    { name: 'Multi-Agent Parallelism', score: 4.5, weight: 0.125, note: 'Supported but needs config' },
+    { name: 'Spec / Plan-Driven', score: 4.5, weight: 0.125, note: 'Flexible Plan mode' },
+    { name: 'Model Freedom', score: 5, weight: 0.125, note: 'Supports any model' },
+    { name: 'Code Generation Quality', score: 4.5, weight: 0.125 },
+    { name: 'Ecosystem Integration', score: 4.5, weight: 0.125 },
+    { name: 'Response Speed', score: 4.5, weight: 0.125 },
+    { name: 'Price Friendliness', score: 5, weight: 0.125, note: 'Free BYOK' },
+    { name: 'China Accessibility', score: 5, weight: 0.125, note: 'Best with domestic APIs' },
+  ]}
+/>
+
+</div>
 
 ---
 

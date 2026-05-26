@@ -218,6 +218,17 @@ const pageDescription = description ?? copy.tagline;
     border-top: 1px solid var(--color-line);
   }
 
+  article .review-score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1.25rem;
+    margin: 2.5rem 0;
+  }
+
+  article .review-score-grid :global(.review-score-card) {
+    margin: 0;
+  }
+
   article table {
     width: 100%;
     margin: 2.5rem 0;

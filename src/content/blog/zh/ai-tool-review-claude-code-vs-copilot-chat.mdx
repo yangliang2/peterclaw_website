@@ -26,6 +26,8 @@ reviews:
     date: "2026-05-26"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI 工具评测专栏 · 第 2 篇**
 >
 > 当 AI 编程助手从 IDE 插件下沉到命令行，代码编写的边界被彻底打破——但 Claude Code 和 GitHub Copilot Chat，谁能真正接管你的 Terminal？
@@ -141,16 +143,37 @@ $ gh copilot suggest "修复 issue #42"
 
 ## 对比总表
 
-| 维度 | Claude Code | GitHub Copilot Chat | 备注 |
-|------|-------------|---------------------|------|
-| 上下文理解 | ★★★★★ | ★★★★☆ | Claude 的 200K 上下文优势明显 |
-| 命令行 UX | ★★★★★ | ★★★★☆ | Claude 的 Agent 交互更自然 |
-| 代码补全（TS） | ★★★★★ | ★★★★★ | 两者均接近满分 |
-| 代码补全（Python） | ★★★★★ | ★★★★☆ | Claude 对复杂类型推断更准 |
-| 价格 | ★★★★☆ | ★★★★★ | Copilot $10/月固定；Claude 按量计费 |
-| 国内可访问性 | ★★★☆☆ | ★★★★☆ | Copilot API 连通性更好 |
-| 隐私与合规 | ★★★★☆ | ★★★★☆ | 两者均不上传代码训练模型 |
-| GitHub 生态集成 | ★★★☆☆ | ★★★★★ | Copilot 原生支持 Issues/PR/Actions |
+<div class="review-score-grid">
+
+<ReviewScoreCard
+  title="Claude Code"
+  dimensions={[
+    { name: '上下文理解', score: 5, weight: 0.125, note: '200K 上下文优势明显' },
+    { name: '命令行 UX', score: 5, weight: 0.125, note: 'Agent 交互更自然' },
+    { name: '代码补全（TS）', score: 5, weight: 0.125 },
+    { name: '代码补全（Python）', score: 5, weight: 0.125, note: '复杂类型推断更准' },
+    { name: '价格', score: 4.5, weight: 0.125, note: '按量计费' },
+    { name: '国内可访问性', score: 3.5, weight: 0.125 },
+    { name: '隐私与合规', score: 4.5, weight: 0.125, note: '不上传代码训练模型' },
+    { name: 'GitHub 生态集成', score: 3.5, weight: 0.125 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="GitHub Copilot Chat"
+  dimensions={[
+    { name: '上下文理解', score: 4.5, weight: 0.125 },
+    { name: '命令行 UX', score: 4.5, weight: 0.125 },
+    { name: '代码补全（TS）', score: 5, weight: 0.125, note: '两者均接近满分' },
+    { name: '代码补全（Python）', score: 4.5, weight: 0.125 },
+    { name: '价格', score: 5, weight: 0.125, note: '$10/月固定' },
+    { name: '国内可访问性', score: 4.5, weight: 0.125, note: 'API 连通性更好' },
+    { name: '隐私与合规', score: 4.5, weight: 0.125, note: '不上传代码训练模型' },
+    { name: 'GitHub 生态集成', score: 5, weight: 0.125, note: '原生支持 Issues/PR/Actions' },
+  ]}
+/>
+
+</div>
 
 ---
 

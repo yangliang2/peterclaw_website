@@ -36,6 +36,8 @@ reviews:
     date: "2026-05-26"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI Tool Review Series · Issue 1**
 >
 > When AI code editors evolve from "toys to try" into "daily production tools," choosing the right one matters more than choosing ten cheap ones.
@@ -116,15 +118,37 @@ Windsurf is an AI IDE launched by the Codeium team in late 2024, built on VS Cod
 
 ## Comparison Summary
 
-| Dimension | Cursor | Windsurf | Notes |
-|-----------|--------|----------|-------|
-| Code Completion | ★★★★★ | ★★★★☆ | Cursor Tab's predictive ability is clearly ahead |
-| Agent Tasks | ★★★★★ | ★★★★☆ | Cursor Composer is more precise; Windsurf Cascade has stronger terminal integration |
-| Context Understanding | ★★★★★ | ★★★★☆ | Cursor's @-symbol system is more mature |
-| Response Speed | ★★★★☆ | ★★★★★ | Windsurf indexes faster with lower daily completion latency |
-| Price | ★★★★☆ | ★★★★★ | Windsurf Pro is $5/month cheaper with a more generous free tier |
-| Learning Curve | ★★★★★ | ★★★★★ | Both are zero-friction for VS Code users |
-| Chinese Support | ★★★★★ | ★★★★☆ | Cursor is more stable in Chinese |
+<div class="review-score-grid">
+
+<ReviewScoreCard
+  title="Cursor"
+  tableLabels={{ dimension: 'Dimension', max: 'Max', score: 'Score', weight: 'Weight' }}
+  dimensions={[
+    { name: 'Code Completion', score: 5, weight: 0.2, note: "Cursor Tab's predictive ability is clearly ahead" },
+    { name: 'Agent Tasks', score: 5, weight: 0.2, note: 'Composer is more precise' },
+    { name: 'Context Understanding', score: 5, weight: 0.15, note: 'at-mention system is more mature' },
+    { name: 'Response Speed', score: 4.5, weight: 0.15 },
+    { name: 'Price', score: 4.5, weight: 0.15 },
+    { name: 'Learning Curve', score: 5, weight: 0.05, note: 'Zero-friction for VS Code users' },
+    { name: 'Chinese Support', score: 5, weight: 0.1, note: 'More stable in Chinese' },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Windsurf"
+  tableLabels={{ dimension: 'Dimension', max: 'Max', score: 'Score', weight: 'Weight' }}
+  dimensions={[
+    { name: 'Code Completion', score: 4.5, weight: 0.2 },
+    { name: 'Agent Tasks', score: 4.5, weight: 0.2, note: 'Cascade has stronger terminal integration' },
+    { name: 'Context Understanding', score: 4.5, weight: 0.15 },
+    { name: 'Response Speed', score: 5, weight: 0.15, note: 'Faster indexing and lower completion latency' },
+    { name: 'Price', score: 5, weight: 0.15, note: 'Pro is $5/month cheaper with a more generous free tier' },
+    { name: 'Learning Curve', score: 5, weight: 0.05, note: 'Zero-friction for VS Code users' },
+    { name: 'Chinese Support', score: 4.5, weight: 0.1 },
+  ]}
+/>
+
+</div>
 
 ---
 

@@ -27,6 +27,8 @@ reviews:
     date: "2026-05-25"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI 工具评测专栏 · 第 5 篇**
 >
 > 当 AI 编程工具从「辅助补全」进化到「多 Agent 自主协作」，选工具的逻辑已经变了——不再是选一个更快的输入法，而是选一个更靠谱的「虚拟技术合伙人」。
@@ -150,18 +152,53 @@ Cline（原名 Claude Dev）是开源社区最具人气的 AI Agent 扩展，Apa
 
 ## 对比总表
 
-| 维度 | Antigravity 2.0 | Kiro | Cline | 备注 |
-|------|-----------------|------|-------|------|
-| 多 Agent 并行 | ★★★★★ | ★★★☆☆ | ★★★★☆ | Antigravity 原生 5 并行；Cline 支持但需配置 |
-| Spec / 规划驱动 | ★★★☆☆ | ★★★★★ | ★★★★☆ | Kiro 的 Spec 工作流最完整；Cline Plan 模式灵活 |
-| 模型自由度 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline 支持任意模型；Antigravity 主要绑 Gemini |
-| 代码生成质量 | ★★★★★ | ★★★★☆ | ★★★★☆ | Antigravity 的 Gemini 3.5 Flash 速度质量兼备 |
-| 生态集成 | ★★★★☆ | ★★★★★ | ★★★★☆ | Kiro 的 AWS 整合无可匹敌；Antigravity 强在 Google 栈 |
-| 响应速度 | ★★★★★ | ★★★★☆ | ★★★★☆ | Gemini 3.5 Flash 约 289 tokens/s，明显领先 |
-| 价格友好度 | ★★★☆☆ | ★★★☆☆ | ★★★★★ | Cline 免费 BYOK；Antigravity 和 Kiro 的企业定价倾向重 |
-| 国内可访问性 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline + 国内 API 最优；Kiro 依赖 AWS 尚可；Antigravity 一般 |
-| 上手门槛 | ★★★★☆ | ★★★☆☆ | ★★★★☆ | Kiro 的 Spec 文化需要团队适应 |
-| 开源 / 可审计 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline 完全开源；Kiro 基于 Code OSS；Antigravity 闭源 |
+以下评分卡聚焦 8 个核心维度（含权重加权总分与雷达图）。完整 10 维对照见各维度说明正文。
+
+<div class="review-score-grid">
+
+<ReviewScoreCard
+  title="Antigravity 2.0"
+  dimensions={[
+    { name: '多 Agent 并行', score: 5, weight: 0.125, note: '原生 5 并行' },
+    { name: 'Spec / 规划驱动', score: 3.5, weight: 0.125 },
+    { name: '模型自由度', score: 3, weight: 0.125, note: '主要绑定 Gemini' },
+    { name: '代码生成质量', score: 5, weight: 0.125, note: 'Gemini 3.5 Flash 速度质量兼备' },
+    { name: '生态集成', score: 4.5, weight: 0.125, note: '强在 Google 栈' },
+    { name: '响应速度', score: 5, weight: 0.125, note: '约 289 tokens/s' },
+    { name: '价格友好度', score: 3.5, weight: 0.125 },
+    { name: '国内可访问性', score: 3.5, weight: 0.125 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Kiro"
+  dimensions={[
+    { name: '多 Agent 并行', score: 3.5, weight: 0.125 },
+    { name: 'Spec / 规划驱动', score: 5, weight: 0.125, note: 'Spec 工作流最完整' },
+    { name: '模型自由度', score: 4.5, weight: 0.125 },
+    { name: '代码生成质量', score: 4.5, weight: 0.125 },
+    { name: '生态集成', score: 5, weight: 0.125, note: 'AWS 整合无可匹敌' },
+    { name: '响应速度', score: 4.5, weight: 0.125 },
+    { name: '价格友好度', score: 3.5, weight: 0.125 },
+    { name: '国内可访问性', score: 4.5, weight: 0.125, note: '依赖 AWS 尚可' },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Cline"
+  dimensions={[
+    { name: '多 Agent 并行', score: 4.5, weight: 0.125, note: '支持但需配置' },
+    { name: 'Spec / 规划驱动', score: 4.5, weight: 0.125, note: 'Plan 模式灵活' },
+    { name: '模型自由度', score: 5, weight: 0.125, note: '支持任意模型' },
+    { name: '代码生成质量', score: 4.5, weight: 0.125 },
+    { name: '生态集成', score: 4.5, weight: 0.125 },
+    { name: '响应速度', score: 4.5, weight: 0.125 },
+    { name: '价格友好度', score: 5, weight: 0.125, note: '免费 BYOK' },
+    { name: '国内可访问性', score: 5, weight: 0.125, note: '国内 API 最优' },
+  ]}
+/>
+
+</div>
 
 ---
 
