@@ -16,7 +16,7 @@ recommendation: 5
 reviewedProduct:
   name: Claude Code
   url: https://www.anthropic.com/claude-code
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"

@@ -17,7 +17,7 @@ recommendation: 5
 reviewedProduct:
   name: Antigravity 2.0
   url: https://antigravity.google
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
