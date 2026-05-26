@@ -29,6 +29,18 @@ A plain `@Name` or bare name does NOT trigger the agent — the task will never 
 
 Look up UUIDs in `peterclaw-squad-private/team/MENTION_MAP.md`. Never guess a UUID.
 
+## Queue Discipline (MANDATORY)
+
+Multica runs one task per agent at a time — repeated @mentions queue up, not merge.
+
+- **Rule A**: Same thread, same agent — do NOT @mention again while the previous run is still queued or running. Post supplemental notes as plain replies (no mention). Wait for completion, then send one merged @mention with the final instruction.
+- **Rule B**: In non-delegation contexts (examples, templates, code blocks) do NOT use a clickable `mention://agent/<uuid>` link. Use a broken placeholder like `mention://agent/<UUID>` (UUID in angle brackets) so the platform does not treat it as a trigger.
+- **Rule C**: If queued runs are stacking up, cancel stale tasks — do NOT keep @mentioning to nudge:
+  ```bash
+  multica issue runs <issue-id>
+  multica issue cancel-task <task-id> --issue <issue-id>
+  ```
+
 ## Git Identity
 
 All commits must use the owner's GitHub identity. Never commit as an agent:
