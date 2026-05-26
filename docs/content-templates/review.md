@@ -13,6 +13,11 @@ tags:
 series: "AI 工具评测专栏"
 # seriesNumber should match the public review sequence.
 seriesNumber: 1
+keywords:
+  - 工具A名称
+  - 工具B名称
+  - AI代码编辑器
+  - 对比评测
 recommendation: 4
 reviewedProduct:
   name: "工具名称"

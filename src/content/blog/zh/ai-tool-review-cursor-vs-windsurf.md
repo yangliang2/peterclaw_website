@@ -12,6 +12,16 @@ tags:
   - AI 编程
 series: "AI 工具评测专栏"
 seriesNumber: 1
+keywords:
+  - Cursor
+  - Windsurf
+  - AI代码编辑器
+  - AI编程
+  - 代码补全
+  - AI工具评测
+  - 编辑器对比
+  - Cursor vs Windsurf
+  - 最强代码编辑器
 recommendation: 5
 reviewedProduct:
   name: Cursor
