@@ -81,7 +81,11 @@ Notion AI, launched in 2023, is natively integrated into Notion's block-based ed
 
 **AI writing assistance feels incredibly natural.** Notion AI's "continue writing" is the most "invisible" I've used in any note-taking tool. When drafting a technical blog, I entered a few headings, selected them, and hit space to invoke AI. The generated paragraphs matched my technical writing style and even referenced concepts I had documented in other pages within the same workspace. Most impressive: while writing about "AI note-taking tool comparisons," Notion AI automatically referenced my earlier note on "Obsidian's local-first philosophy" — this cross-page memory is rare in other tools.
 
+![Notion AI writing assistance scene: invoking AI continuation within the "AI note-taking tool comparison" page, where AI automatically references concepts from other pages in the same workspace](/images/blog/pet-556/notion-ai-writing-scene.svg)
+
 **Database + AI is a killer combo.** When organizing the project knowledge base, I put 20+ reference articles into a Notion database with properties for Source, Type, and Priority. Then I used Notion AI's "bulk fill" to auto-generate "Core Insight" summaries based on each article's content — 20 articles, about 3 minutes, ~85% accuracy. This "structured data + batch AI processing" workflow is hard to replicate in Obsidian or Capacities.
+
+![Notion AI database batch fill: 20 reference articles processed in 3 minutes with "Core Insight" summaries](/images/blog/pet-556/notion-ai-database-scene.svg)
 
 **Meeting note automation is excellent.** Notion AI can transform messy meeting notes into "Topic - Decision - Action Item" structure and auto-identify owners (if names are mentioned). Across 5 meetings, it correctly identified ~90% of action items and auto-generated todo lists.
 
@@ -106,6 +110,8 @@ Obsidian is a local-first Markdown note-taking tool; Copilot is the most powerfu
 ### Pros
 
 **Knowledge graph is the strongest of the three.** Obsidian's Graph View isn't just pretty — it's a genuinely usable thinking tool. When organizing the knowledge base, I linked 20+ reference materials via `[[wikilinks]]` and `#tags`, then discovered an unexpected connection in graph view: three seemingly unrelated articles all touched on "context windows." This discovery inspired a new section in my blog. Obsidian's backlink panel shows exactly "who references this page" — the core of a knowledge network.
+
+![Obsidian Copilot graph view: 20+ reference materials linked via bi-directional links, backlink panel showing "context windows" referenced by 3 articles](/images/blog/pet-556/obsidian-copilot-graph-scene.svg)
 
 **Native Markdown experience is unmatched.** Every Obsidian note is a `.md` file on your local disk. Open it in any editor, version it with Git, batch-process it with scripts. During testing, I opened the Obsidian vault directly in VS Code and ran a Python script to extract all code blocks — this zero-friction interoperability is impossible in Notion or Capacities.
 
@@ -132,6 +138,8 @@ Capacities is a relatively young note-taking tool positioned as a "Studio for yo
 ### Pros
 
 **Object-oriented knowledge + AI is a natural fit.** In Capacities, I created a "Project" object for this review and linked related "Daily Notes," "References," and "Ideas." Capacities' AI not only generates content based on object type (e.g., "write a book summary"), but also auto-discovers "which people are referenced by this project" and "which domain do these ideas belong to." This "structured + AI" combination transforms knowledge management from "document organizing" into "concept network management."
+
+![Capacities object-oriented view: the "AI Tool Review #3" project object aggregates daily notes, references, and ideas, with AI auto-generating connection summaries](/images/blog/pet-556/capacities-object-scene.svg)
 
 **AI writing quality is underrated.** Capacities uses a hybrid Claude/GPT-4o backend (auto-selected per task). Its writing style is "deeper" than Notion AI. When drafting the blog, generated paragraphs were not only accurate but proactively suggested "you might also want to discuss the counter-argument." This "critical thinking assistance" is rare elsewhere. Most impressive: I asked AI to summarize three articles about "second brains." It produced not just summaries but an auto-generated comparison table highlighting core disagreements between the articles.
 
@@ -231,8 +239,7 @@ Notion's team collaboration (permissions, comments, database view sharing, templ
 ## Further Reading
 
 - [Cursor vs Windsurf 2026 Deep Review](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Column Issue 1
-- [Claude Code vs GitHub Copilot Chat Deep Review](/en/blog/ai-tool-review-claude-code-vs-copilot-chat/) — AI Tool Review Column Issue 2
-- [AI Diary Vol.8: Polishing an Article with Three AI Writing Tools](/en/blog/ai-diary-008-creative-writing-tools/) — Comparing Claude, GPT-4, and Notion AI for creative writing
+- [AI Diary Vol.5: Vibe Coding](/en/blog/ai-diary-005-vibe-coding/) — Exploring AI-assisted development workflows
 - [PeterClaw Toolbox](/en/tools/) — Our daily development and productivity tool stack
 - [Notion AI Official Docs](https://www.notion.so/help/guides/category/ai)
 - [Obsidian Copilot Plugin Docs](https://github.com/logancyang/obsidian-copilot)
