@@ -4,6 +4,8 @@ const previewUrl = process.env.BASE_URL?.trim();
 const localUrl = 'http://127.0.0.1:4321';
 
 if (!previewUrl) {
+  // Avoid overriding Astro's built-in "/" BASE_URL when CI exposes an unset variable as "".
+  delete process.env.BASE_URL;
   const localBypass = '127.0.0.1,localhost';
   process.env.NO_PROXY = [process.env.NO_PROXY, localBypass].filter(Boolean).join(',');
   process.env.no_proxy = [process.env.no_proxy, localBypass].filter(Boolean).join(',');
