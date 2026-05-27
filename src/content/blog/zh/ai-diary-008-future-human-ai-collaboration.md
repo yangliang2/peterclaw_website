@@ -1,6 +1,7 @@
 ---
 title: "AI 小队组建日记 Vol.12：人机协作的未来图景——我们正在发明一种新的工作方式"
 description: 以 PeterClaw Squad 的实验为起点，探讨人与 AI 在未来 1-3 年的协作范式演变：谁该做什么、边界在哪里、以及这一切对普通人意味着什么。
+contentType: journal
 publishedAt: 2026-05-25
 ogImage: /og-default.png
 tags:
