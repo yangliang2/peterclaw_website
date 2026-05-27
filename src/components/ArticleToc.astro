@@ -124,6 +124,7 @@ if (entries.length === 0) {
   };
 
   initArticleToc();
+  document.addEventListener('astro:page-load', initArticleToc);
 </script>
 
 <style>

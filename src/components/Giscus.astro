@@ -48,6 +48,8 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
     sendGiscusMessage({ setConfig: { theme: resolveGiscusTheme() } });
   }
 
+  let themeWatchReady = false;
+
   function loadGiscus() {
     const host = document.querySelector('.giscus-host');
     if (!host || host.dataset.giscusLoaded === 'true') return;
@@ -69,10 +71,13 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
     script.setAttribute('data-lang', giscusLang);
 
     host.dataset.giscusLoaded = 'true';
-    host.append(script);
+    host.replaceChildren(script);
   }
 
   function watchThemeChanges() {
+    if (themeWatchReady) return;
+    themeWatchReady = true;
+
     const observer = new MutationObserver(() => syncGiscusTheme());
     observer.observe(document.documentElement, {
       attributes: true,
@@ -97,8 +102,13 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
     });
   }
 
-  loadGiscus();
-  watchThemeChanges();
+  function initGiscus() {
+    loadGiscus();
+    watchThemeChanges();
+  }
+
+  initGiscus();
+  document.addEventListener('astro:page-load', initGiscus);
 </script>
 
 <style>

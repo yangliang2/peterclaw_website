@@ -25,7 +25,12 @@ const navItems = [
 const isCurrentPath = (href: string) => currentPath === href || currentPath.startsWith(href);
 ---
 
-<nav class="navbar" aria-label={copy.primaryNavigation} data-pagefind-ignore="all">
+<nav
+  class="navbar"
+  aria-label={copy.primaryNavigation}
+  data-pagefind-ignore="all"
+  transition:persist="site-navbar"
+>
   <div class="container">
     <div class="bar">
       <a href={`${prefix}/`} class="logo">
@@ -36,6 +41,7 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
         <a
           href={switchPath}
           class="lang-switch"
+          data-astro-reload
           aria-label={`Switch to ${otherLocale === 'zh' ? 'Chinese' : 'English'}`}
           title={otherLocale === 'zh' ? '切换到中文' : 'Switch to English'}
         >
@@ -360,6 +366,27 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
       if (menuPanel.contains(target) || menuToggle.contains(target)) return;
       setOpen(false);
     });
+
+    function syncNavActiveState() {
+      const path = window.location.pathname;
+      document.querySelectorAll<HTMLAnchorElement>('.nav-links a[href]').forEach((link) => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const active = path === href || (href !== '/' && path.startsWith(href));
+        if (active) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    document.addEventListener('astro:before-swap', () => {
+      if (isOpen()) setOpen(false);
+    });
+
+    document.addEventListener('astro:after-swap', syncNavActiveState);
+    document.addEventListener('astro:page-load', syncNavActiveState);
   })();
 </script>
 
