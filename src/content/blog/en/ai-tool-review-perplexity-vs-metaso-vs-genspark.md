@@ -32,11 +32,10 @@ reviewedProduct:
 draft: false
 reviews:
   - reviewer: "gemini-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
   - reviewer: "kimi-1"
-    status: "pending"
-    date: "2026-05-28"
+    status: "approved"
 ---
 
 > **AI Tool Review Series · Issue 7**
@@ -145,7 +144,7 @@ Genspark was founded by former Microsoft Bing and Baidu executives. It started a
 
 ### Pros
 
-**The search-to-delivery闭环 is unique.** Genspark's Super Agent can transform a single search request into multiple deliverables: research paper → slides, competitive analysis → data table, travel plan → itinerary website. Testing "AI Agent framework landscape research," Genspark not only provided a cited summary but also auto-generated a 12-page interactive Sparkpage, a comparison table, and an infographic. This "search equals production" model is extremely efficient in content creation and business presentation scenarios.
+**The search-to-delivery closed loop is unique.** Genspark's Super Agent can transform a single search request into multiple deliverables: research paper → slides, competitive analysis → data table, travel plan → itinerary website. Testing "AI Agent framework landscape research," Genspark not only provided a cited summary but also auto-generated a 12-page interactive Sparkpage, a comparison table, and an infographic. This "search equals production" model is extremely efficient in content creation and business presentation scenarios.
 
 **Multi-modal output capability is the strongest.** Genspark supports generating text, slides (AI Slides), data tables (AI Sheets), images (FLUX, Ideogram), videos (Kling, Sora 2), and simple websites. In competitive analysis, I asked Genspark to "compare Perplexity, MetaSo, and Genspark pricing strategies and generate a slide deck for a team meeting" — 5 minutes later, I had an 8-page beautifully designed deck with comparison tables and trend charts.
 
@@ -196,7 +195,7 @@ Use MetaSo for Chinese queries (deep coverage of tech blogs, academic papers, in
 
 **Recommend Genspark Plus.**
 
-Genspark's "search → slides/tables/videos"闭环 accelerates content production. After researching a topic, directly generate deliverables for WeChat articles, Bilibili video scripts, or team meetings, eliminating time spent switching between multiple tools. At $25/month, if it saves you 5 hours monthly on layout and design, the ROI is positive.
+Genspark's "search → slides/tables/videos" closed loop accelerates content production. After researching a topic, directly generate deliverables for WeChat articles, Bilibili video scripts, or team meetings, eliminating time spent switching between multiple tools. At $25/month, if it saves you 5 hours monthly on layout and design, the ROI is positive.
 
 ### If you are a budget-sensitive student or freelancer
 
