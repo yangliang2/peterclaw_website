@@ -18,7 +18,7 @@
 | 第 5 篇 | Antigravity 2.0 / Kiro / Cline 深度评测 | 2026-05-26 | `src/content/blog/zh/ai-tool-review-antigravity-kiro-cline.md` | Antigravity, Kiro, Cline | 已发布 |
 | 第 6 篇 | **Kiro vs Cline 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kiro-vs-cline.mdx` | Kiro, Cline | **已提交 PR** |
 | 第 7 篇 | **Gemini 2.5 Pro vs GPT-4o 全面横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-gemini-2-5-pro-vs-gpt-4o.mdx` | Gemini 2.5 Pro, GPT-4o | 已提交 |
-| 第 8 篇 | **Kimi vs 豆包 vs 文心一言专业版 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kimi-vs-doubao-vs-wenxin.mdx` | Kimi, 豆包, 文心一言专业版 | 已发布 |
+| 第 8 篇 | **Kimi vs 豆包 vs 文心一言专业版 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kimi-vs-doubao-vs-wenxin.mdx` | Kimi, 豆包, 文心一言专业版 | 待审核（已增强统一测试集 + 代码注释场景）|
 | 第 9 篇 | **Gemini CLI vs Claude Code CLI 命令行 AI 工具横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-gemini-cli-vs-claude-code-cli.mdx` | Gemini CLI, Claude Code CLI | **已提交** |
 
 ---
@@ -154,5 +154,5 @@
 - [ ] 第 6 篇 PR 合并后更新本索引状态为「已发布」
 - [ ] 第 7 篇 PR 合并后更新本索引状态为「已发布」
 - [x] 第 9 篇已提交（中英双语）
-- [x] 第 8 篇完成双重审核后更新状态为「已发布」
+- [ ] 第 8 篇完成双重审核后更新状态为「已发布」
 - [ ] 第 9 篇 PR 合并后更新本索引状态为「已发布」
