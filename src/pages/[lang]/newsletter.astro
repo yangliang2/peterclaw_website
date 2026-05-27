@@ -1,0 +1,108 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import EmailSignup from '@/components/EmailSignup.astro';
+import { buildHreflangAlternates, isLocale, ui } from '@/lib/i18n';
+import { buildBreadcrumbSchema } from '@/utils/seo';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/newsletter/');
+}
+
+const copy = ui[lang];
+const prefix = `/${lang}`;
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.newsletterPageTitle}
+  description={copy.newsletterPageDescription}
+  canonicalPath={`${prefix}/newsletter/`}
+  alternateLocales={buildHreflangAlternates('/newsletter/')}
+  structuredData={[
+    buildBreadcrumbSchema([
+      { name: copy.siteTitle, path: `${prefix}/` },
+      { name: copy.newsletterPageTitle, path: `${prefix}/newsletter/` },
+    ]),
+  ]}
+>
+  <section class="hero newsletter-hero">
+    <h1 class="gradient-text">{copy.newsletterPageHeroTitle}</h1>
+    <p class="lede">{copy.newsletterPageHeroLede}</p>
+    
+    <div class="newsletter-main-signup">
+      <EmailSignup locale={lang} variant="full" />
+    </div>
+  </section>
+
+  <section class="newsletter-features">
+    <div class="feature-grid">
+      <div class="feature-card glass-card">
+        <h3>{lang === 'zh' ? '每周更新' : 'Weekly Updates'}</h3>
+        <p>{lang === 'zh' ? '每周一封邮件，总结当周最核心的 AI 协作实验与进展。' : 'One email per week, summarizing the core AI collaboration experiments and progress.'}</p>
+      </div>
+      <div class="feature-card glass-card">
+        <h3>{lang === 'zh' ? 'Prompt 技巧' : 'Prompt Engineering'}</h3>
+        <p>{lang === 'zh' ? '分享我们在实际项目中打磨的 Prompt 模板与工程实践。' : 'Share the prompt templates and engineering practices we refined in real projects.'}</p>
+      </div>
+      <div class="feature-card glass-card">
+        <h3>{lang === 'zh' ? '无广告干扰' : 'No Ads'}</h3>
+        <p>{lang === 'zh' ? '纯粹的技术与协作分享，没有任何赞助商广告与废话。' : 'Pure technical and collaboration sharing, no sponsored ads or fluff.'}</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .newsletter-hero {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: clamp(3rem, 8vw, 5rem);
+  }
+
+  .newsletter-hero h1 {
+    max-width: 800px;
+  }
+
+  .newsletter-hero .lede {
+    max-width: 680px;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .newsletter-main-signup {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .newsletter-features {
+    margin-top: clamp(2rem, 5vw, 4rem);
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .feature-card {
+    padding: var(--space-lg);
+  }
+
+  .feature-card h3 {
+    margin-bottom: var(--space-sm);
+    font-size: 1.25rem;
+    color: var(--color-primary);
+  }
+
+  .feature-card p {
+    margin-bottom: 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

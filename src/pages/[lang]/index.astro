@@ -52,6 +52,9 @@ const heroCopy = {
       <p class="hero-eyebrow">{heroCopy.eyebrow}</p>
       <h1 class="hero-title gradient-text">{copy.siteTitle}</h1>
       <p class="lede hero-lede">{copy.tagline}</p>
+      <div class="hero-newsletter">
+        <EmailSignup locale={lang} variant="inline" />
+      </div>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#latest">{heroCopy.explore}</a>
         <a class="btn btn-secondary" href={`/${lang}/about/`}>{heroCopy.about}</a>
@@ -145,9 +148,14 @@ const heroCopy = {
 
   .hero-lede {
     max-width: 36rem;
-    margin-bottom: clamp(2rem, 5vw, 2.75rem);
+    margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
     font-size: clamp(1.08rem, 2.3vw, 1.35rem);
     line-height: 1.72;
+  }
+
+  .hero-newsletter {
+    max-width: 480px;
+    margin-bottom: 2.5rem;
   }
 
   .hero-actions {

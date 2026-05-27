@@ -16,6 +16,7 @@ const copy = ui[locale];
     <div class="cta-header">
       <h3>{copy.ctaTitle}</h3>
       <p>{copy.ctaDescription}</p>
+      <p class="social-proof">{copy.newsletterSocialProof}</p>
     </div>
   )}
   
@@ -63,6 +64,13 @@ const copy = ui[locale];
     color: var(--color-text-muted);
     font-size: 1.1rem;
     margin-bottom: 0;
+  }
+
+  .social-proof {
+    margin-top: 0.75rem !important;
+    font-size: 0.95rem !important;
+    color: var(--color-secondary) !important;
+    font-weight: 500;
   }
 
   .cta-actions {

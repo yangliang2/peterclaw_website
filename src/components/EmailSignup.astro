@@ -3,20 +3,27 @@ import { ui, type Locale } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
+  variant?: 'full' | 'inline' | 'floating';
 }
 
-const { locale } = Astro.props;
+const { locale, variant = 'full' } = Astro.props;
 const copy = ui[locale];
-const signupId = `newsletter-signup-${locale}`;
+const signupId = `newsletter-signup-${variant}-${locale}`;
 const titleId = `${signupId}-title`;
 const emailId = `${signupId}-email`;
 const statusId = `${signupId}-status`;
 ---
 
-<section class="email-signup glass-card" aria-labelledby={titleId}>
+<section class={`email-signup ${variant} glass-card`} aria-labelledby={titleId} id={variant === 'floating' ? 'floating-signup' : undefined}>
+  {variant === 'floating' && (
+    <button class="btn-close" aria-label="Close" data-close-signup>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  )}
   <div class="email-signup-copy">
-    <h2 id={titleId}>{copy.newsletterTitle}</h2>
-    <p>{copy.newsletterDescription}</p>
+    {variant !== 'inline' && <h2 id={titleId}>{copy.newsletterTitle}</h2>}
+    {variant === 'full' && <p>{copy.newsletterDescription}</p>}
+    {variant === 'floating' && <p class="social-proof">{copy.newsletterSocialProof}</p>}
   </div>
   <form class="email-signup-form" novalidate>
     <label class="sr-only" for={emailId}>{copy.newsletterPlaceholder}</label>
@@ -33,20 +40,35 @@ const statusId = `${signupId}-status`;
       {copy.newsletterSubmit}
     </button>
   </form>
+  {variant === 'inline' && <p class="social-proof-small">{copy.newsletterSocialProof}</p>}
   <p id={statusId} class="email-signup-status" role="status" aria-live="polite" hidden></p>
 </section>
 
-<script define:vars={{ messages: {
-  submitting: copy.newsletterSubmitting,
-  success: copy.newsletterSuccess,
-  invalid: copy.newsletterErrorInvalid,
-  generic: copy.newsletterErrorGeneric,
-  defaultLabel: copy.newsletterSubmit,
-} }}>
-  const form = document.querySelector('.email-signup-form');
-  const status = document.querySelector('.email-signup-status');
+<script define:vars={{ 
+  messages: {
+    submitting: copy.newsletterSubmitting,
+    success: copy.newsletterSuccess,
+    invalid: copy.newsletterErrorInvalid,
+    generic: copy.newsletterErrorGeneric,
+    defaultLabel: copy.newsletterSubmit,
+  },
+  variant
+}}>
+  const container = document.querySelector(variant === 'floating' ? '#floating-signup' : `.email-signup.${variant}`);
+  const form = container?.querySelector('.email-signup-form');
+  const status = container?.querySelector('.email-signup-status');
   const submitButton = form?.querySelector('button[type="submit"]');
   const emailInput = form?.querySelector('input[name="email"]');
+  const closeButton = container?.querySelector('[data-close-signup]');
+
+  if (closeButton instanceof HTMLButtonElement && container instanceof HTMLElement) {
+    closeButton.addEventListener('click', () => {
+      container.classList.remove('is-visible');
+      if (window.trackEvent) {
+        window.trackEvent('newsletter_dismiss', { location: variant });
+      }
+    });
+  }
 
   if (form instanceof HTMLFormElement && status instanceof HTMLParagraphElement && submitButton instanceof HTMLButtonElement && emailInput instanceof HTMLInputElement) {
     form.addEventListener('submit', async (event) => {
@@ -80,6 +102,10 @@ const statusId = `${signupId}-status`;
           status.textContent = messages.success;
           status.classList.add('is-success');
           form.reset();
+          
+          if (window.trackEvent) {
+            window.trackEvent('newsletter_subscribe', { location: variant });
+          }
         } else if (response.status === 400 && payload.error === 'invalid_email') {
           status.textContent = messages.invalid;
           status.classList.add('is-error');
@@ -101,10 +127,57 @@ const statusId = `${signupId}-status`;
 
 <style>
   .email-signup {
-    margin-top: var(--space-xl);
     padding: var(--space-lg);
     display: grid;
     gap: var(--space-md);
+  }
+
+  .email-signup.full {
+    margin-top: var(--space-xl);
+  }
+
+  .email-signup.inline {
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: var(--space-xs);
+  }
+
+  .email-signup.floating {
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    width: min(calc(100vw - 2rem), 380px);
+    z-index: 50;
+    transform: translateY(120%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .email-signup.floating.is-visible {
+    transform: translateY(0);
+  }
+
+  .btn-close {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    padding: var(--space-xs);
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .btn-close:hover {
+    background-color: var(--color-hover-bg);
+    color: var(--color-text);
   }
 
   .email-signup-copy h2 {
@@ -112,9 +185,25 @@ const statusId = `${signupId}-status`;
     font-size: 1.5rem;
   }
 
+  .email-signup.inline .email-signup-copy h2 {
+    font-size: 1.25rem;
+  }
+
   .email-signup-copy p {
     margin: 0;
     color: var(--color-text-muted);
+  }
+
+  .social-proof {
+    font-size: 0.9rem;
+    color: var(--color-secondary) !important;
+    font-weight: 500;
+  }
+
+  .social-proof-small {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin: var(--space-xs) 0 0;
   }
 
   .email-signup-form {
@@ -124,19 +213,28 @@ const statusId = `${signupId}-status`;
   }
 
   .email-signup-form input {
-    flex: 1 1 220px;
+    flex: 1 1 200px;
     min-width: 0;
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 1rem;
     border: var(--border-glass);
     border-radius: var(--radius-md);
     background: var(--color-input-bg);
     color: var(--color-text);
     font: inherit;
+    font-size: 0.95rem;
+  }
+
+  .email-signup.inline .email-signup-form input {
+    padding: 0.5rem 0.85rem;
   }
 
   .email-signup-form input:focus {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
+  }
+
+  .email-signup-form button {
+    white-space: nowrap;
   }
 
   .email-signup-form button:disabled {
@@ -147,7 +245,7 @@ const statusId = `${signupId}-status`;
 
   .email-signup-status {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
   .email-signup-status.is-success {

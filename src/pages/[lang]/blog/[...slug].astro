@@ -171,8 +171,32 @@ if (
   <ArticleChat locale={lang} articleContent={post.body ?? ''} />
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
+  <EmailSignup locale={lang} variant="floating" />
   <Giscus locale={lang} />
 </BaseLayout>
+
+<script>
+  const floatingSignup = document.getElementById('floating-signup');
+  let hasShown = false;
+
+  const handleScroll = () => {
+    if (hasShown || !floatingSignup) return;
+
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+
+    if (scrollPercent > 50) {
+      floatingSignup.classList.add('is-visible');
+      hasShown = true;
+      
+      // Auto-hide after some time if not interacted? Or just leave it.
+      // For now, leave it.
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+</script>
 
 <style>
   .article-layout {
