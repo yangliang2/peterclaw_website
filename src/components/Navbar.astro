@@ -25,37 +25,21 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
 
 <nav class="navbar" aria-label={copy.primaryNavigation} data-pagefind-ignore="all">
   <div class="container">
-    <a href={`${prefix}/`} class="logo">
-      <span class="gradient-text">{copy.siteTitle}</span>
-    </a>
-    <ul class="nav-links">
-      {navItems.map((item) => <li><a href={item.href} aria-current={isCurrentPath(item.href) ? 'page' : undefined}>{item.name}</a></li>)}
-      <li>
-        <a href={`${prefix}/search/`} class="search-link" aria-label={copy.search} aria-current={isCurrentPath(`${prefix}/search/`) ? 'page' : undefined}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </svg>
-          <span class="search-label">{copy.search}</span>
-        </a>
-      </li>
-      <li>
-        <a href={switchPath} class="lang-switch" aria-label={`Switch to ${otherLocale === 'zh' ? 'Chinese' : 'English'}`} title={otherLocale === 'zh' ? '切换到中文' : 'Switch to English'}>
+    <div class="bar">
+      <a href={`${prefix}/`} class="logo">
+        <span class="gradient-text">{copy.siteTitle}</span>
+      </a>
+
+      <div class="bar-actions">
+        <a
+          href={switchPath}
+          class="lang-switch"
+          aria-label={`Switch to ${otherLocale === 'zh' ? 'Chinese' : 'English'}`}
+          title={otherLocale === 'zh' ? '切换到中文' : 'Switch to English'}
+        >
           {locale === 'zh' ? 'EN' : '中'}
         </a>
-      </li>
-      <li>
+
         <button
           class="theme-toggle"
           type="button"
@@ -122,8 +106,91 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
             <path d="M12 17v4"></path>
           </svg>
         </button>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label={copy.primaryNavigation}
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="menu-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <ul class="nav-links nav-links-desktop">
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} aria-current={isCurrentPath(item.href) ? 'page' : undefined}>
+            {item.name}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a
+          href={`${prefix}/search/`}
+          class="search-link"
+          aria-label={copy.search}
+          aria-current={isCurrentPath(`${prefix}/search/`) ? 'page' : undefined}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <span class="search-label">{copy.search}</span>
+        </a>
       </li>
     </ul>
+
+    <div class="menu-backdrop" data-menu-backdrop hidden></div>
+    <div id="mobile-menu" class="menu-panel" data-menu-panel hidden>
+      <ul class="nav-links nav-links-mobile" data-menu-links>
+        {navItems.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrentPath(item.href) ? 'page' : undefined}>
+              {item.name}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a
+            href={`${prefix}/search/`}
+            class="search-link"
+            aria-label={copy.search}
+            aria-current={isCurrentPath(`${prefix}/search/`) ? 'page' : undefined}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <span class="search-label">{copy.search}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 
@@ -173,6 +240,81 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
   })();
 </script>
 
+<script>
+  (() => {
+    const root = document.documentElement;
+    const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+    const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+    const backdrop = document.querySelector<HTMLElement>('[data-menu-backdrop]');
+    const links = document.querySelector<HTMLElement>('[data-menu-links]');
+
+    if (!toggle || !panel || !backdrop || !links) return;
+
+    const menuToggle = toggle;
+    const menuPanel = panel;
+    const menuBackdrop = backdrop;
+    const menuLinks = links;
+
+    let scrollY = 0;
+
+    function lockScroll() {
+      scrollY = window.scrollY || 0;
+      root.classList.add('nav-open');
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    }
+
+    function unlockScroll() {
+      root.classList.remove('nav-open');
+      const top = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      const y = top ? Math.abs(parseInt(top, 10)) : scrollY;
+      window.scrollTo(0, y);
+    }
+
+    function setOpen(next: boolean) {
+      menuToggle.setAttribute('aria-expanded', String(next));
+      menuPanel.hidden = !next;
+      menuBackdrop.hidden = !next;
+      menuToggle.classList.toggle('is-open', next);
+      if (next) lockScroll();
+      else unlockScroll();
+    }
+
+    function isOpen() {
+      return menuToggle.getAttribute('aria-expanded') === 'true';
+    }
+
+    menuToggle.addEventListener('click', () => setOpen(!isOpen()));
+    menuBackdrop.addEventListener('click', () => setOpen(false));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    menuLinks.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!isOpen()) return;
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (menuPanel.contains(target) || menuToggle.contains(target)) return;
+      setOpen(false);
+    });
+  })();
+</script>
+
 <style>
   .navbar {
     position: sticky;
@@ -186,9 +328,23 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
 
   .navbar .container {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    position: relative;
+  }
+
+  .bar {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
+    width: 100%;
+  }
+
+  .bar-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
   }
 
   .logo {
@@ -209,6 +365,121 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
   .nav-links a {
     color: var(--color-text-muted);
     font-weight: 500;
+  }
+
+  .nav-links a,
+  .theme-toggle,
+  .lang-switch,
+  .menu-toggle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .menu-toggle {
+    position: relative;
+    display: inline-grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .menu-toggle:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text);
+  }
+
+  .menu-icon {
+    position: relative;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .menu-icon::before,
+  .menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+    transition: transform 0.2s ease, top 0.2s ease;
+  }
+
+  .menu-icon::before {
+    top: -6px;
+  }
+
+  .menu-icon::after {
+    top: 6px;
+  }
+
+  .menu-toggle.is-open .menu-icon {
+    background: transparent;
+  }
+
+  .menu-toggle.is-open .menu-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+
+  .menu-toggle.is-open .menu-icon::after {
+    top: 0;
+    transform: rotate(-45deg);
+  }
+
+  .menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2px);
+    z-index: 90;
+  }
+
+  .menu-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin: 0 auto;
+    padding: var(--space-md);
+    background: var(--color-navbar-bg);
+    border-bottom: var(--border-glass);
+    z-index: 95;
+  }
+
+  .menu-panel .nav-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .menu-panel .nav-links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-md);
+  }
+
+  .menu-panel .nav-links a:hover {
+    background: var(--color-input-bg);
+  }
+
+  :global(html.nav-open) {
+    overflow: hidden;
   }
 
   .nav-links a:hover {
@@ -308,9 +579,35 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
   }
 
   @media (max-width: 640px) {
+    .nav-links-desktop {
+      display: none;
+    }
+  }
+
+  @media (min-width: 641px) {
+    .menu-toggle,
+    .menu-backdrop,
+    .menu-panel {
+      display: none;
+    }
+
     .navbar .container {
-      align-items: flex-start;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .bar {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    .nav-links-desktop {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-lg);
     }
   }
 </style>
