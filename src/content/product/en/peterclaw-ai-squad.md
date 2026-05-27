@@ -1,12 +1,12 @@
 ---
 title: "PeterClaw AI Squad"
-description: "Turn ideas into a traceable AI delivery workflow: issues, parallel implementation, and pull-request review for independent builders shipping at team speed."
+description: "Turn ideas into a traceable AI delivery workflow: issues, parallel collaboration, and automated delivery for independent builders shipping at team speed."
 eyebrow: "AI DELIVERY WORKFLOW"
 features:
   - title: "Tasks carry context"
     description: "Every request keeps its goal, acceptance criteria, and handoff history in an issue, so an agent can start with the right context."
-  - title: "Parallel and reviewable"
-    description: "Agents implement and review on dedicated branches, while each delivered change lands through an inspectable pull request."
+  - title: "Parallel and transparent"
+    description: "Agents collaborate on tasks with all changes tracked in public issues and commits, ensuring full traceability."
   - title: "Build reusable assets"
     description: "Decisions, build logs, and templates become public site content and references instead of disappearing after a release."
 pricing:
@@ -31,4 +31,8 @@ cta:
   label: "Visit GitHub"
   href: "https://github.com/yangliang2/peterclaw_website"
   emailSignup: true
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
 ---

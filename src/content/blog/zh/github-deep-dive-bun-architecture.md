@@ -1,5 +1,5 @@
 ---
-title: "Bun 架构深潜：一个可执行文件如何挑战 Node.js 的整个帝国"
+title: "GitHub 热门项目深潜 Vol.1：Bun 架构深潜：一个可执行文件如何挑战 Node.js 的整个帝国"
 description: "从 Zig + JavaScriptCore 的底层选型，到运行时、包管理器、测试框架、打包工具的四合一设计，拆解 Bun 89k Star 背后的工程决策与 trade-off。"
 contentType: review
 publishedAt: 2026-05-26
