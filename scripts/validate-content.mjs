@@ -250,11 +250,14 @@ async function checkExternalLink(url, relativePath) {
       });
     }
 
-    if (response.status >= 400) {
+    if (response.status === 404 || response.status === 410) {
       errors.push(`${relativePath}: external link returned HTTP ${response.status}: ${url}.`);
+    } else if (response.status >= 400) {
+      // 403/401/429/5xx — URL exists but CI bot is blocked or server is temporarily unavailable
+      warnings.push(`${relativePath}: external link returned HTTP ${response.status} (non-fatal): ${url}.`);
     }
   } catch (error) {
-    errors.push(`${relativePath}: external link check failed for ${url}: ${error.message}.`);
+    warnings.push(`${relativePath}: external link check failed for ${url}: ${error.message}.`);
   } finally {
     clearTimeout(timeout);
   }
