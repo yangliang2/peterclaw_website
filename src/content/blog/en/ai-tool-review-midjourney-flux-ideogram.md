@@ -460,5 +460,4 @@ Reason: Chinese text rendering is a hard threshold. Midjourney and Flux failure 
 - [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1
 - [Antigravity 2.0 / Kiro / Cline Deep Dive](/en/blog/ai-tool-review-antigravity-kiro-cline/) — AI Tool Review Series Issue 5
 - [PeterClaw Toolbox](/en/tools/) — Our daily creative and development tools
-- [Midjourney Official Website](https://www.midjourney.com)
 - [Black Forest Labs FLUX Models](https://bfl.ai)
