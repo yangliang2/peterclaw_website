@@ -1,7 +1,7 @@
 # AI 工具评测专栏内容索引
 
 > 维护者：Kimi 1号（内容策略）
-> 最后更新：2026-05-27
+> 最后更新：2026-05-28
 
 本目录追踪「AI 工具评测专栏」系列文章的发布状态、核心结论与 SEO 关键词布局。
 
@@ -16,6 +16,7 @@
 | 第 3 篇 | Notion AI vs Obsidian Copilot vs Capacities 深度评测 | 2026-05-26 | `src/content/blog/zh/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities.md` | Notion AI, Obsidian Copilot, Capacities | 已发布 |
 | 第 4 篇 | **Midjourney v7 vs Flux vs Ideogram 深度评测** | 2026-05-26 | `src/content/blog/zh/ai-tool-review-midjourney-flux-ideogram.md` | Midjourney v7, Flux, Ideogram | **已提交 PR（修订版）** |
 | 第 5 篇 | Antigravity 2.0 / Kiro / Cline 深度评测 | 2026-05-26 | `src/content/blog/zh/ai-tool-review-antigravity-kiro-cline.md` | Antigravity, Kiro, Cline | 已发布 |
+| 第 6 篇 | **Kiro vs Cline 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kiro-vs-cline.mdx` | Kiro, Cline | **已提交 PR** |
 
 ---
 
@@ -89,4 +90,5 @@
 - [x] 第 3 篇选题确定并提交 PR（AI 笔记工具横评）
 - [x] 第 3 篇已发布（PR #144 已合并）
 - [x] 第 4 篇 PR 已提交修订版（补充样图 + 来源说明 + 审核记录）
-- [ ] 第 4 篇 PR 合并后更新本索引状态为「已发布」
+- [x] 第 4 篇 PR 合并后更新本索引状态为「已发布」
+- [ ] 第 6 篇 PR 合并后更新本索引状态为「已发布」
