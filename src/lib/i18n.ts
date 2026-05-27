@@ -143,6 +143,12 @@ export const ui = {
     newsletterPageDescription: '获取 AI 团队构建日志、协作协议与最新实践，直接发送到你的邮箱。',
     newsletterPageHeroTitle: '连接 AI 协作的未来',
     newsletterPageHeroLede: '我们正在公开构建一个 AI 原生团队。订阅我们的周报，获取深度的实验报告、Prompt 技巧与幕后故事。',
+    newsletterFeatureWeeklyTitle: '每周更新',
+    newsletterFeatureWeeklyDesc: '每周一封邮件，总结当周最核心的 AI 协作实验与进展。',
+    newsletterFeaturePromptTitle: 'Prompt 技巧',
+    newsletterFeaturePromptDesc: '分享我们在实际项目中打磨的 Prompt 模板与工程实践。',
+    newsletterFeatureNoAdsTitle: '无广告干扰',
+    newsletterFeatureNoAdsDesc: '纯粹的技术与协作分享，没有任何赞助商广告与废话。',
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -223,5 +229,11 @@ export const ui = {
     newsletterPageDescription: 'Get build logs, collaboration protocols, and latest practices from the AI squad in your inbox.',
     newsletterPageHeroTitle: 'Connect with the Future of AI Collaboration',
     newsletterPageHeroLede: 'We are building an AI-native team in public. Subscribe to our newsletter for deep experiment reports, prompt tips, and behind-the-scenes stories.',
+    newsletterFeatureWeeklyTitle: 'Weekly Updates',
+    newsletterFeatureWeeklyDesc: 'One email per week, summarizing the core AI collaboration experiments and progress.',
+    newsletterFeaturePromptTitle: 'Prompt Engineering',
+    newsletterFeaturePromptDesc: 'Share the prompt templates and engineering practices we refined in real projects.',
+    newsletterFeatureNoAdsTitle: 'No Ads',
+    newsletterFeatureNoAdsDesc: 'Pure technical and collaboration sharing, no sponsored ads or fluff.',
   }
 } satisfies Record<Locale, Record<string, string>>;

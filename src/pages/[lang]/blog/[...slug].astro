@@ -177,25 +177,32 @@ if (
 
 <script>
   const floatingSignup = document.getElementById('floating-signup');
-  let hasShown = false;
+  const DISMISS_KEY = 'newsletter_floating_dismissed';
 
-  const handleScroll = () => {
-    if (hasShown || !floatingSignup) return;
+  if (floatingSignup && !localStorage.getItem(DISMISS_KEY)) {
+    let hasShown = false;
 
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = (scrollTop / docHeight) * 100;
+    const handleScroll = () => {
+      if (hasShown) return;
 
-    if (scrollPercent > 50) {
-      floatingSignup.classList.add('is-visible');
-      hasShown = true;
-      
-      // Auto-hide after some time if not interacted? Or just leave it.
-      // For now, leave it.
-    }
-  };
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
+      if (scrollPercent > 50) {
+        floatingSignup.classList.add('is-visible');
+        hasShown = true;
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+
+    const closeButton = floatingSignup.querySelector('[data-close-signup]');
+    closeButton?.addEventListener('click', () => {
+      localStorage.setItem(DISMISS_KEY, '1');
+    });
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
 </script>
 
 <style>
