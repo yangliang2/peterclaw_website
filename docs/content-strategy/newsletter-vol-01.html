@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PeterClaw Newsletter · Vol.1</title>
+  <style>
+    /* Reset */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+
+    /* Base */
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #1f2937;
+    }
+
+    /* Container */
+    .email-wrapper {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+
+    /* Header */
+    .header {
+      background-color: #6366f1;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Sections */
+    .section {
+      padding: 28px 24px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .emoji {
+      font-size: 20px;
+    }
+
+    /* Highlight items */
+    .highlight-item {
+      margin-bottom: 16px;
+    }
+    .highlight-item:last-child {
+      margin-bottom: 0;
+    }
+    .highlight-item h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+    }
+    .highlight-item p {
+      margin: 0;
+      font-size: 15px;
+      color: #4b5563;
+    }
+    .highlight-item a {
+      color: #6366f1;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .highlight-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Tool items */
+    .tool-item {
+      margin-bottom: 14px;
+      padding-left: 16px;
+      border-left: 3px solid #6366f1;
+    }
+    .tool-item:last-child {
+      margin-bottom: 0;
+    }
+    .tool-item strong {
+      color: #111827;
+      font-weight: 600;
+    }
+    .tool-item p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    /* Article cards */
+    .article-card {
+      margin-bottom: 16px;
+      padding: 16px;
+      background-color: #f9fafb;
+      border-radius: 8px;
+    }
+    .article-card:last-child {
+      margin-bottom: 0;
+    }
+    .article-card h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .article-card h4 a {
+      color: #111827;
+      text-decoration: none;
+    }
+    .article-card h4 a:hover {
+      color: #6366f1;
+    }
+    .article-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #4b5563;
+    }
+    .article-card .meta {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* CTA */
+    .cta-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #6366f1;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      margin-top: 8px;
+    }
+    .cta-button:hover {
+      background-color: #4f46e5;
+    }
+
+    /* Preview box */
+    .preview-box {
+      background-color: #eef2ff;
+      border-left: 4px solid #6366f1;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 8px;
+    }
+    .preview-box p {
+      margin: 0;
+      font-size: 14px;
+      color: #4338ca;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #9ca3af;
+      background-color: #f9fafb;
+    }
+    .footer a {
+      color: #6b7280;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .footer .social {
+      margin: 12px 0;
+    }
+    .footer .social a {
+      margin: 0 8px;
+    }
+
+    /* Mobile */
+    @media screen and (max-width: 480px) {
+      .header { padding: 24px 16px; }
+      .header h1 { font-size: 20px; }
+      .section { padding: 20px 16px; }
+      .section-title { font-size: 16px; }
+      body { font-size: 15px; }
+      .article-card { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="email-wrapper" style="max-width: 600px;">
+
+          <!-- Header -->
+          <tr>
+            <td class="header" style="background-color: #6366f1; padding: 32px 24px; text-align: center;">
+              <h1 style="margin: 0 0 8px; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">PeterClaw Newsletter</h1>
+              <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.85);">Vol.1 · 2026-05-30 · AI 工具周报 + 独立开发者洞察</p>
+            </td>
+          </tr>
+
+          <!-- Editor's Note -->
+          <tr>
+            <td class="section" style="padding: 28px 24px; border-bottom: 1px solid #e5e7eb;">
+              <p style="margin: 0; font-size: 16px; color: #374151; line-height: 1.7;">
+                你好，欢迎打开 PeterClaw Newsletter 第一期。
+              </p>
+              <p style="margin: 12px 0 0; font-size: 16px; color: #374151; line-height: 1.7;">
+                这份双周报的定位很简单：<strong>每周一次，看见 AI 如何真正改变开发工作流</strong>。我们不追热点，只分享经过真实项目验证的工具、观点和踩坑记录。所有内容都与 <a href="https://peterclaw.com" style="color: #6366f1; text-decoration: none; font-weight: 500;">peterclaw.com</a> 的博客/评测形成呼应，方便你深度阅读。
+              </p>
+            </td>
+          </tr>
+
+          <!-- Highlights -->
+          <tr>
+            <td class="section" style="padding: 28px 24px; border-bottom: 1px solid #e5e7eb;">
+              <h2 class="section-title" style="margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #111827;"><span class="emoji">🎯</span> 本期亮点</h2>
+
+              <div class="highlight-item" style="margin-bottom: 16px;">
+                <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: #374151;">1. AI 小队公开协作首周：从单 Agent 到七人团队的实战记录</h3>
+                <p style="margin: 0; font-size: 15px; color: #4b5563;">我们把 AI 团队维护个人网站的全过程公开了。从串行派工的踩坑，到代码审查路由的失效与修补，再到定时工作流让团队不再「等活干」——这些日志正在变成最有价值的内容资产。<a href="https://peterclaw.com/zh/blog/ai-squad-launch-diary/" style="color: #6366f1; text-decoration: none; font-weight: 500;">阅读全文 →</a></p>
+              </div>
+
+              <div class="highlight-item" style="margin-bottom: 16px;">
+                <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: #374151;">2. 2026 Q2 Agent IDE 三强横评：Antigravity 2.0 / Kiro / Cline 深度对比</h3>
+                <p style="margin: 0; font-size: 15px; color: #4b5563;">历时两周真实项目测试，从多 Agent 协作、Spec 驱动、开源自由度三个全新维度，给出独立开发者的明确选型建议。如果你正在犹豫该押谁，这篇评测会直接给你答案。<a href="https://peterclaw.com/zh/blog/ai-tool-review-antigravity-kiro-cline/" style="color: #6366f1; text-decoration: none; font-weight: 500;">阅读全文 →</a></p>
+              </div>
+
+              <div class="highlight-item" style="margin-bottom: 0;">
+                <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: #374151;">3. Newsletter 首期发送——我们决定每两周和你聊一次</h3>
+                <p style="margin: 0; font-size: 15px; color: #4b5563;">首期核心是验证一件事：有没有读者愿意每两周花 3 分钟，读一份经过筛选的 AI 工具与独立开发简报。如果你正在读这句话，答案已经呼之欲出。</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Tool Updates -->
+          <tr>
+            <td class="section" style="padding: 28px 24px; border-bottom: 1px solid #e5e7eb;">
+              <h2 class="section-title" style="margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #111827;"><span class="emoji">🛠</span> 精选 AI 工具动态</h2>
+
+              <div class="tool-item" style="margin-bottom: 14px; padding-left: 16px; border-left: 3px solid #6366f1;">
+                <strong style="color: #111827; font-weight: 600;">Cursor 0.48</strong> — Agent 模式支持多文件并行编辑
+                <p style="margin: 4px 0 0; font-size: 14px; color: #4b5563;">多文件 Agent 任务终于不再串行了。实测在 Astro 项目中重构组件时，Cursor 能同时改写 `.astro`、`.ts` 和样式文件，上下文丢失率明显下降。</p>
+              </div>
+
+              <div class="tool-item" style="margin-bottom: 14px; padding-left: 16px; border-left: 3px solid #6366f1;">
+                <strong style="color: #111827; font-weight: 600;">Bun 1.2 正式版</strong> — 内置包管理器 + 测试框架 + 打包工具四合一
+                <p style="margin: 4px 0 0; font-size: 14px; color: #4b5563;">从运行时到工具链，Bun 正在用一个可执行文件挑战 Node.js 的整个帝国。我们在站内发布了一篇架构深潜，拆解它 89k Star 背后的工程决策。<a href="https://peterclaw.com/zh/blog/github-deep-dive-bun-architecture/" style="color: #6366f1; text-decoration: none; font-weight: 500;">阅读 →</a></p>
+              </div>
+
+              <div class="tool-item" style="margin-bottom: 14px; padding-left: 16px; border-left: 3px solid #6366f1;">
+                <strong style="color: #111827; font-weight: 600;">n8n 加入 AI Agent 节点</strong> — 工作流自动化正式进入 Agent 时代
+                <p style="margin: 4px 0 0; font-size: 14px; color: #4b5563;">400+ 集成节点图谱之上，n8n 新加入了可自主决策的 AI Agent 节点。这意味着你不再只是「编排」流程，而是可以「委托」流程自己跑。</p>
+              </div>
+
+              <div class="tool-item" style="margin-bottom: 14px; padding-left: 16px; border-left: 3px solid #6366f1;">
+                <strong style="color: #111827; font-weight: 600;">Windsurf Cascade 2.0</strong> — 上下文理解能力显著提升
+                <p style="margin: 4px 0 0; font-size: 14px; color: #4b5563;">在 PeterClaw 的横评中，Windsurf 的上下文深度一直是它的长板。Cascade 2.0 进一步拉大了与竞品的差距，跨文件引用准确率提升了约 15%。<a href="https://peterclaw.com/zh/blog/ai-tool-review-cursor-vs-windsurf/" style="color: #6366f1; text-decoration: none; font-weight: 500;">评测对比 →</a></p>
+              </div>
+
+              <div class="tool-item" style="margin-bottom: 0; padding-left: 16px; border-left: 3px solid #6366f1;">
+                <strong style="color: #111827; font-weight: 600;">Claude Code 开源</strong> — Anthropic 的命令行 AI 助手正式向公众开放
+                <p style="margin: 4px 0 0; font-size: 14px; color: #4b5563;">命令行 AI 助手赛道又添一员猛将。我们在站内对比了 Claude Code 与 GitHub Copilot Chat 的真实表现，从上下文理解到隐私安全，给出了明确的选谁建议。<a href="https://peterclaw.com/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/" style="color: #6366f1; text-decoration: none; font-weight: 500;">阅读 →</a></p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- New Content -->
+          <tr>
+            <td class="section" style="padding: 28px 24px; border-bottom: 1px solid #e5e7eb;">
+              <h2 class="section-title" style="margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #111827;"><span class="emoji">📖</span> 本周 peterclaw.com 新内容导读</h2>
+
+              <div class="article-card" style="margin-bottom: 16px; padding: 16px; background-color: #f9fafb; border-radius: 8px;">
+                <h4 style="margin: 0 0 6px; font-size: 15px; font-weight: 600; color: #111827;"><a href="https://peterclaw.com/zh/blog/ai-squad-launch-diary/" style="color: #111827; text-decoration: none;">AI 小队组建日记：从个人网站到公开协作现场</a></h4>
+                <p style="margin: 0; font-size: 14px; color: #4b5563;">记录 PeterClaw 网站如何把 AI 团队的协作过程变成产品、内容和品牌资产。五位 AI Agent 的真实分工与运转协议首次公开。</p>
+                <p class="meta" style="margin-top: 6px; font-size: 12px; color: #9ca3af;">AI 小队组建日记 · 第 1 篇</p>
+              </div>
+
+              <div class="article-card" style="margin-bottom: 16px; padding: 16px; background-color: #f9fafb; border-radius: 8px;">
+                <h4 style="margin: 0 0 6px; font-size: 15px; font-weight: 600; color: #111827;"><a href="https://peterclaw.com/zh/blog/ai-tool-review-cursor-vs-windsurf/" style="color: #111827; text-decoration: none;">Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？</a></h4>
+                <p style="margin: 0; font-size: 14px; color: #4b5563;">历时两周真实项目测试，从代码补全、Agent 能力、上下文理解、响应速度和定价五个维度深度对比，给出不同场景下的明确选择建议。</p>
+                <p class="meta" style="margin-top: 6px; font-size: 12px; color: #9ca3af;">AI 工具评测专栏 · 第 1 篇</p>
+              </div>
+
+              <div class="article-card" style="margin-bottom: 16px; padding: 16px; background-color: #f9fafb; border-radius: 8px;">
+                <h4 style="margin: 0 0 6px; font-size: 15px; font-weight: 600; color: #111827;"><a href="https://peterclaw.com/zh/blog/github-deep-dive-bun-architecture/" style="color: #111827; text-decoration: none;">Bun 架构深潜：一个可执行文件如何挑战 Node.js 的整个帝国</a></h4>
+                <p style="margin: 0; font-size: 14px; color: #4b5563;">从 Zig + JavaScriptCore 的底层选型，到运行时、包管理器、测试框架、打包工具的四合一设计，拆解 Bun 89k Star 背后的工程决策。</p>
+                <p class="meta" style="margin-top: 6px; font-size: 12px; color: #9ca3af;">GitHub 深潜系列</p>
+              </div>
+
+              <div class="article-card" style="margin-bottom: 0; padding: 16px; background-color: #f9fafb; border-radius: 8px;">
+                <h4 style="margin: 0 0 6px; font-size: 15px; font-weight: 600; color: #111827;"><a href="https://peterclaw.com/zh/blog/github-deep-dive-mastra-agent-memory/" style="color: #111827; text-decoration: none;">Mastra 深度解析：TypeScript Agent 框架的 Observational Memory 架构</a></h4>
+                <p style="margin: 0; font-size: 14px; color: #4b5563;">从 Gatsby 团队到 TypeScript-native Agent 框架，拆解 Mastra 如何实现 4-10x Token 成本削减，以及它的设计对 AI 工程化的启示。</p>
+                <p class="meta" style="margin-top: 6px; font-size: 12px; color: #9ca3af;">GitHub 深潜系列</p>
+              </div>
+
+              <div style="text-align: center; margin-top: 20px;">
+                <a href="https://peterclaw.com/zh/blog/" class="cta-button" style="display: inline-block; padding: 12px 24px; background-color: #6366f1; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">浏览全部文章 →</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Next Issue Preview -->
+          <tr>
+            <td class="section" style="padding: 28px 24px; border-bottom: 1px solid #e5e7eb;">
+              <h2 class="section-title" style="margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #111827;"><span class="emoji">🔭</span> 下期预告</h2>
+
+              <div class="preview-box" style="background-color: #eef2ff; border-left: 4px solid #6366f1; padding: 16px; border-radius: 0 8px 8px 0; margin-top: 8px;">
+                <p style="margin: 0; font-size: 14px; color: #4338ca;"><strong>Vol.2（预计 2026-06-13）</strong> 将带来：「AI 日记 Vol.9：当 AI 开始互相评审代码——多 Agent 代码审查的真实效果」，以及一份「独立开发者 AI 工具栈 2026 Q2」的完整盘点。如果你有任何想看的选题，直接回复这封邮件即可。</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="footer" style="padding: 24px; text-align: center; font-size: 13px; color: #9ca3af; background-color: #f9fafb;">
+              <p style="margin: 0 0 8px;">PeterClaw · <a href="https://peterclaw.com" style="color: #6b7280; text-decoration: none;">peterclaw.com</a></p>
+              <p style="margin: 0 0 12px;">由 AI 小队与 Peter 共同维护</p>
+              <div class="social" style="margin: 12px 0;">
+                <a href="https://twitter.com/peterclaw" style="margin: 0 8px; color: #6b7280; text-decoration: none;">X / Twitter</a>
+                <a href="https://github.com/yangliang2" style="margin: 0 8px; color: #6b7280; text-decoration: none;">GitHub</a>
+              </div>
+              <p style="margin: 12px 0 0;">
+                <a href="{{unsubscribe_url}}" style="color: #9ca3af; text-decoration: underline;">退订</a> ·
+                <a href="https://peterclaw.com" style="color: #9ca3af; text-decoration: underline;">访问网站</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
