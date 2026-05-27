@@ -26,6 +26,8 @@ const staticRoutes = new Set([
   '/en/blog/series/ai-diary', '/en/blog/series/ai-diary/',
   '/zh/knowledge', '/zh/knowledge/',
   '/en/knowledge', '/en/knowledge/',
+  '/zh/newsletter', '/zh/newsletter/',
+  '/en/newsletter', '/en/newsletter/',
 ]);
 const errors = [];
 const warnings = [];
