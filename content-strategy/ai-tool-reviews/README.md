@@ -19,6 +19,7 @@
 | 第 6 篇 | **Kiro vs Cline 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kiro-vs-cline.mdx` | Kiro, Cline | **已提交 PR** |
 | 第 7 篇 | **Gemini 2.5 Pro vs GPT-4o 全面横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-gemini-2-5-pro-vs-gpt-4o.mdx` | Gemini 2.5 Pro, GPT-4o | 已提交 |
 | 第 8 篇 | **Kimi vs 豆包 vs 文心一言专业版 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kimi-vs-doubao-vs-wenxin.mdx` | Kimi, 豆包, 文心一言专业版 | 待审核（已增强统一测试集 + 代码注释场景）|
+| 第 9 篇 | **Gemini CLI vs Claude Code CLI 命令行 AI 工具横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-gemini-cli-vs-claude-code-cli.mdx` | Gemini CLI, Claude Code CLI | **已提交** |
 
 ---
 
@@ -113,6 +114,25 @@
 
 ---
 
+## 第 9 篇核心结论摘要
+
+**《命令行 AI 编程助手横评（Gemini CLI vs Claude Code CLI）》**
+
+- **Gemini CLI**：安装零门槛、1M 上下文窗口 + 多模态能力独一无二、免费额度 generous + API 定价极具竞争力，是「大场景分析 + 预算敏感」的最优解；Agent 自主性弱于 Claude Code，代码编辑精度有提升空间
+- **Claude Code CLI**：Agent 任务执行能力是行业标杆、代码编辑精度最强、推理深度令人震惊、Git 工作流原生融合，是「复杂工程任务」的最佳搭档；安装门槛较高、按量计费重度使用成本高、上下文窗口相对较小
+
+**场景推荐矩阵**：
+- 全栈开发者 / 复杂项目 → Claude Code CLI
+- 数据分析师 / ML 工程师 / 多模态场景 → Gemini CLI
+- 独立开发者 / 学生 / 预算敏感 → Gemini CLI
+- 企业隐私合规 / GCP 团队 → Gemini CLI（Vertex AI）
+- DevOps / 运维工程师 → Claude Code CLI
+- 理想组合：日常查询 + 文档分析用 Gemini CLI，复杂重构 + Agent 任务用 Claude Code CLI
+
+**SEO 关键词**：Gemini CLI 评测、Claude Code CLI 评测、命令行 AI 编程助手、AI 终端工具对比、Gemini vs Claude Code、CLI AI 工具推荐 2026
+
+---
+
 ## 内容规范
 
 所有评测文章统一遵循 `docs/content-templates/review.md` 模板，frontmatter 必须包含：
@@ -133,4 +153,6 @@
 - [x] 第 4 篇 PR 合并后更新本索引状态为「已发布」
 - [ ] 第 6 篇 PR 合并后更新本索引状态为「已发布」
 - [ ] 第 7 篇 PR 合并后更新本索引状态为「已发布」
+- [x] 第 9 篇已提交（中英双语）
 - [ ] 第 8 篇完成双重审核后更新状态为「已发布」
+- [ ] 第 9 篇 PR 合并后更新本索引状态为「已发布」
