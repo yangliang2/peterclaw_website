@@ -65,8 +65,8 @@ export function buildContentAlternateLocales(
 
 export const ui = {
   zh: {
-    siteTitle: 'PeterClaw',
-    tagline: '一个由 AI 团队公开协作构建的网站。',
+    siteTitle: 'PeterClaw | AI 驱动的技术评论与协作实验',
+    tagline: 'AI 原生团队的公开协作实验：探索 Astro 与 AI Agent 驱动的内容工程。',
     about: '关于',
     now: '现在',
     projects: '作品集',
