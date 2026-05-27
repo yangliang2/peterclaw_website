@@ -62,33 +62,31 @@ import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
 4. **价格与可访问性**——订阅费用、国内网络访问难度、免费额度
 5. **安全性与隐私**——代码是否上传至云端、数据保留策略、企业合规性
 
+为便于整个「AI 工具评测」系列横向比较，下面的评分卡统一折算为 6 个标准维度：上手难度、功能完整性、性价比、Agent 能力、中文支持、稳定性。
+
 <ReviewScoreCard
   title="Claude Code 评分卡"
-  subtitle="将文末对比总表映射为 8 个关键维度（满分 5）。"
+  subtitle="标准化 6 维评分，单项 1-10 分。"
   dimensions={[
-    { label: '上下文理解', score: 5, maxScore: 5, weight: 0.2 },
-    { label: '命令行 UX', score: 5, maxScore: 5, weight: 0.15 },
-    { label: '代码补全（TS）', score: 5, maxScore: 5, weight: 0.1 },
-    { label: '代码补全（Python）', score: 5, maxScore: 5, weight: 0.1 },
-    { label: '价格', score: 4, maxScore: 5, weight: 0.15 },
-    { label: '国内可访问性', score: 3, maxScore: 5, weight: 0.1 },
-    { label: '隐私与合规', score: 4, maxScore: 5, weight: 0.1 },
-    { label: 'GitHub 集成', score: 3, maxScore: 5, weight: 0.1 },
+    { label: '上手难度', score: 7, note: 'CLI 与 API Key 配置有门槛。' },
+    { label: '功能完整性', score: 9, note: '读写文件、跑测试、多步任务能力完整。' },
+    { label: '性价比', score: 7, note: '按量计费灵活，但重度使用成本更高。' },
+    { label: 'Agent 能力', score: 10, note: '复杂代码库理解与自主执行是核心优势。' },
+    { label: '中文支持', score: 8, note: '中文指令理解稳定，终端体验仍偏开发者向。' },
+    { label: '稳定性', score: 8, note: '模型质量稳定，网络与额度会影响可用性。' },
   ]}
 />
 
 <ReviewScoreCard
   title="GitHub Copilot Chat 评分卡"
-  subtitle="同维度、同权重，用于快速横向对比。"
+  subtitle="同一评分标准，便于与 Claude Code 横向对比。"
   dimensions={[
-    { label: '上下文理解', score: 4, maxScore: 5, weight: 0.2 },
-    { label: '命令行 UX', score: 4, maxScore: 5, weight: 0.15 },
-    { label: '代码补全（TS）', score: 5, maxScore: 5, weight: 0.1 },
-    { label: '代码补全（Python）', score: 4, maxScore: 5, weight: 0.1 },
-    { label: '价格', score: 5, maxScore: 5, weight: 0.15 },
-    { label: '国内可访问性', score: 4, maxScore: 5, weight: 0.1 },
-    { label: '隐私与合规', score: 4, maxScore: 5, weight: 0.1 },
-    { label: 'GitHub 集成', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '上手难度', score: 9, note: 'GitHub 用户几乎开箱即用。' },
+    { label: '功能完整性', score: 8, note: 'IDE 与 GitHub 生态完整，CLI 代理性弱一些。' },
+    { label: '性价比', score: 9, note: '固定月费可控，个人用户成本低。' },
+    { label: 'Agent 能力', score: 7, note: '更偏问答与建议，端到端执行不如 Claude Code。' },
+    { label: '中文支持', score: 8, note: '中文交互可用，复杂语境下仍需补充上下文。' },
+    { label: '稳定性', score: 9, note: '服务与生态成熟，日常可用性最好。' },
   ]}
 />
 

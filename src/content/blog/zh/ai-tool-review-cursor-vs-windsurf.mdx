@@ -71,27 +71,31 @@ import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
 4. **响应速度**——从输入到获得建议的延迟，以及 Agent 任务的执行速度
 5. **价格与性价比**——订阅费用、免费额度、团队版定价
 
+为便于整个「AI 工具评测」系列横向比较，下面的评分卡统一折算为 6 个标准维度：上手难度、功能完整性、性价比、Agent 能力、中文支持、稳定性。
+
 <ReviewScoreCard
   title="Cursor 评分卡"
-  subtitle="评分维度与权重与本文一致（满分 5）。"
+  subtitle="标准化 6 维评分，单项 1-10 分。"
   dimensions={[
-    { label: '代码补全', score: 5, maxScore: 5, weight: 0.25 },
-    { label: 'Agent 任务', score: 5, maxScore: 5, weight: 0.25 },
-    { label: '上下文理解', score: 5, maxScore: 5, weight: 0.2 },
-    { label: '响应速度', score: 4, maxScore: 5, weight: 0.15 },
-    { label: '价格/性价比', score: 4, maxScore: 5, weight: 0.15 },
+    { label: '上手难度', score: 9, note: 'VS Code 迁移成本低，核心交互成熟。' },
+    { label: '功能完整性', score: 9, note: '补全、Composer、上下文管理都很完整。' },
+    { label: '性价比', score: 8, note: '价格偏高，但主力开发场景回报稳定。' },
+    { label: 'Agent 能力', score: 9, note: '复杂任务拆解与多文件修改表现领先。' },
+    { label: '中文支持', score: 9, note: '中文提示、解释与界面稳定性较好。' },
+    { label: '稳定性', score: 8, note: '整体可靠，高峰期慢速请求会影响体验。' },
   ]}
 />
 
 <ReviewScoreCard
   title="Windsurf 评分卡"
-  subtitle="同维度、同权重，用于快速横向对比。"
+  subtitle="同一评分标准，便于与 Cursor 横向对比。"
   dimensions={[
-    { label: '代码补全', score: 4, maxScore: 5, weight: 0.25 },
-    { label: 'Agent 任务', score: 4, maxScore: 5, weight: 0.25 },
-    { label: '上下文理解', score: 4, maxScore: 5, weight: 0.2 },
-    { label: '响应速度', score: 5, maxScore: 5, weight: 0.15 },
-    { label: '价格/性价比', score: 5, maxScore: 5, weight: 0.15 },
+    { label: '上手难度', score: 9, note: '同样接近 VS Code，初始索引更快。' },
+    { label: '功能完整性', score: 8, note: 'Cascade 与终端闭环强，精细编辑略弱。' },
+    { label: '性价比', score: 9, note: '订阅更便宜，免费版对轻量用户友好。' },
+    { label: 'Agent 能力', score: 8, note: '终端执行闭环突出，但修改粒度偏粗。' },
+    { label: '中文支持', score: 7, note: '中文场景偶有截断或乱码。' },
+    { label: '稳定性', score: 8, note: '日常响应快，复杂任务仍需人工 review。' },
   ]}
 />
 

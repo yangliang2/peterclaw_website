@@ -68,48 +68,44 @@ import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
 5. **生态与集成**——与云服务商、CI/CD、第三方工具的整合深度
 6. **价格与可访问性**——订阅费用、国内网络环境、免费额度
 
+为便于整个「AI 工具评测」系列横向比较，下面的评分卡统一折算为 6 个标准维度：上手难度、功能完整性、性价比、Agent 能力、中文支持、稳定性。
+
 <ReviewScoreCard
   title="Antigravity 2.0 评分卡"
-  subtitle="从对比总表中抽取 8 个关键维度（满分 5）。"
+  subtitle="标准化 6 维评分，单项 1-10 分。"
   dimensions={[
-    { label: '多 Agent 并行', score: 5, maxScore: 5, weight: 0.125 },
-    { label: 'Spec 驱动', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '模型自由度', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '代码生成质量', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '响应速度', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '国内可访问性', score: 3, maxScore: 5, weight: 0.125 },
+    { label: '上手难度', score: 7, note: '独立应用迁移成本高于 VS Code 系工具。' },
+    { label: '功能完整性', score: 9, note: '多 Agent、浏览器子代理、后台任务覆盖面强。' },
+    { label: '性价比', score: 7, note: '入门价可接受，重度额度成本不够透明。' },
+    { label: 'Agent 能力', score: 10, note: '并行调度与视觉验证能力最突出。' },
+    { label: '中文支持', score: 7, note: '中文语音和提示可用，服务访问依赖网络环境。' },
+    { label: '稳定性', score: 8, note: '能力强但产品新，长任务仍需观察。' },
   ]}
 />
 
 <ReviewScoreCard
   title="Kiro 评分卡"
-  subtitle="同维度、同权重，用于快速横向对比。"
+  subtitle="同一评分标准，便于与 Antigravity / Cline 横向对比。"
   dimensions={[
-    { label: '多 Agent 并行', score: 3, maxScore: 5, weight: 0.125 },
-    { label: 'Spec 驱动', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '模型自由度', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '生态与集成', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '响应速度', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '国内可访问性', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '上手难度', score: 6, note: 'Spec 工作流需要团队先适应。' },
+    { label: '功能完整性', score: 8, note: '规范、Hooks、Steering Files 架构完整。' },
+    { label: '性价比', score: 7, note: '早期免费有吸引力，GA 定价仍不确定。' },
+    { label: 'Agent 能力', score: 8, note: '规范追踪强，多 Agent 并行不如 Antigravity。' },
+    { label: '中文支持', score: 7, note: '中文规范可用，但术语与流程偏英文生态。' },
+    { label: '稳定性', score: 8, note: '工程化约束强，编辑器生态仍在补齐。' },
   ]}
 />
 
 <ReviewScoreCard
   title="Cline 评分卡"
-  subtitle="同维度、同权重，用于快速横向对比。"
+  subtitle="同一评分标准，便于与 Antigravity / Kiro 横向对比。"
   dimensions={[
-    { label: '多 Agent 并行', score: 4, maxScore: 5, weight: 0.125 },
-    { label: 'Spec 驱动', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '模型自由度', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '响应速度', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '价格友好度', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '国内可访问性', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '上手难度', score: 7, note: '需要配置模型与权限，熟悉后很灵活。' },
+    { label: '功能完整性', score: 8, note: 'Plan / Act、CLI、团队能力覆盖主流工作流。' },
+    { label: '性价比', score: 9, note: '开源免费，自选模型带来成本弹性。' },
+    { label: 'Agent 能力', score: 9, note: '模型自由度叠加 Plan / Act，生产安全感强。' },
+    { label: '中文支持', score: 8, note: '可接国内模型，中文场景最容易优化。' },
+    { label: '稳定性', score: 8, note: '插件成熟度高，但最终质量依赖所选模型。' },
   ]}
 />
 
