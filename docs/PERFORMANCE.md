@@ -10,7 +10,7 @@ To ensure a high-quality user experience and maintain search engine rankings, we
 - **Cumulative Layout Shift (CLS)**: < 0.1
 - **Interaction to Next Paint (INP)**: < 200ms
 - **Total Blocking Time (TBT)**: ≤ 200ms (Lighthouse lab proxy for INP)
-- **Lighthouse Performance Score**: ≥ 85
+- **Lighthouse Performance Score**: ≥ 90
 
 ## Monitoring Strategy
 
@@ -51,7 +51,7 @@ Production smoke tests run daily from GitHub Actions against the deployed site:
 
 Current budgets are defined in `lighthouserc.json`:
 
-- `categories:performance`: min 0.85
+- `categories:performance`: min 0.90
 - `largest-contentful-paint`: max 2500ms
 - `cumulative-layout-shift`: max 0.1
 - `total-blocking-time`: max 200ms (lab proxy for INP; production INP is observed in Speed Insights)
