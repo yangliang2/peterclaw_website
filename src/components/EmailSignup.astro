@@ -24,6 +24,12 @@ const statusId = `${signupId}-status`;
     {variant !== 'inline' && <h2 id={titleId}>{copy.newsletterTitle}</h2>}
     {variant === 'full' && <p>{copy.newsletterDescription}</p>}
     {variant === 'floating' && <p class="social-proof">{copy.newsletterSocialProof}</p>}
+    {variant !== 'floating' && (
+      <div class="lead-magnet-badge">
+        <span class="lead-magnet-icon" aria-hidden="true">📘</span>
+        <span class="lead-magnet-text">{locale === 'zh' ? '免费赠品：《2026 AI 编程工具选型白皮书》' : 'Free gift: 2026 AI Coding Tools Whitepaper'}</span>
+      </div>
+    )}
   </div>
   <form class="email-signup-form" novalidate>
     <label class="sr-only" for={emailId}>{copy.newsletterPlaceholder}</label>
@@ -44,13 +50,14 @@ const statusId = `${signupId}-status`;
   <p id={statusId} class="email-signup-status" role="status" aria-live="polite" hidden></p>
 </section>
 
-<script define:vars={{ 
+<script define:vars={{
   messages: {
     submitting: copy.newsletterSubmitting,
     success: copy.newsletterSuccess,
     invalid: copy.newsletterErrorInvalid,
     generic: copy.newsletterErrorGeneric,
     defaultLabel: copy.newsletterSubmit,
+    downloadLabel: locale === 'zh' ? '立即下载白皮书' : 'Download whitepaper now',
   },
   variant
 }}>
@@ -99,7 +106,10 @@ const statusId = `${signupId}-status`;
         const payload = await response.json().catch(() => ({}));
 
         if (response.ok && payload.ok) {
-          status.textContent = messages.success;
+          const downloadLink = payload.downloadUrl
+            ? ` <a href="${payload.downloadUrl}" download style="color:inherit;text-decoration:underline;font-weight:600;">${messages.downloadLabel}</a>`
+            : '';
+          status.innerHTML = messages.success + downloadLink;
           status.classList.add('is-success');
           form.reset();
           
@@ -254,6 +264,25 @@ const statusId = `${signupId}-status`;
 
   .email-signup-status.is-error {
     color: var(--color-error);
+  }
+
+  .lead-magnet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(124, 58, 237, 0.06));
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-primary);
+  }
+
+  .lead-magnet-icon {
+    font-size: 1.1rem;
+    line-height: 1;
   }
 
   .sr-only {

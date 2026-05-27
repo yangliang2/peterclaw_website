@@ -63,14 +63,14 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (response.ok) {
-      return new Response(JSON.stringify({ ok: true }), {
+      return new Response(JSON.stringify({ ok: true, downloadUrl: '/downloads/ai-tool-selection-whitepaper-2026.pdf' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
     if (response.status === 409) {
-      return new Response(JSON.stringify({ ok: true }), {
+      return new Response(JSON.stringify({ ok: true, downloadUrl: '/downloads/ai-tool-selection-whitepaper-2026.pdf' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
