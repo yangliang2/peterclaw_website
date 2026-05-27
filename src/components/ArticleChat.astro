@@ -13,10 +13,19 @@ const content = articleContent.slice(0, 6000);
 ---
 
 <details class="article-chat glass-card" aria-label={copy.chatPrompt}>
-  <summary>{copy.chatPrompt}</summary>
+  <summary>
+    <span class="chat-summary-text">{copy.chatPrompt}</span>
+    <span class="chat-context-badge">{copy.chatContextHint}</span>
+  </summary>
   <div class="article-chat-body">
-    <h2>{copy.chatTitle}</h2>
-    <p>{copy.chatDescription}</p>
+    <p class="article-chat-desc">{copy.chatDescription}</p>
+    <div class="chat-presets" data-chat-presets>
+      <button type="button" class="chat-preset-btn">{copy.chatSuggest1}</button>
+      <button type="button" class="chat-preset-btn">{copy.chatSuggest2}</button>
+      <button type="button" class="chat-preset-btn">{copy.chatSuggest3}</button>
+    </div>
+    <div class="chat-history" data-chat-history hidden aria-live="polite"></div>
+    <p class="article-chat-status" data-chat-status role="status" aria-live="polite" hidden></p>
     <form class="article-chat-form" data-chat-form novalidate>
       <label class="article-chat-field">
         <textarea
@@ -29,13 +38,9 @@ const content = articleContent.slice(0, 6000);
       </label>
       <div class="article-chat-actions">
         <button class="btn btn-primary" type="submit" data-chat-submit>{copy.chatSubmit}</button>
-        <button class="btn" type="button" data-chat-reset hidden>{copy.chatReset}</button>
+        <button class="btn" type="button" data-chat-clear hidden>{copy.chatClearHistory}</button>
       </div>
     </form>
-    <div class="article-chat-answer" data-chat-answer hidden aria-live="polite">
-      <div class="article-chat-answer-text" data-chat-answer-text></div>
-    </div>
-    <p class="article-chat-status" data-chat-status role="status" aria-live="polite" hidden></p>
   </div>
 </details>
 
@@ -45,20 +50,38 @@ const content = articleContent.slice(0, 6000);
   invalid: copy.chatErrorInvalid,
   rateLimit: copy.chatErrorRateLimit,
   generic: copy.chatErrorGeneric,
+  you: copy.chatYou,
+  ai: copy.chatAI,
 } }}>
   document.querySelectorAll('[data-chat-form]').forEach((element) => {
     if (!(element instanceof HTMLFormElement) || element.dataset.ready === 'true') return;
     element.dataset.ready = 'true';
 
     const form = element;
-    const body = form.closest('.article-chat-body');
+    const chatBody = form.closest('.article-chat-body');
     const submitBtn = form.querySelector('[data-chat-submit]');
-    const resetBtn = form.querySelector('[data-chat-reset]');
-    const answerEl = body && body.querySelector('[data-chat-answer]');
-    const answerText = answerEl && answerEl.querySelector('[data-chat-answer-text]');
-    const statusEl = body && body.querySelector('[data-chat-status]');
+    const clearBtn = form.querySelector('[data-chat-clear]');
+    const historyEl = chatBody && chatBody.querySelector('[data-chat-history]');
+    const statusEl = chatBody && chatBody.querySelector('[data-chat-status]');
+    const presetsEl = chatBody && chatBody.querySelector('[data-chat-presets]');
 
-    if (!(submitBtn instanceof HTMLButtonElement) || !(resetBtn instanceof HTMLButtonElement)) return;
+    if (!(submitBtn instanceof HTMLButtonElement) || !(clearBtn instanceof HTMLButtonElement)) return;
+
+    // Per-session conversation history: [{role, content}]
+    let history = [];
+
+    // Preset chips fill the textarea
+    if (presetsEl) {
+      presetsEl.querySelectorAll('.chat-preset-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const textarea = form.querySelector('textarea[name="question"]');
+          if (textarea instanceof HTMLTextAreaElement) {
+            textarea.value = (btn.textContent || '').trim();
+            textarea.focus();
+          }
+        });
+      });
+    }
 
     function setStatus(text, isError) {
       if (!(statusEl instanceof HTMLElement)) return;
@@ -67,10 +90,27 @@ const content = articleContent.slice(0, 6000);
       statusEl.hidden = !text;
     }
 
-    resetBtn.addEventListener('click', () => {
-      if (answerEl instanceof HTMLElement) answerEl.hidden = true;
-      if (answerText instanceof HTMLElement) answerText.textContent = '';
-      resetBtn.hidden = true;
+    function createMessageEl(role, text) {
+      const div = document.createElement('div');
+      div.className = 'chat-message chat-message--' + role;
+      const label = document.createElement('span');
+      label.className = 'chat-message-label';
+      label.textContent = role === 'user' ? messages.you : messages.ai;
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'chat-message-content';
+      if (text) contentDiv.textContent = text;
+      div.appendChild(label);
+      div.appendChild(contentDiv);
+      return div;
+    }
+
+    clearBtn.addEventListener('click', () => {
+      history = [];
+      if (historyEl instanceof HTMLElement) {
+        historyEl.innerHTML = '';
+        historyEl.hidden = true;
+      }
+      clearBtn.hidden = true;
       setStatus('', false);
       form.reset();
     });
@@ -85,50 +125,77 @@ const content = articleContent.slice(0, 6000);
         return;
       }
 
+      const question = textarea.value.trim();
+
+      // Build API messages — cap at last 6 for cost control
+      const apiMessages = [...history, { role: 'user', content: question }].slice(-6);
+
+      // Create conversation pair in history immediately
+      const pairEl = document.createElement('div');
+      pairEl.className = 'chat-pair';
+      const userMsgEl = createMessageEl('user', question);
+      const aiMsgEl = createMessageEl('ai', '');
+      aiMsgEl.classList.add('is-streaming');
+      const aiContentEl = aiMsgEl.querySelector('.chat-message-content');
+      pairEl.appendChild(userMsgEl);
+      pairEl.appendChild(aiMsgEl);
+
+      if (historyEl instanceof HTMLElement) {
+        historyEl.appendChild(pairEl);
+        historyEl.hidden = false;
+        setTimeout(() => pairEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      }
+
+      form.reset();
       submitBtn.disabled = true;
       submitBtn.textContent = messages.submitting;
-      resetBtn.hidden = true;
-      if (answerEl instanceof HTMLElement) answerEl.hidden = true;
-      if (answerText instanceof HTMLElement) answerText.textContent = '';
 
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question: textarea.value.trim(),
-            articleContent,
-            locale,
-          }),
+          body: JSON.stringify({ messages: apiMessages, articleContent, locale }),
         });
 
         if (response.status === 429) {
           setStatus(messages.rateLimit, true);
+          pairEl.remove();
+          if (historyEl instanceof HTMLElement && historyEl.children.length === 0) historyEl.hidden = true;
           return;
         }
         if (!response.ok || !response.body) {
           setStatus(messages.generic, true);
+          pairEl.remove();
+          if (historyEl instanceof HTMLElement && historyEl.children.length === 0) historyEl.hidden = true;
           return;
         }
 
-        if (answerEl instanceof HTMLElement) answerEl.hidden = false;
-
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
+        let fullAnswer = '';
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          if (answerText instanceof HTMLElement) {
-            answerText.textContent += decoder.decode(value, { stream: true });
-          }
+          const chunk = decoder.decode(value, { stream: true });
+          fullAnswer += chunk;
+          if (aiContentEl instanceof HTMLElement) aiContentEl.textContent = fullAnswer;
         }
-        if (answerText instanceof HTMLElement) {
-          answerText.textContent += decoder.decode();
+        const remainder = decoder.decode();
+        if (remainder) {
+          fullAnswer += remainder;
+          if (aiContentEl instanceof HTMLElement) aiContentEl.textContent = fullAnswer;
         }
 
-        resetBtn.hidden = false;
+        aiMsgEl.classList.remove('is-streaming');
+
+        history.push({ role: 'user', content: question });
+        history.push({ role: 'assistant', content: fullAnswer });
+
+        clearBtn.hidden = false;
       } catch {
         setStatus(messages.generic, true);
+        pairEl.remove();
+        if (historyEl instanceof HTMLElement && historyEl.children.length === 0) historyEl.hidden = true;
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = messages.submitLabel;
@@ -151,6 +218,24 @@ const content = articleContent.slice(0, 6000);
     font-size: 1.125rem;
     font-weight: 600;
     list-style-position: inside;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .chat-summary-text {
+    flex: 1;
+  }
+
+  .chat-context-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.2em 0.65em;
+    border-radius: 999px;
+    border: var(--border-glass);
+    background: var(--color-soft-bg);
+    color: var(--color-text-muted);
+    white-space: nowrap;
   }
 
   .article-chat[open] summary {
@@ -161,14 +246,96 @@ const content = articleContent.slice(0, 6000);
     padding: var(--space-lg);
   }
 
-  .article-chat-body h2 {
-    margin: 0 0 var(--space-sm);
-    font-size: 1.5rem;
+  .article-chat-desc {
+    margin: 0 0 var(--space-md);
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
   }
 
-  .article-chat-body > p {
-    margin: 0 0 var(--space-lg);
+  .chat-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .chat-preset-btn {
+    padding: 0.3em 0.75em;
+    border: var(--border-glass);
+    border-radius: 999px;
+    background: transparent;
     color: var(--color-text-muted);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .chat-preset-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .chat-history {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .chat-pair {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .chat-message {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .chat-message-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+
+  .chat-message--user .chat-message-label {
+    color: var(--color-primary);
+  }
+
+  .chat-message--user .chat-message-content {
+    padding: 0.55rem 0.85rem;
+    border-left: 3px solid var(--color-primary);
+    background: var(--color-soft-bg);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: var(--color-text);
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .chat-message--ai .chat-message-content {
+    padding: 0.25rem 0;
+    color: var(--color-article);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+  }
+
+  .chat-message--ai.is-streaming .chat-message-content::after {
+    content: '▊';
+    animation: chat-blink 1s step-end infinite;
+    margin-left: 1px;
+    color: var(--color-primary);
+  }
+
+  @keyframes chat-blink {
+    50% { opacity: 0; }
   }
 
   .article-chat-form {
@@ -204,22 +371,8 @@ const content = articleContent.slice(0, 6000);
     transform: none;
   }
 
-  .article-chat-answer {
-    margin-top: var(--space-lg);
-    padding: var(--space-lg);
-    border: var(--border-glass);
-    border-radius: var(--radius-md);
-    background: var(--color-soft-bg);
-  }
-
-  .article-chat-answer-text {
-    white-space: pre-wrap;
-    color: var(--color-article);
-    line-height: 1.7;
-  }
-
   .article-chat-status {
-    margin: var(--space-md) 0 0;
+    margin: 0 0 var(--space-md);
     font-size: 0.95rem;
   }
 
