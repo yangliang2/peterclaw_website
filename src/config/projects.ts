@@ -1,4 +1,10 @@
+import aiExperimentsCover from '@/assets/projects/ai-experiments.svg';
+import articleChatCover from '@/assets/projects/article-chat.svg';
+import peterclawNowCover from '@/assets/projects/peterclaw-now.svg';
+import peterclawSquadCover from '@/assets/projects/peterclaw-squad.svg';
+import peterclawWebsiteCover from '@/assets/projects/peterclaw-website.svg';
 import type { Locale } from '@/lib/i18n';
+import type { ImageMetadata } from 'astro';
 
 export type ProjectTag = 'AI' | 'Web' | 'Tool';
 export type ProjectStatus = 'shipped' | 'experiment';
@@ -8,7 +14,7 @@ export interface Project {
   description: Record<Locale, string>;
   tags: ProjectTag[];
   status: ProjectStatus;
-  coverImage: string;
+  coverImage: ImageMetadata;
   coverAlt: Record<Locale, string>;
   url: string | Record<Locale, string>;
   stack: string[];
@@ -76,7 +82,7 @@ export const projects: Project[] = [
     },
     tags: ['Web', 'Tool'],
     status: 'shipped',
-    coverImage: '/projects/peterclaw-website.svg',
+    coverImage: peterclawWebsiteCover,
     coverAlt: {
       zh: 'PeterClaw 个人网站界面抽象预览图',
       en: 'Abstract preview of the PeterClaw personal website interface',
@@ -94,7 +100,7 @@ export const projects: Project[] = [
     },
     tags: ['AI', 'Tool'],
     status: 'shipped',
-    coverImage: '/projects/peterclaw-squad.svg',
+    coverImage: peterclawSquadCover,
     coverAlt: {
       zh: '七个 AI Agent 协作网络抽象插图',
       en: 'Abstract network of seven collaborating AI agents',
@@ -114,7 +120,7 @@ export const projects: Project[] = [
     },
     tags: ['Web', 'Tool'],
     status: 'shipped',
-    coverImage: '/projects/peterclaw-now.svg',
+    coverImage: peterclawNowCover,
     coverAlt: {
       zh: '/now 状态页布局抽象预览图',
       en: 'Abstract preview of the /now status page layout',
@@ -133,7 +139,7 @@ export const projects: Project[] = [
     },
     tags: ['AI', 'Web'],
     status: 'shipped',
-    coverImage: '/projects/article-chat.svg',
+    coverImage: articleChatCover,
     coverAlt: {
       zh: '文章内 AI 问答对话界面抽象预览图',
       en: 'Abstract preview of the in-article AI Q&A chat interface',
@@ -153,7 +159,7 @@ export const projects: Project[] = [
     },
     tags: ['AI', 'Web'],
     status: 'shipped',
-    coverImage: '/projects/ai-experiments.svg',
+    coverImage: aiExperimentsCover,
     coverAlt: {
       zh: 'AI 小队建站日记系列抽象封面图',
       en: 'Abstract cover for the AI squad website build diary series',
