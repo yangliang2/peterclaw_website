@@ -6,9 +6,10 @@ interface Props {
   locale: Locale;
   section: ContentSection;
   contentType?: string;
+  tags?: string[];
 }
 
-const { locale, section, contentType } = Astro.props;
+const { locale, section, contentType, tags = [] } = Astro.props;
 const resolvedType =
   contentType ?? (section === 'knowledge' ? 'knowledge' : 'journal');
 const typeLabel = getContentTypeLabel(resolvedType, section, locale);
@@ -17,3 +18,6 @@ const typeLabel = getContentTypeLabel(resolvedType, section, locale);
 <span data-pagefind-meta={`section:${section}`} hidden></span>
 <span data-pagefind-meta={`content_type:${resolvedType}`} hidden></span>
 <span data-pagefind-meta={`type_label:${typeLabel}`} hidden></span>
+{tags.map((tag) => (
+  <span data-pagefind-meta={`tag:${tag}`} hidden></span>
+))}

@@ -243,6 +243,52 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
 
 <script>
   (() => {
+    const locale = document.documentElement.getAttribute('lang') || 'zh';
+    const prefix = `/${locale}`;
+    const searchPath = `${prefix}/search/`;
+
+    function focusSearchInput() {
+      const input = document.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+      input?.focus();
+      input?.select();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      const isK = key === 'k';
+      const withMod = e.metaKey || e.ctrlKey;
+      if (!isK || !withMod) return;
+
+      // Don't hijack typing in inputs/textareas/contenteditable.
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName?.toLowerCase();
+      const isEditable =
+        tag === 'input' ||
+        tag === 'textarea' ||
+        (target instanceof HTMLElement && target.isContentEditable);
+      if (isEditable) return;
+
+      e.preventDefault();
+
+      if (window.location.pathname.startsWith(searchPath)) {
+        focusSearchInput();
+        return;
+      }
+
+      window.location.href = `${searchPath}?focus=1`;
+    });
+
+    document.addEventListener('astro:after-swap', () => {
+      if (window.location.pathname.startsWith(searchPath)) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('focus') === '1') focusSearchInput();
+      }
+    });
+  })();
+</script>
+
+<script>
+  (() => {
     const root = document.documentElement;
     const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
     const panel = document.querySelector<HTMLElement>('[data-menu-panel]');

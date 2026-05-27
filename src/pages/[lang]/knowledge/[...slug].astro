@@ -108,7 +108,7 @@ const structuredData = [
   <div class="article-layout">
     <ArticleToc locale={lang} entries={tocEntries} />
     <article class="article-main" data-pagefind-body>
-      <PagefindMeta locale={lang} section="knowledge" />
+      <PagefindMeta locale={lang} section="knowledge" tags={article.data.tags} />
       <p class="meta">{article.data.area}</p>
       <h1>{article.data.title}</h1>
       <p class="reading-time">{readingTimeLabel}</p>

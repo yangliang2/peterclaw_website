@@ -1,10 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
-import PopularArticles from '@/components/PopularArticles.astro';
 import type { Locale } from '@/lib/i18n';
 import { ui } from '@/lib/i18n';
 import { isSearchFilterType, type SearchFilterType } from '@/lib/search';
 import resultTemplate from '@/assets/pagefind-result-template.html?raw';
+import PopularArticles from '@/components/PopularArticles.astro';
 
 interface Props {
   locale: Locale;
@@ -16,6 +17,26 @@ const copy = ui[locale];
 const initialQuery = Astro.url.searchParams.get('q') ?? '';
 const rawType = Astro.url.searchParams.get('type');
 const initialType: SearchFilterType = isSearchFilterType(rawType) ? rawType : 'all';
+const initialTag = Astro.url.searchParams.get('tag') ?? '';
+
+const [blog, knowledge] = await Promise.all([
+  getCollection('blog', (entry) => locale === entry.id.split('/')[0] && !entry.data.draft),
+  getCollection('knowledge', (entry) => locale === entry.id.split('/')[0] && !entry.data.draft),
+]);
+
+const tagCounts = new Map<string, number>();
+for (const entry of [...blog, ...knowledge]) {
+  for (const tag of entry.data.tags ?? []) {
+    const key = String(tag).trim();
+    if (!key) continue;
+    tagCounts.set(key, (tagCounts.get(key) ?? 0) + 1);
+  }
+}
+
+const topTags = [...tagCounts.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 24)
+  .map(([tag, count]) => ({ tag, count }));
 
 const filterTabs: { id: SearchFilterType; label: string }[] = [
   { id: 'all', label: copy.searchFilterAll },
@@ -31,6 +52,7 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   class:list={['search-root', { 'search-root--compact': compact }]}
   data-locale={locale}
   data-initial-type={initialType}
+  data-initial-tag={initialTag}
 >
   <div class="search-filters" role="tablist" aria-label={copy.searchTitle}>
     {
@@ -48,6 +70,12 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     }
   </div>
 
+  <div class="search-tag-entry">
+    <a class="search-tag-entry-link" href="#browse-by-tag">
+      {copy.searchBrowseByTag}
+    </a>
+  </div>
+
   <PagefindConfig instance="site-search" />
   <pagefind-searchbox
     instance="site-search"
@@ -58,16 +86,40 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     <Fragment set:html={pagefindResultTemplate} />
   </pagefind-searchbox>
 
+  <section id="browse-by-tag" class="search-tags" aria-label={copy.searchBrowseByTag}>
+    <h2 class="search-tags-title">{copy.searchBrowseByTag}</h2>
+    <div class="search-tags-grid">
+      {topTags.map(({ tag, count }) => (
+        <button type="button" class="search-tag-chip" data-search-tag={tag}>
+          <span class="search-tag-chip__label">{tag}</span>
+          <span class="search-tag-chip__count">{count}</span>
+        </button>
+      ))}
+    </div>
+  </section>
+
   <section class="search-empty" hidden aria-live="polite">
-    <h2 class="search-empty__title">{copy.searchNoResultsTitle}</h2>
-    <p class="search-empty__hint">{copy.searchNoResultsHint}</p>
-    <PopularArticles locale={locale} />
+    <div class="search-empty-card">
+      <h2 class="search-empty-title">{copy.searchEmptyTitle}</h2>
+      <p class="search-empty-desc">{copy.searchEmptyDescription}</p>
+      <PopularArticles locale={locale} />
+      <div class="search-empty-tags">
+        <h3 class="search-empty-tags-title">{copy.searchEmptyTagsTitle}</h3>
+        <div class="search-tags-grid">
+          {topTags.slice(0, 12).map(({ tag, count }) => (
+            <button type="button" class="search-tag-chip" data-search-tag={tag}>
+              <span class="search-tag-chip__label">{tag}</span>
+              <span class="search-tag-chip__count">{count}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   </section>
 </div>
 
 <script>
   import { getInstanceManager } from '@pagefind/component-ui';
-  import type { PagefindSearchResult } from '@pagefind/component-ui';
   import {
     isSearchFilterType,
     pagefindFiltersForType,
@@ -75,20 +127,13 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   } from '@/lib/search';
 
   const INSTANCE_NAME = 'site-search';
-  const HIGHLIGHT_ATTR = 'data-search-highlight';
 
   function getSearchRoot() {
     return document.querySelector<HTMLElement>('.search-root');
   }
 
-  function getEmptyState(root: HTMLElement) {
-    return root.querySelector<HTMLElement>('.search-empty');
-  }
-
-  function setEmptyStateVisible(root: HTMLElement, visible: boolean) {
-    const empty = getEmptyState(root);
-    if (!empty) return;
-    empty.toggleAttribute('hidden', !visible);
+  function getActiveTag(root: HTMLElement): string {
+    return root.dataset.activeTag ?? '';
   }
 
   function getActiveFilterType(root: HTMLElement): SearchFilterType {
@@ -97,112 +142,26 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     return isSearchFilterType(type) ? type : 'all';
   }
 
-  function escapeRegExp(value: string) {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  function normalizeQueryTerms(query: string): string[] {
-    const raw = query
-      .trim()
-      .split(/\s+/)
-      .map((t) => t.trim())
-      .filter(Boolean);
-
-    const unique: string[] = [];
-    for (const term of raw) {
-      if (term.length < 2) continue;
-      if (unique.includes(term)) continue;
-      unique.push(term);
-      if (unique.length >= 6) break;
-    }
-    return unique;
-  }
-
-  function unwrapHighlights(container: HTMLElement) {
-    container.querySelectorAll(`mark[${HIGHLIGHT_ATTR}]`).forEach((mark) => {
-      const parent = mark.parentNode;
-      if (!parent) return;
-      parent.replaceChild(document.createTextNode(mark.textContent ?? ''), mark);
-      parent.normalize();
-    });
-  }
-
-  function highlightInContainer(container: HTMLElement, terms: string[]) {
-    if (terms.length === 0) return;
-
-    unwrapHighlights(container);
-
-    const pattern = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
-      acceptNode(node) {
-        const parent = node.parentElement;
-        if (!parent) return NodeFilter.FILTER_REJECT;
-        const tag = parent.tagName;
-        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'MARK') {
-          return NodeFilter.FILTER_REJECT;
-        }
-        if (!node.nodeValue || !node.nodeValue.trim()) {
-          return NodeFilter.FILTER_REJECT;
-        }
-        return NodeFilter.FILTER_ACCEPT;
-      },
-    });
-
-    const textNodes: Text[] = [];
-    while (walker.nextNode()) {
-      textNodes.push(walker.currentNode as Text);
-    }
-
-    for (const node of textNodes) {
-      const text = node.nodeValue ?? '';
-      if (!pattern.test(text)) continue;
-      pattern.lastIndex = 0;
-
-      const frag = document.createDocumentFragment();
-      let lastIndex = 0;
-      let match: RegExpExecArray | null;
-      while ((match = pattern.exec(text)) !== null) {
-        const start = match.index;
-        const end = start + match[0].length;
-        if (start > lastIndex) frag.append(text.slice(lastIndex, start));
-        const mark = document.createElement('mark');
-        mark.setAttribute(HIGHLIGHT_ATTR, 'true');
-        mark.textContent = text.slice(start, end);
-        frag.append(mark);
-        lastIndex = end;
-      }
-      if (lastIndex < text.length) frag.append(text.slice(lastIndex));
-
-      node.parentNode?.replaceChild(frag, node);
-    }
-  }
-
-  function applyHighlights(root: HTMLElement, query: string) {
-    const terms = normalizeQueryTerms(query);
-    if (terms.length === 0) {
-      root.querySelectorAll<HTMLElement>('.pf-result-card, .pagefind-ui__result').forEach((card) => {
-        unwrapHighlights(card);
-      });
-      return;
-    }
-
-    root
-      .querySelectorAll<HTMLElement>('.pf-result-card, .pagefind-ui__result')
-      .forEach((card) => highlightInContainer(card, terms));
-  }
-
   function syncUrlParams(root: HTMLElement) {
     const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
     const query = input?.value.trim() ?? '';
     const type = getActiveFilterType(root);
+    const tag = getActiveTag(root);
     const params = new URLSearchParams();
 
     if (query) params.set('q', query);
     if (type !== 'all') params.set('type', type);
+    if (tag) params.set('tag', tag);
 
     const next = params.toString();
     const nextUrl = next ? `${window.location.pathname}?${next}` : window.location.pathname;
     window.history.replaceState({}, '', nextUrl);
+  }
+
+  function buildCombinedFilters(type: SearchFilterType, tag: string) {
+    const base = pagefindFiltersForType(type);
+    if (!tag) return base;
+    return { ...base, tag: [tag] };
   }
 
   function applyFilterType(root: HTMLElement, type: SearchFilterType) {
@@ -217,43 +176,19 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
     const term = input?.value.trim() ?? '';
 
-    instance.triggerSearchWithFilters(term, pagefindFiltersForType(type));
+    instance.triggerSearchWithFilters(term, buildCombinedFilters(type, getActiveTag(root)));
     syncUrlParams(root);
   }
 
-  function initEmptyStateAndHighlighting() {
-    const root = getSearchRoot();
-    if (!root || root.dataset.resultsHookReady === 'true') return;
-
+  function applyTag(root: HTMLElement, tag: string) {
     const manager = getInstanceManager();
     const instance = manager.getInstance(INSTANCE_NAME);
+    const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+    const term = input?.value.trim() ?? '';
+    root.dataset.activeTag = tag;
 
-    root.dataset.resultsHookReady = 'true';
-
-    instance.on(
-      'results',
-      (results) => {
-        const parsed = results as PagefindSearchResult;
-        const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
-        const query = input?.value.trim() ?? '';
-        const hasQuery = query.length > 0;
-        const empty =
-          hasQuery && Array.isArray(parsed?.results) && parsed.results.length === 0;
-        setEmptyStateVisible(root, empty);
-
-        if (!hasQuery) return;
-        requestAnimationFrame(() => requestAnimationFrame(() => applyHighlights(root, query)));
-      },
-      root,
-    );
-
-    instance.on(
-      'search',
-      () => {
-        setEmptyStateVisible(root, false);
-      },
-      root,
-    );
+    instance.triggerSearchWithFilters(term, buildCombinedFilters(getActiveFilterType(root), tag));
+    syncUrlParams(root);
   }
 
   function initSearchFilters() {
@@ -263,6 +198,8 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     const initialType = root.dataset.initialType;
     const filterType: SearchFilterType =
       initialType && isSearchFilterType(initialType) ? initialType : 'all';
+    const initialTag = (root.dataset.initialTag ?? '').trim();
+    root.dataset.activeTag = initialTag;
 
     root.dataset.filtersReady = 'true';
 
@@ -274,10 +211,64 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
       });
     });
 
+    root.querySelectorAll<HTMLButtonElement>('[data-search-tag]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tag = (btn.dataset.searchTag ?? '').trim();
+        if (!tag) return;
+        applyTag(root, tag);
+      });
+    });
+
     window.setTimeout(() => {
       if (filterType !== 'all') {
         applyFilterType(root, filterType);
       }
+      if (initialTag) {
+        applyTag(root, initialTag);
+      }
+    }, 0);
+  }
+
+  function isEmptyResults(root: HTMLElement): boolean {
+    const queryInput = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+    const query = queryInput?.value.trim() ?? '';
+    if (!query) return false;
+
+    const results =
+      root.querySelectorAll('.pagefind-ui__result, .pf-result').length;
+    return results === 0;
+  }
+
+  function syncEmptyState(root: HTMLElement) {
+    const empty = root.querySelector<HTMLElement>('.search-empty');
+    if (!empty) return;
+    empty.hidden = !isEmptyResults(root);
+  }
+
+  function initEmptyStateObserver() {
+    const root = getSearchRoot();
+    if (!root) return;
+
+    const resultsContainer =
+      root.querySelector<HTMLElement>('.pagefind-ui__results') ??
+      root.querySelector<HTMLElement>('.pagefind-ui__results-area') ??
+      root;
+
+    const observer = new MutationObserver(() => syncEmptyState(root));
+    observer.observe(resultsContainer, { subtree: true, childList: true, attributes: true });
+    root.addEventListener('input', () => syncEmptyState(root));
+    window.setTimeout(() => syncEmptyState(root), 0);
+  }
+
+  function maybeAutoFocus() {
+    const root = getSearchRoot();
+    if (!root) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('focus') !== '1') return;
+    window.setTimeout(() => {
+      const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+      input?.focus();
+      input?.select();
     }, 0);
   }
 
@@ -318,15 +309,16 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   }
 
   initSearchFilters();
-  initEmptyStateAndHighlighting();
   initSearchTracking();
+  initEmptyStateObserver();
+  maybeAutoFocus();
   document.addEventListener('astro:after-swap', () => {
     const root = getSearchRoot();
     if (root) root.dataset.filtersReady = 'false';
-    if (root) root.dataset.resultsHookReady = 'false';
     initSearchFilters();
-    initEmptyStateAndHighlighting();
     initSearchTracking();
+    initEmptyStateObserver();
+    maybeAutoFocus();
   });
 </script>
 
@@ -426,36 +418,97 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     text-transform: uppercase;
   }
 
-  .search-root :global(mark[data-search-highlight]) {
-    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
-    color: inherit;
-    padding: 0 0.15em;
-    border-radius: 0.25em;
-  }
-
-  .search-empty {
-    margin-top: var(--space-xl);
-    border: var(--border-glass);
-    border-radius: var(--radius-lg);
-    background: var(--gradient-glass);
-    padding: 1.25rem 1.25rem 0.25rem;
-  }
-
-  .search-empty__title {
-    margin: 0 0 0.5rem;
-    color: var(--color-heading);
-  }
-
-  .search-empty__hint {
-    margin: 0 0 1rem;
-    color: var(--color-text-muted);
-  }
-
   .search-root--compact {
     max-width: 100%;
   }
 
   .search-root--compact .search-filters {
     margin-bottom: 0.75rem;
+  }
+
+  .search-tag-entry {
+    margin: 0 0 0.75rem;
+  }
+
+  .search-tag-entry-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .search-tag-entry-link:hover {
+    color: var(--color-text);
+  }
+
+  .search-tags {
+    margin-top: var(--space-xl);
+  }
+
+  .search-tags-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.05rem;
+  }
+
+  .search-tags-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .search-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    font: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .search-tag-chip:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft-bg);
+  }
+
+  .search-tag-chip__count {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .search-empty {
+    margin-top: var(--space-xl);
+  }
+
+  .search-empty-card {
+    padding: 1.25rem 1.25rem 0.5rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+
+  .search-empty-title {
+    margin: 0 0 0.35rem;
+  }
+
+  .search-empty-desc {
+    margin: 0 0 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .search-empty-tags {
+    margin-top: var(--space-xl);
+  }
+
+  .search-empty-tags-title {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
   }
 </style>
