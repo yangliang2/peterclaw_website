@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  locale="zh"
+  title="离线阅读"
+  description="当前无法连接网络。已访问过的文章仍可通过浏览器缓存继续阅读。"
+  canonicalPath="/offline/"
+  noindex
+>
+  <section class="offline-hero" data-pagefind-ignore="all">
+    <p class="meta">OFFLINE</p>
+    <h1>你当前处于离线状态</h1>
+    <p class="lede">
+      PeterClaw 已启用离线缓存。之前打开过的博客和知识库文章可以继续阅读；恢复网络后，新内容会自动更新。
+    </p>
+    <div class="offline-actions">
+      <a class="btn btn-primary" href="/zh/blog/">查看已缓存博客</a>
+      <a class="btn btn-secondary" href="/zh/">返回首页</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .offline-hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .offline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .offline-hero {
+      padding-top: 2.5rem;
+    }
+  }
+</style>
