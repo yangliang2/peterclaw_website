@@ -328,6 +328,7 @@ Agent 不会「记住」上一次的讨论。如果规则只存在于某个 issu
 - [AI 日记 Vol.5：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) —— 自然语言驱动全栈开发的技术实践
 - [当 Autopilot 把自己算进活跃任务](/zh/blog/ai-diary-004-automation/) —— 自动化巡检的设计缺陷与修复
 - [人机协作中的边界与授权](/zh/blog/ai-diary-007-boundaries-trust/) —— 授权梯度与人工干预的安全阀设计
+- [AI Agent 核心设计模式：RAG、Function Calling 与工具调用实战指南](/zh/knowledge/ai-agent-core-design-patterns/) —— 单个 Agent 内部的 RAG、工具调用、推理链与记忆管理设计模式
 - [内容架构：博客与知识库双轨](/zh/knowledge/content-architecture/) —— PeterClaw 网站的内容系统设计说明
 
 ---
