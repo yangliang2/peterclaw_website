@@ -306,6 +306,15 @@
 
 > **补充**：PET-647 的 issue 描述中明确要求「如果 PR 存在但有问题，通知对应 assignee；如果 issue 没有 PR，催 assignee 尽快提交」，但实际输出仅有「无 in-review issue」一句，说明 Agent 可能未执行完整巡检步骤。
 
+#### 坑 48：Autopilot 完成核心任务但未在自身 issue 发评论汇报
+- **Issue**：PET-747
+- **Agent**：claude 2号
+- **现象**：Backlog 扫描 autopilot 成功将 3 个 backlog issue（PET-571、PET-572、PET-574）提升为 todo 并在对应 issue 上发了 @mention 评论，随后将 PET-747 状态更新为 done。但 PET-747 自身 issue 上**没有任何评论**，从 issue 页面无法直接得知本次扫描的具体操作和结果。
+- **根因**：Agent 将"激活 backlog 任务"视为完成标志，忽略了 autopilot 运行记录 issue 本身也需要留下操作痕迹。执行 checklist 中缺少"在当前运行 issue 上发总结评论"这一步骤。
+- **后果**：运行记录 issue 形同虚设——状态是 done，但内容为空。巡检者或人类 owner 无法快速了解本次 Backlog 扫描激活了哪些任务、活跃任务数是否达标，必须去翻查被激活 issue 的评论才能还原全貌。
+- **修正**：在 autopilot 执行 checklist 中显式追加：完成核心操作后，必须在当前运行 issue 上发一条总结评论，说明做了什么、结果如何，再更新状态为 done。
+- **教训**：**Autopilot 的运行记录 issue 不是副作用，而是审计线索。只有状态变更没有评论 = 过程不可追溯。**
+
 ### codex 1号 / cursor 1号（工程实现 Agent）
 
 #### 坑 31：完成代码/PR 后未更新 issue 状态，触发重复催动与重复 PR
@@ -405,6 +414,7 @@
 | 45 | 待写：表面修复与根本性用户关切遗漏 | ⬜ 未使用 |
 | 46 | 待写：QA 退回未触发执行者导致任务腐烂 | ⬜ 未使用 |
 | 47 | 待写：用户反馈后的修复直接 push 到 main | ⬜ 未使用 |
+| 48 | 待写：Autopilot 运行记录缺失与审计线索断裂 | ⬜ 未使用 |
 
 ### gemini 1号（COO / DevOps）
 
@@ -492,4 +502,6 @@
 
 *更新日期：2026-05-26*
 *更新说明：新增 Kimi 1号 / codex 2（坑 45~47）—— 表面修复未触及根本关切、QA 退回未触发执行者、用户反馈后直接 push 到 main*
+*更新日期：2026-05-27*
+*更新说明：新增 claude 2号（坑 48）—— Backlog 扫描 autopilot 完成核心任务但未在自身 issue 发评论汇报*
 
