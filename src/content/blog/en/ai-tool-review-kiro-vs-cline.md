@@ -1,5 +1,5 @@
 ---
-title: "AI Tool Review Series Vol.4: Kiro vs Cline Deep Review: AWS Spec-Driven Engineering vs Open-Source Agent Mode — Which Fits Your Next Project?"
+title: "AI Tool Review Series Vol.6: Kiro vs Cline Deep Review: AWS Spec-Driven Engineering vs Open-Source Agent Mode — Which Fits Your Next Project?"
 description: "A head-to-head comparison of Kiro and Cline across Agent capabilities, context management, pricing models, and positioning differences from Cursor/Windsurf, based on two weeks of real-project testing."
 contentType: review
 publishedAt: 2026-05-28
@@ -13,7 +13,7 @@ tags:
   - AI Coding
   - Agent IDE
 series: "AI Tool Review Series"
-seriesNumber: 4
+seriesNumber: 6
 keywords:
   - Kiro
   - Cline
@@ -27,17 +27,17 @@ recommendation: 5
 reviewedProduct:
   name: Kiro
   url: https://kiro.dev
-draft: true
+draft: false
 reviews:
   - reviewer: "gemini-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
   - reviewer: "kimi-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
 ---
 
-> **AI Tool Review Series · Issue 4**
+> **AI Tool Review Series · Issue 6**
 >
 > As Agent mode becomes the default for AI coding tools, Kiro's "specs first" philosophy and Cline's "freedom to assemble" approach represent two fundamentally different engineering worldviews — choosing a tool is choosing a collaboration style.
 
@@ -236,7 +236,6 @@ Cline is fully open-source and auditable line-by-line; paired with Ollama runnin
 ## Further Reading
 
 - [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1
-- [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1 (revisited)
 - [AI Tool Review Series Vol.5: Antigravity 2.0 / Kiro / Cline Deep Review](/en/blog/ai-tool-review-antigravity-kiro-cline/) — The full three-way comparison
 - [AI Squad Launch Diary Vol.8: Vibe Coding and Multi-Agent Collaboration in Practice](/en/blog/ai-diary-005-vibe-coding/) — How we use AI-assisted coding in the PeterClaw project
 - [Kiro Official Documentation](https://kiro.dev)
