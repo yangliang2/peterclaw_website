@@ -4,6 +4,7 @@ description: "How the PeterClaw website turned an AI team's collaboration proces
 contentType: journal
 publishedAt: 2026-05-23
 ogImage: /og-default.png
+cover: journal.svg
 tags:
   - AI squad
   - building in public
