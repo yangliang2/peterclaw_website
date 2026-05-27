@@ -61,8 +61,10 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
           type="button"
           aria-label={copy.themeToggleToDark}
           title={copy.themeToggleToDark}
-          data-label-dark={copy.themeToggleToDark}
           data-label-light={copy.themeToggleToLight}
+          data-label-dark={copy.themeToggleToDark}
+          data-label-system={copy.themeToggleToSystem}
+          data-mode-system={copy.themeModeSystem}
         >
           <svg
             class="theme-icon theme-icon-sun"
@@ -102,6 +104,23 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
           >
             <path d="M12 3a6 6 0 0 0 9 7.3 9 9 0 1 1-9-7.3Z"></path>
           </svg>
+          <svg
+            class="theme-icon theme-icon-system"
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+            <path d="M8 21h8"></path>
+            <path d="M12 17v4"></path>
+          </svg>
         </button>
       </li>
     </ul>
@@ -110,59 +129,46 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
 
 <script>
   (() => {
-    const storageKey = 'peterclaw-theme';
+    type ThemePreference = 'light' | 'dark' | 'system';
+
     const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
 
-    function hasStoredPreference() {
-      try {
-        const stored = localStorage.getItem(storageKey);
-        return stored === 'light' || stored === 'dark';
-      } catch {
-        return false;
+    function nextLabel(preference: ThemePreference) {
+      if (preference === 'light') {
+        return toggle?.dataset.labelDark ?? 'Switch to dark mode';
       }
+      if (preference === 'dark') {
+        return toggle?.dataset.labelSystem ?? 'Switch to system theme';
+      }
+      return toggle?.dataset.labelLight ?? 'Switch to light mode';
     }
 
-    function syncToggleState(theme: 'light' | 'dark') {
-      toggle?.setAttribute('aria-pressed', String(theme === 'dark'));
-      const label =
-        theme === 'dark'
-          ? (toggle?.dataset.labelLight ?? 'Switch to light mode')
-          : (toggle?.dataset.labelDark ?? 'Switch to dark mode');
-      if (label && toggle) {
-        toggle.setAttribute('aria-label', label);
-        toggle.setAttribute('title', label);
-      }
-    }
+    function syncToggleState() {
+      const preference = (document.documentElement.dataset.themePreference ??
+        'system') as ThemePreference;
+      const resolved = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 
-    function applyTheme(theme: 'light' | 'dark', persist = false) {
-      document.documentElement.dataset.theme = theme;
-      if (persist) {
-        try {
-          localStorage.setItem(storageKey, theme);
-        } catch {
-          // Keep the live theme switch working when storage is unavailable.
-        }
-      }
-      syncToggleState(theme);
+      toggle?.setAttribute('aria-pressed', String(resolved === 'dark'));
+      toggle?.setAttribute('data-active-preference', preference);
+
+      const label = nextLabel(preference);
+      toggle?.setAttribute('aria-label', label);
+      toggle?.setAttribute('title', label);
     }
 
     requestAnimationFrame(() => {
       document.documentElement.classList.add('theme-transition');
     });
 
+    syncToggleState();
 
-    if (toggle) {
-      const currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      syncToggleState(currentTheme);
-      toggle.addEventListener('click', () => {
-        const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-        applyTheme(nextTheme, true);
-      });
-    }
+    toggle?.addEventListener('click', () => {
+      window.peterclawTheme?.cyclePreference();
+      syncToggleState();
+    });
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-      if (hasStoredPreference()) return;
-      applyTheme(event.matches ? 'dark' : 'light');
+    document.documentElement.addEventListener('peterclaw-theme-change', () => {
+      syncToggleState();
     });
   })();
 </script>
@@ -273,18 +279,16 @@ const isCurrentPath = (href: string) => currentPath === href || currentPath.star
 
   .theme-icon {
     grid-area: 1 / 1;
+    opacity: 0;
+    transform: scale(0.75) rotate(-20deg);
     transition:
       opacity 0.2s ease,
       transform 0.2s ease;
   }
 
-  :global([data-theme='dark']) .theme-icon-sun,
-  .theme-icon-moon {
-    opacity: 0;
-    transform: scale(0.75) rotate(-20deg);
-  }
-
-  :global([data-theme='dark']) .theme-icon-moon {
+  :global(html[data-theme-preference='light']) .theme-icon-sun,
+  :global(html[data-theme-preference='dark']) .theme-icon-moon,
+  :global(html[data-theme-preference='system']) .theme-icon-system {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
