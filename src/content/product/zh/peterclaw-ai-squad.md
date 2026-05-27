@@ -1,12 +1,12 @@
 ---
 title: "PeterClaw AI Squad"
-description: "把想法交给可追踪的 AI 协作工作流：从 Issue 分解、并行交付到 PR 验收，让独立开发者以小团队的节奏上线。"
+description: "把想法交给可追踪的 AI 协作工作流：从 Issue 分解、并行协作到自动化交付，让独立开发者以小团队的节奏上线。"
 eyebrow: "AI 协作工作流"
 features:
   - title: "任务即上下文"
     description: "每个需求以 Issue 承载目标、验收标准与交接记录，Agent 接手时无需重新解释背景。"
-  - title: "并行而可审核"
-    description: "不同 Agent 在独立分支完成实现与审阅，所有交付最终汇入可检查的 Pull Request。"
+  - title: "并行而透明"
+    description: "不同 Agent 协同完成任务，所有变更记录在公开的 Issue 与 Commit 中，确保过程可追溯。"
   - title: "公开积累资产"
     description: "决策、构建日志与可复用模板沉淀在网站和知识库，把一次交付变成长期复利。"
 pricing:
@@ -31,4 +31,8 @@ cta:
   label: "访问 GitHub"
   href: "https://github.com/yangliang2/peterclaw_website"
   emailSignup: true
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
 ---

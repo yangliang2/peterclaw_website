@@ -1,5 +1,5 @@
 ---
-title: "Missing hreflang and Direct Pushes to Main: When Code Review Routing Failed"
+title: "AI Squad Launch Diary Vol.3: Missing hreflang and Direct Pushes to Main: When Code Review Routing Failed"
 description: "How PeterClaw AI Squad's code-review protocol became a paper tiger, fixes bypassed PRs, and we redesigned the review routing rules."
 contentType: journal
 publishedAt: 2026-05-23
@@ -8,7 +8,7 @@ tags:
   - building in public
   - code review
   - collaboration protocol
-series: AI Squad Launch Diary
+series: "AI Squad Launch Diary"
 seriesNumber: 3
 draft: false
 faq:

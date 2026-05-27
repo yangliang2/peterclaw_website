@@ -1,5 +1,5 @@
 ---
-title: "Context7 架构解读：为 LLM 而生的代码知识图谱"
+title: "GitHub 热门项目深潜 Vol.2：Context7 架构解读：为 LLM 而生的代码知识图谱"
 description: "拆解 Context7 如何将任意代码库转化为 LLM 友好的结构化文档，以及它的『结构化提取 + 语义索引』双引擎设计对 AI 编程工作流的启示。"
 contentType: review
 publishedAt: 2026-05-26
@@ -24,7 +24,7 @@ useCases:
   - 为私有代码库生成 LLM 可用的文档
   - 替代传统 RAG 的代码检索方案
   - 构建团队内部代码知识库
-draft: false
+draft: true
 faq:
   - question: "Context7 和直接把所有代码塞进 LLM 有什么区别？"
     answer: "原始代码含有大量冗余（空格、注释、重复结构），Context7 提取的是结构化语义信息（函数签名、类型定义、调用关系），信息密度高 5-10 倍，且保留了代码间的引用关系。"

@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '@/lib/i18n';
 import type { Project, ProjectsCopy } from '@/config/projects';
+import { Image } from 'astro:assets';
 
 interface Props {
   project: Project;
@@ -13,12 +14,12 @@ const projectUrl = typeof project.url === 'string' ? project.url : project.url[l
 ---
 
 <article class="project-card glass-card" data-tags={project.tags.join(' ')} data-github-repo={project.githubRepo}>
-  <img
+  <Image
     class="project-cover"
     src={project.coverImage}
     alt={project.coverAlt[locale]}
-    width="640"
-    height="360"
+    width={640}
+    height={360}
     loading="lazy"
     decoding="async"
   />
