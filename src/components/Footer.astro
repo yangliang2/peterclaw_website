@@ -8,6 +8,8 @@ interface Props {
 const { locale = 'zh' } = Astro.props;
 const currentYear = new Date().getFullYear();
 const nowHref = `/${locale}/now/`;
+const footerEmailId = `footer-newsletter-email-${locale}`;
+const footerStatusId = `footer-newsletter-status-${locale}`;
 const copy = locale === 'zh'
   ? {
       newsletterLabel: '订阅更新',
@@ -37,37 +39,50 @@ const copy = locale === 'zh'
     </div>
     
     <div class="newsletter-box">
-      <form class="newsletter-form" id="newsletter-footer" aria-label={copy.newsletterLabel}>
-        <label class="visually-hidden" for="newsletter-email">{copy.email}</label>
+      <form class="newsletter-form" data-newsletter-footer aria-label={copy.newsletterLabel}>
+        <label class="visually-hidden" for={footerEmailId}>{copy.email}</label>
         <input
-          id="newsletter-email"
+          id={footerEmailId}
           name="email"
           type="email"
           autocomplete="email"
           placeholder={copy.emailPlaceholder}
           required
+          aria-describedby={footerStatusId}
         />
         <button type="submit" class="btn-subscribe">{copy.subscribe}</button>
       </form>
-      <p class="success" id="newsletter-success" role="status" aria-live="polite" hidden>{copy.subscribed}</p>
+      <p class="success" id={footerStatusId} data-newsletter-success role="status" aria-live="polite" hidden>{copy.subscribed}</p>
     </div>
   </div>
 </footer>
 
 <script>
-  const form = document.getElementById('newsletter-footer') as HTMLFormElement;
-  const status = document.getElementById('newsletter-success') as HTMLParagraphElement;
-  if (form) {
+  document.querySelectorAll('[data-newsletter-footer]').forEach((element) => {
+    if (!(element instanceof HTMLFormElement)) return;
+
+    const form = element;
+    const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement | null;
+    const status = form.parentElement?.querySelector('[data-newsletter-success]') as HTMLParagraphElement | null;
+
+    if (!emailInput || !status) return;
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const email = (form.querySelector('input[type="email"]') as HTMLInputElement).value;
-      if (email) {
-        window.trackEvent('newsletter_subscribe', { location: 'footer' });
-        form.hidden = true;
-        status.hidden = false;
+      const email = emailInput.value.trim();
+      if (!emailInput.checkValidity()) {
+        emailInput.focus();
+        emailInput.reportValidity();
+        return;
       }
+
+      if (!email) return;
+
+      window.trackEvent('newsletter_subscribe', { location: 'footer' });
+      form.hidden = true;
+      status.hidden = false;
     });
-  }
+  });
 </script>
 
 <style>

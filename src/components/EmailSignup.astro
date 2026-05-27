@@ -7,28 +7,33 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = ui[locale];
+const signupId = `newsletter-signup-${locale}`;
+const titleId = `${signupId}-title`;
+const emailId = `${signupId}-email`;
+const statusId = `${signupId}-status`;
 ---
 
-<section class="email-signup glass-card" aria-labelledby="newsletter-title">
+<section class="email-signup glass-card" aria-labelledby={titleId}>
   <div class="email-signup-copy">
-    <h2 id="newsletter-title">{copy.newsletterTitle}</h2>
+    <h2 id={titleId}>{copy.newsletterTitle}</h2>
     <p>{copy.newsletterDescription}</p>
   </div>
   <form class="email-signup-form" novalidate>
-    <label class="sr-only" for="newsletter-email">{copy.newsletterPlaceholder}</label>
+    <label class="sr-only" for={emailId}>{copy.newsletterPlaceholder}</label>
     <input
-      id="newsletter-email"
+      id={emailId}
       name="email"
       type="email"
       autocomplete="email"
       required
       placeholder={copy.newsletterPlaceholder}
+      aria-describedby={statusId}
     />
     <button class="btn btn-primary" type="submit" data-default-label={copy.newsletterSubmit}>
       {copy.newsletterSubmit}
     </button>
   </form>
-  <p class="email-signup-status" role="status" aria-live="polite" hidden></p>
+  <p id={statusId} class="email-signup-status" role="status" aria-live="polite" hidden></p>
 </section>
 
 <script define:vars={{ messages: {
@@ -55,6 +60,7 @@ const copy = ui[locale];
         status.textContent = messages.invalid;
         status.classList.add('is-error');
         status.hidden = false;
+        emailInput.focus();
         return;
       }
 
