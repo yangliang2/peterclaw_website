@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const repositories = await getFeaturedRepositories();
+const { repositories } = await getFeaturedRepositories();
 const copy = {
   zh: {
     eyebrow: 'GitHub 动态',

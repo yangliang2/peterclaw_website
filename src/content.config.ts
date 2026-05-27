@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { githubContentEntrySchema, githubContentLoader } from './lib/github-loader';
 
 const sharedContentSchema = z.object({
   title: z.string(),
@@ -81,4 +82,11 @@ const product = defineCollection({
   })
 });
 
-export const collections = { blog, knowledge, product };
+const github = defineCollection({
+  loader: githubContentLoader({
+    projectRepositories: ['yangliang2/peterclaw_website'],
+  }),
+  schema: githubContentEntrySchema,
+});
+
+export const collections = { blog, knowledge, product, github };
