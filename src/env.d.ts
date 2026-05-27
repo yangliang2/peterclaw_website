@@ -8,6 +8,11 @@ interface PeterclawThemeApi {
 
 interface Window {
   peterclawTheme?: PeterclawThemeApi;
+  umami?: {
+    track: (name: string, props?: Record<string, unknown>) => void;
+  };
+  plausible?: (name: string, options?: { props?: Record<string, unknown> }) => void;
+  trackEvent: (name: string, props?: Record<string, unknown>) => void;
 }
 
 interface DocumentEventMap {

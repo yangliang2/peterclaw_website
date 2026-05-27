@@ -14,6 +14,8 @@ const umamiWebsiteId = import.meta.env.UMAMI_WEBSITE_ID;
 const umamiScriptUrl = import.meta.env.UMAMI_SCRIPT_URL || 'https://analytics.eu.umami.is/script.js';
 
 const isProd = import.meta.env.PROD;
+const isDev = import.meta.env.DEV;
+const hasAnalytics = Boolean(isProd && (plausibleDomain || umamiWebsiteId));
 ---
 
 {isProd && plausibleDomain && (
@@ -24,82 +26,70 @@ const isProd = import.meta.env.PROD;
   <script is:inline async src={umamiScriptUrl} data-website-id={umamiWebsiteId}></script>
 )}
 
-<script>
-  declare global {
-    interface Window {
-      umami?: {
-        track: (name: string, props?: Record<string, unknown>) => void;
-      };
-      plausible?: (name: string, options?: { props?: Record<string, unknown> }) => void;
-      trackEvent: (name: string, props?: Record<string, unknown>) => void;
-    }
-  }
-
-  window.trackEvent = (name, props = {}) => {
-    // Umami
+<script is:inline define:vars={{ hasAnalytics, isDev }}>
+  window.trackEvent = function trackEvent(name, props = {}) {
     if (window.umami && typeof window.umami.track === 'function') {
       window.umami.track(name, props);
     }
-    
-    // Plausible
+
     if (window.plausible && typeof window.plausible === 'function') {
       window.plausible(name, { props });
     }
 
-    // Development logging
-    if (import.meta.env.DEV) {
+    if (isDev) {
       console.log(`[Analytics] ${name}`, props);
     }
   };
 
-  // Global Click Listeners for External Links and RSS
-  document.addEventListener('click', (event) => {
-    const link = (event.target as HTMLElement).closest('a');
-    if (!link) return;
+  if (hasAnalytics || isDev) {
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
 
-    const href = link.getAttribute('href');
-    if (!href) return;
+      const link = target.closest('a');
+      if (!link) return;
 
-    // RSS Tracking
-    if (href.endsWith('rss.xml')) {
-      window.trackEvent('rss_click', {
-        location: link.closest('footer') ? 'footer' : 'navbar',
-        url: href
-      });
-      return;
-    }
+      const href = link.getAttribute('href');
+      if (!href) return;
 
-    // External Link Tracking
-    if (href.startsWith('http') && !href.includes(window.location.hostname)) {
-      window.trackEvent('external_link_click', {
-        url: href,
-        text: link.innerText.trim().substring(0, 100)
-      });
-    }
-  });
+      if (href.endsWith('rss.xml')) {
+        window.trackEvent('rss_click', {
+          location: link.closest('footer') ? 'footer' : 'navbar',
+          url: href
+        });
+        return;
+      }
 
-  // Code Block Copy Tracking
-  document.addEventListener('copy', () => {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed) return;
-    
-    // Check if the selection is within a code block
-    try {
-      const range = selection.getRangeAt(0);
-      const container = range.commonAncestorContainer;
-      const element = container.nodeType === 1 ? (container as HTMLElement) : container.parentElement;
-      const pre = element?.closest('pre');
-      
-      if (pre) {
-        const code = pre.querySelector('code');
-        const language = code ? Array.from(code.classList).find(c => c.startsWith('language-'))?.replace('language-', '') : 'unknown';
-        
-        window.trackEvent('code_copy', {
-          language
+      if (href.startsWith('http') && !href.includes(window.location.hostname)) {
+        window.trackEvent('external_link_click', {
+          url: href,
+          text: link.innerText.trim().substring(0, 100)
         });
       }
-    } catch (e) {
-      // Ignore errors in range selection
-    }
-  });
+    });
+
+    document.addEventListener('copy', () => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) return;
+
+      try {
+        const range = selection.getRangeAt(0);
+        const container = range.commonAncestorContainer;
+        const element = container.nodeType === 1 ? container : container.parentElement;
+        const pre = element?.closest('pre');
+
+        if (pre) {
+          const code = pre.querySelector('code');
+          const language = code
+            ? Array.from(code.classList).find((className) => className.startsWith('language-'))?.replace('language-', '')
+            : 'unknown';
+
+          window.trackEvent('code_copy', {
+            language
+          });
+        }
+      } catch {
+      }
+    });
+  }
 </script>

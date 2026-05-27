@@ -10,10 +10,33 @@ function isLocalePrefixedPage(page) {
   return /^\/(zh|en)(\/|$)/.test(path);
 }
 
+function addImagePerformanceAttributes() {
+  return (tree) => {
+    function visit(node) {
+      if (!node || typeof node !== 'object') return;
+
+      if (node.type === 'element' && node.tagName === 'img') {
+        node.properties = {
+          loading: 'lazy',
+          decoding: 'async',
+          ...node.properties,
+        };
+      }
+
+      if (Array.isArray(node.children)) {
+        node.children.forEach(visit);
+      }
+    }
+
+    visit(tree);
+  };
+}
+
 export default defineConfig({
   site: 'https://peterclaw-website.vercel.app',
   output: 'static',
   markdown: {
+    rehypePlugins: [addImagePerformanceAttributes],
     shikiConfig: {
       themes: {
         light: 'github-light',
