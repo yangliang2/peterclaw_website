@@ -81,6 +81,29 @@ export const seriesCatalog: SeriesDefinition[] = [
       en: 'Updated by project milestones and community interest, 1-2 posts per month.',
     },
   },
+  {
+    slug: 'indie-dev-ai-toolbox',
+    names: {
+      zh: '独立开发者 AI 工具箱',
+      en: 'Indie Developer AI Toolbox',
+    },
+    title: {
+      zh: '独立开发者 AI 工具箱',
+      en: 'Indie Developer AI Toolbox',
+    },
+    description: {
+      zh: '以独立开发者视角，系统梳理 AI Coding 工具生态的四层结构，给出可直接执行的工具组合建议。',
+      en: "From an indie developer's perspective, systematically map the four-layer AI Coding tool ecosystem with actionable stack recommendations.",
+    },
+    intent: {
+      zh: '不做单工具评测，而是帮开发者理解「IDE → CLI → Agent 框架 → 辅助工具」四层如何搭配，避免选错一层拖累全局。',
+      en: "Instead of single-tool reviews, help developers understand how the IDE → CLI → Agent framework → auxiliary tool layers fit together, so one wrong choice doesn't drag down the whole workflow.",
+    },
+    updateFrequency: {
+      zh: '按 AI 工具生态的重大变化更新，每季度 1 篇。',
+      en: 'Updated on major shifts in the AI tool ecosystem, once per quarter.',
+    },
+  },
 ];
 
 export function getSeriesBySlug(slug: string): SeriesDefinition | undefined {
