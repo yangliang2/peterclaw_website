@@ -1,0 +1,599 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { buildHreflangAlternates, isLocale, ui, type Locale } from '@/lib/i18n';
+import { buildBreadcrumbSchema, buildFaqSchema } from '@/utils/seo';
+import { siteConfig } from '@/config/site';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/consulting/');
+}
+
+const prefix = `/${lang}`;
+const siteCopy = ui[lang];
+
+type PageCopy = {
+  title: string;
+  metaDescription: string;
+  eyebrow: string;
+  heroTitle: string;
+  heroLede: string;
+  primaryCta: string;
+  primaryCtaHref: string;
+  secondaryCta: string;
+  secondaryCtaHref: string;
+  sections: {
+    whoTitle: string;
+    whoLede: string;
+    whoPoints: string[];
+    offersTitle: string;
+    offers: Array<{
+      title: string;
+      duration: string;
+      price: string;
+      forWhom: string;
+      bullets: string[];
+    }>;
+    processTitle: string;
+    processSteps: Array<{ title: string; description: string }>;
+    trustTitle: string;
+    trustLede: string;
+    trustCards: Array<{ title: string; description: string }>;
+    faqTitle: string;
+    faq: Array<{ q: string; a: string }>;
+  };
+};
+
+const copy: Record<Locale, PageCopy> = {
+  zh: {
+    title: 'AI 工作流专家咨询',
+    metaDescription: 'AI 工具选型与工作流自动化咨询：1v1 视频咨询 + 工作流审计报告。让团队从“会用工具”走向“可复用、可衡量的自动化”。',
+    eyebrow: 'CONSULTING',
+    heroTitle: 'AI 工具选型 + 工作流自动化咨询',
+    heroLede:
+      '把零散的 AI 工具使用，升级为可复用、可衡量、能持续迭代的工作流。适合独立开发者、小团队与内容创作者。',
+    primaryCta: '预约咨询（私信）',
+    primaryCtaHref: siteConfig.twitterUrl,
+    secondaryCta: '查看公开实践（博客）',
+    secondaryCtaHref: `${prefix}/blog/`,
+    sections: {
+      whoTitle: '适合谁',
+      whoLede: '如果你遇到的是“工具很多，但效率没上去”，这类问题通常需要系统化梳理。',
+      whoPoints: [
+        '你在 Claude / Cursor / Copilot / n8n 等工具间切换，缺少稳定的端到端流程。',
+        '你希望把重复工作（写文档、整理会议、发版检查、客服回复）自动化，但不想牺牲质量。',
+        '你已经有一些脚本/流程，但维护成本高、不可扩展、团队不愿意用。',
+        '你需要一套可交接的“团队工作流手册”，而不是零散的提示词。',
+      ],
+      offersTitle: '服务形式与定价（参考）',
+      offers: [
+        {
+          title: '1v1 视频咨询',
+          duration: '60 分钟',
+          price: '¥499–999 / 次',
+          forWhom: '快速定位瓶颈，给出下一步路线图。',
+          bullets: ['需求澄清 + 目标定义', '工具/模型选型建议', '流程拆解与优先级', '风险与成本评估'],
+        },
+        {
+          title: '工作流审计报告',
+          duration: '3–5 天交付',
+          price: '按复杂度报价',
+          forWhom: '把当前流程系统化重构成“能跑、能交接、能迭代”的方案。',
+          bullets: ['现状盘点（工具/数据/角色/权限）', '端到端流程图 + 关键节点守门', '自动化建议（可实现路径）', '落地清单（按周拆分）'],
+        },
+      ],
+      processTitle: '预约流程（简单三步）',
+      processSteps: [
+        {
+          title: '1) 私信我你的背景与目标',
+          description: '建议包含：你做什么、当前流程、最痛的 1–2 个问题、期望的交付形态。',
+        },
+        {
+          title: '2) 确认时间与范围',
+          description: '优先从“可在 2–4 周内见效”的问题开始，避免一次做完所有事。',
+        },
+        {
+          title: '3) 会后拿到可执行清单',
+          description: '你会得到明确的下一步（工具/流程/落地顺序），可直接交给自己或团队执行。',
+        },
+      ],
+      trustTitle: '为什么可信',
+      trustLede: '我把协作过程公开化：每一次选择、权衡与复盘，都能被读者看到与复用。',
+      trustCards: [
+        {
+          title: '公开交付',
+          description: '网站内容、工具与工作流在公开仓库中持续迭代，而不是只展示截图。',
+        },
+        {
+          title: '评测与方法论',
+          description: '长期写 AI 工具评测与“如何把 AI 用进流程”的文章，关注可复用与可衡量。',
+        },
+        {
+          title: '工程化落地',
+          description: '重点不是“提示词”，而是把流程变成可维护的系统：边界、数据、守门与回退。',
+        },
+      ],
+      faqTitle: '常见问题',
+      faq: [
+        {
+          q: '我没有现成的自动化基础，可以做吗？',
+          a: '可以。通常从流程拆解开始，先明确“可衡量的目标”，再选最小的自动化切入点。',
+        },
+        {
+          q: '咨询会输出什么？',
+          a: '至少包含：问题定义、目标与约束、推荐工具/模型组合、优先级路线图、可落地的下一步清单。',
+        },
+        {
+          q: '你会帮我直接写自动化/代码吗？',
+          a: '本页主打咨询与审计；如需实现，可在范围确认后按项目形式另行约定。',
+        },
+      ],
+    },
+  },
+  en: {
+    title: 'AI Workflow Consulting',
+    metaDescription:
+      'AI tool selection + workflow automation consulting. 1:1 video call and workflow audit report—turn scattered AI usage into reusable, measurable systems.',
+    eyebrow: 'CONSULTING',
+    heroTitle: 'AI tool selection + workflow automation',
+    heroLede:
+      'Upgrade scattered AI tooling into workflows that are reusable, measurable, and easy to iterate. Built for independent builders, small teams, and creators.',
+    primaryCta: 'Book via DM',
+    primaryCtaHref: siteConfig.twitterUrl,
+    secondaryCta: 'See the public practice (blog)',
+    secondaryCtaHref: `${prefix}/blog/`,
+    sections: {
+      whoTitle: 'Who it is for',
+      whoLede: 'If you have “many tools but no real speed-up”, the fix is usually a system—not another prompt.',
+      whoPoints: [
+        'You jump across Claude / Cursor / Copilot / n8n but lack a stable end-to-end flow.',
+        'You want to automate repetitive work without sacrificing quality.',
+        'You have scripts/workflows already, but they are fragile and hard to maintain.',
+        'You want a handoff-ready team playbook instead of scattered notes.',
+      ],
+      offersTitle: 'Offers & pricing (reference)',
+      offers: [
+        {
+          title: '1:1 video consulting',
+          duration: '60 minutes',
+          price: '¥499–999 / session',
+          forWhom: 'Diagnose bottlenecks and leave with a clear next-step plan.',
+          bullets: ['Goal & constraints', 'Tool/model recommendations', 'Workflow decomposition', 'Risks & trade-offs'],
+        },
+        {
+          title: 'Workflow audit report',
+          duration: '3–5 days',
+          price: 'Quoted by scope',
+          forWhom: 'Refactor your process into something shippable, maintainable, and team-friendly.',
+          bullets: ['Current-state inventory', 'End-to-end flow + guardrails', 'Automation plan (feasible path)', 'Execution checklist (week-by-week)'],
+        },
+      ],
+      processTitle: 'Booking flow (3 steps)',
+      processSteps: [
+        {
+          title: '1) DM your context and target outcome',
+          description: 'Include: what you do, current workflow, top 1–2 pains, and desired deliverable.',
+        },
+        {
+          title: '2) Confirm time and scope',
+          description: 'We start with what can move the needle in 2–4 weeks, not an endless overhaul.',
+        },
+        {
+          title: '3) Leave with an execution checklist',
+          description: 'You get a prioritized plan your team can actually run with.',
+        },
+      ],
+      trustTitle: 'Why trust this',
+      trustLede: 'I build in public. Decisions, trade-offs, and iterations are visible and reusable.',
+      trustCards: [
+        {
+          title: 'Public delivery',
+          description: 'This site and its workflows evolve in a public repo—no “magic screenshots only”.',
+        },
+        {
+          title: 'Reviews & playbooks',
+          description: 'Ongoing AI tool reviews and workflow patterns focused on reuse and measurable impact.',
+        },
+        {
+          title: 'Engineering-first execution',
+          description: 'Not just prompts: guardrails, data, ownership, rollback paths, and maintainability.',
+        },
+      ],
+      faqTitle: 'FAQ',
+      faq: [
+        {
+          q: 'Do I need existing automation skills?',
+          a: 'No. We typically start with workflow decomposition, then pick a minimal automation wedge with clear metrics.',
+        },
+        {
+          q: 'What will I get after the session?',
+          a: 'At minimum: problem framing, constraints, recommended tools/models, a priority roadmap, and a concrete next-step checklist.',
+        },
+        {
+          q: 'Will you implement the automation/code?',
+          a: 'This page covers consulting and audits. Implementation can be scoped as a separate project if needed.',
+        },
+      ],
+    },
+  },
+};
+
+const faqSchema = buildFaqSchema(
+  copy[lang].sections.faq.map((item) => ({
+    question: item.q,
+    answer: item.a,
+  }))
+);
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy[lang].title}
+  description={copy[lang].metaDescription}
+  canonicalPath={`${prefix}/consulting/`}
+  alternateLocales={buildHreflangAlternates('/consulting/')}
+  structuredData={[
+    buildBreadcrumbSchema([
+      { name: siteCopy.siteTitle, path: `${prefix}/` },
+      { name: siteCopy.consulting, path: `${prefix}/consulting/` },
+    ]),
+    faqSchema,
+  ]}
+>
+  <section class="hero consulting-hero">
+    <p class="eyebrow">{copy[lang].eyebrow}</p>
+    <h1 class="gradient-text">{copy[lang].heroTitle}</h1>
+    <p class="lede">{copy[lang].heroLede}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href={copy[lang].primaryCtaHref} target="_blank" rel="noopener noreferrer">
+        {copy[lang].primaryCta}
+      </a>
+      <a class="btn btn-secondary" href={copy[lang].secondaryCtaHref}>{copy[lang].secondaryCta}</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <header class="section-heading">
+      <h2>{copy[lang].sections.whoTitle}</h2>
+      <p>{copy[lang].sections.whoLede}</p>
+    </header>
+    <ul class="bullets">
+      {copy[lang].sections.whoPoints.map((point) => (
+        <li>{point}</li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section">
+    <header class="section-heading">
+      <h2>{copy[lang].sections.offersTitle}</h2>
+    </header>
+    <div class="offer-grid" aria-label={copy[lang].sections.offersTitle}>
+      {copy[lang].sections.offers.map((offer) => (
+        <article class="offer glass-card">
+          <div class="offer-top">
+            <h3>{offer.title}</h3>
+            <div class="offer-meta">
+              <span class="pill">{offer.duration}</span>
+              <span class="pill pill-primary">{offer.price}</span>
+            </div>
+          </div>
+          <p class="offer-for">{offer.forWhom}</p>
+          <ul class="offer-list">
+            {offer.bullets.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <div class="offer-cta">
+            <a class="text-link" href={copy[lang].primaryCtaHref} target="_blank" rel="noopener noreferrer">
+              {lang === 'zh' ? '现在预约 →' : 'Book now →'}
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section glass-card process">
+    <header class="section-heading">
+      <h2>{copy[lang].sections.processTitle}</h2>
+    </header>
+    <ol class="process-steps">
+      {copy[lang].sections.processSteps.map((step) => (
+        <li>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section">
+    <header class="section-heading">
+      <h2>{copy[lang].sections.trustTitle}</h2>
+      <p>{copy[lang].sections.trustLede}</p>
+    </header>
+    <div class="trust-grid" aria-label={copy[lang].sections.trustTitle}>
+      {copy[lang].sections.trustCards.map((card) => (
+        <div class="trust-card glass-card">
+          <h3>{card.title}</h3>
+          <p>{card.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section faq glass-card">
+    <header class="section-heading">
+      <h2>{copy[lang].sections.faqTitle}</h2>
+    </header>
+    <div class="faq-list" aria-label={copy[lang].sections.faqTitle}>
+      {copy[lang].sections.faq.map((item) => (
+        <details>
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="closing-card glass-card">
+      <h2>{lang === 'zh' ? '准备好把流程变成系统了吗？' : 'Ready to turn your workflow into a system?'}</h2>
+      <p>
+        {lang === 'zh'
+          ? '发一条私信，把你的目标与约束说清楚；我会帮你把下一步变得可执行。'
+          : 'Send a DM with your context and constraints. We will make the next step executable.'}
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={copy[lang].primaryCtaHref} target="_blank" rel="noopener noreferrer">
+          {copy[lang].primaryCta}
+        </a>
+        <a class="btn btn-secondary" href={`${prefix}/tools/`}>{lang === 'zh' ? '先看看工具箱' : 'Browse the toolkit'}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .consulting-hero {
+    padding-bottom: clamp(2.75rem, 7vw, 4.25rem);
+    margin-bottom: var(--space-xl);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-md);
+    color: var(--color-secondary);
+    font: 700 0.82rem/1.2 var(--font-mono);
+    letter-spacing: 0.16em;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .section {
+    margin-top: clamp(3rem, 7vw, 4.75rem);
+  }
+
+  .section-heading {
+    max-width: 720px;
+    margin-bottom: var(--space-lg);
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    font-size: 1.05rem;
+  }
+
+  .bullets {
+    display: grid;
+    gap: 0.85rem;
+    max-width: 760px;
+    padding-left: 1.25rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .offer-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .offer {
+    padding: clamp(1.5rem, 4vw, 2rem);
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .offer-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .offer-top h3 {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+  }
+
+  .offer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: var(--border-glass);
+    background: var(--color-input-bg);
+    color: var(--color-text-muted);
+    font: 600 0.78rem/1.3 var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+
+  .pill-primary {
+    color: var(--color-primary);
+    border-color: rgba(124, 92, 255, 0.4);
+    background: var(--color-primary-soft-bg);
+  }
+
+  .offer-for {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.75;
+  }
+
+  .offer-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--color-text-muted);
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .offer-cta {
+    margin-top: 0.25rem;
+  }
+
+  .text-link {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  .process {
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .process-steps {
+    list-style: none;
+    counter-reset: step;
+    display: grid;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+  }
+
+  .process-steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 3.25rem;
+  }
+
+  .process-steps li::before {
+    content: '0' counter(step);
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    color: var(--color-primary);
+    font: 700 0.85rem/1.5 var(--font-mono);
+  }
+
+  .process-steps h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+  }
+
+  .process-steps p {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .trust-grid {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .trust-card {
+    padding: clamp(1.25rem, 4vw, 1.75rem);
+  }
+
+  .trust-card h3 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1.2rem;
+  }
+
+  .trust-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .faq {
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: var(--space-lg);
+  }
+
+  details {
+    border: var(--border-glass);
+    background: var(--color-input-bg);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1rem;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--color-heading);
+  }
+
+  details p {
+    margin: 0.75rem 0 0;
+    color: var(--color-text-muted);
+    line-height: 1.75;
+  }
+
+  .closing {
+    margin-top: clamp(3.5rem, 8vw, 5.5rem);
+  }
+
+  .closing-card {
+    padding: clamp(1.75rem, 5vw, 2.5rem);
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .closing-card h2 {
+    margin: 0;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+  }
+
+  .closing-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    max-width: 720px;
+  }
+
+  @media (min-width: 720px) {
+    .offer-grid,
+    .trust-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .offer-top {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+  }
+</style>
