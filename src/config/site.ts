@@ -18,6 +18,12 @@ export const siteConfig = {
     zh: 'zh_CN',
     en: 'en_US',
   } satisfies Record<Locale, string>,
+  // SEO Verification Tokens
+  verification: {
+    baidu: '', // TODO: Add Baidu verification token
+    bing: '',  // TODO: Add Bing verification token
+    google: '', // TODO: Add Google verification token
+  },
 } as const;
 
 export function getSiteUrl(): URL {
