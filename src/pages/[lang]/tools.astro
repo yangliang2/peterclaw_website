@@ -87,8 +87,34 @@ const structuredData: JsonLdSchema[] = [
                   <line x1="10" y1="14" x2="21" y2="3" />
                 </svg>
               </div>
+              <p class="tool-rating">
+                <span class="tool-rating-label">{copy.ratingLabel}</span>
+                <span class="tool-rating-value" aria-label={`${copy.ratingLabel}: ${tool.rating}`}>
+                  {tool.rating}
+                </span>
+              </p>
               <p class="tool-description">{tool.description}</p>
               <p class="tool-review">{tool.review}</p>
+              {tool.reviewLink && (
+                <a class="tool-review-link" href={tool.reviewLink}>
+                  {copy.reviewLinkLabel}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </a>
+              )}
             </article>
           ))}
         </div>
@@ -165,6 +191,28 @@ const structuredData: JsonLdSchema[] = [
     color: var(--color-text-muted);
   }
 
+  .tool-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .tool-rating-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+  }
+
+  .tool-rating-value {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
   .tool-description {
     margin: 0;
     color: var(--color-text-muted);
@@ -179,6 +227,22 @@ const structuredData: JsonLdSchema[] = [
     color: var(--color-text);
     padding-top: var(--space-sm);
     border-top: 1px solid var(--color-line);
+  }
+
+  .tool-review-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: var(--space-xs);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-decoration: none;
+    width: fit-content;
+  }
+
+  .tool-review-link:hover {
+    text-decoration: underline;
   }
 
   .disclaimer {
