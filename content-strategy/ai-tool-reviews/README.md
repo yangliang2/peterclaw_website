@@ -17,6 +17,7 @@
 | 第 4 篇 | **Midjourney v7 vs Flux vs Ideogram 深度评测** | 2026-05-26 | `src/content/blog/zh/ai-tool-review-midjourney-flux-ideogram.md` | Midjourney v7, Flux, Ideogram | **已提交 PR（修订版）** |
 | 第 5 篇 | Antigravity 2.0 / Kiro / Cline 深度评测 | 2026-05-26 | `src/content/blog/zh/ai-tool-review-antigravity-kiro-cline.md` | Antigravity, Kiro, Cline | 已发布 |
 | 第 6 篇 | **Kiro vs Cline 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kiro-vs-cline.mdx` | Kiro, Cline | **已提交 PR** |
+| 第 7 篇 | **Gemini 2.5 Pro vs GPT-4o 全面横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-gemini-2-5-pro-vs-gpt-4o.mdx` | Gemini 2.5 Pro, GPT-4o | 已提交 |
 
 ---
 
@@ -73,6 +74,25 @@
 
 ---
 
+## 第 7 篇核心结论摘要
+
+**《AI 旗舰模型横评（Gemini 2.5 Pro vs GPT-4o）》**
+
+- **Gemini 2.5 Pro**：能力天花板更高，1M 上下文 + 原生多模态 + Thinking 模式，在代码生成、长文档、复杂推理上全面领先，价格对长任务极具优势，但 TTFT 偏高、中文偶有生硬
+- **GPT-4o**：生产稳定性更强，指令遵循和格式一致性是行业标杆，中文表达最自然，生态成熟度无可替代，但 128K 上下文是硬伤，推理任务需切换 o3
+
+**场景推荐矩阵**：
+- 后端开发 / 大型代码库重构 → Gemini 2.5 Pro
+- 前端开发 / 实时交互场景 → GPT-4o
+- 中文内容创作 / 品牌文案 → GPT-4o
+- 数据分析 / 大量 PDF/图表处理 → Gemini 2.5 Pro
+- 预算敏感 / 任务多样 → Gemini（短任务）+ GPT-4o（高稳定性任务）组合
+- 企业隐私合规 → GCP 团队选 Gemini，Azure 团队选 GPT-4o
+
+**SEO 关键词**：Gemini 2.5 Pro 评测、GPT-4o 评测、AI 模型对比 2026、Gemini vs GPT-4o、AI 旗舰模型推荐
+
+---
+
 ## 内容规范
 
 所有评测文章统一遵循 `docs/content-templates/review.md` 模板，frontmatter 必须包含：
@@ -92,3 +112,4 @@
 - [x] 第 4 篇 PR 已提交修订版（补充样图 + 来源说明 + 审核记录）
 - [x] 第 4 篇 PR 合并后更新本索引状态为「已发布」
 - [ ] 第 6 篇 PR 合并后更新本索引状态为「已发布」
+- [ ] 第 7 篇 PR 合并后更新本索引状态为「已发布」
