@@ -446,7 +446,8 @@ def plan_and_execute(query: str, planner_llm, executor_llm, tools) -> str:
     for step in plan.steps:
         if step.tool:
             tool_args = step.tool_input
-            result = tools[step.tool](**tool_args)
+            tool_fn = tools[step.tool]
+            result = tool_fn(**tool_args)
         else:
             result = executor_llm.invoke(step.description)
         results.append({"step": step.step_number, "result": result})
