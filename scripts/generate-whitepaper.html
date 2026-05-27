@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2026 AI 编程工具选型白皮书</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #f8fafc;
+      --color-surface: #ffffff;
+      --color-text: #172033;
+      --color-text-muted: #5f6b7a;
+      --color-heading: #0f172a;
+      --color-primary: #2563eb;
+      --color-secondary: #7c3aed;
+      --color-accent: #059669;
+      --gradient-ai: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #c026d3 100%);
+      --font-sans: "Noto Sans SC", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      line-height: 1.7;
+      background: var(--color-bg);
+    }
+
+    @page {
+      size: A4;
+      margin: 18mm 20mm 22mm 20mm;
+      @bottom-center {
+        content: counter(page);
+        font-family: var(--font-sans);
+        font-size: 10pt;
+        color: #8896aa;
+      }
+    }
+
+    @page :first {
+      margin: 0;
+      @bottom-center { content: none; }
+    }
+
+    @page cover {
+      margin: 0;
+      @bottom-center { content: none; }
+    }
+
+    @page toc {
+      @bottom-center { content: none; }
+    }
+
+    /* Cover */
+    .cover {
+      page: cover;
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      overflow: hidden;
+      background: var(--color-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40mm 24mm;
+    }
+
+    .cover-bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+      background-size: 14mm 14mm;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 45%, black, transparent);
+    }
+
+    .cover-glow {
+      position: absolute;
+      width: 120mm;
+      height: 120mm;
+      border-radius: 999px;
+      background: var(--gradient-ai);
+      filter: blur(60px);
+      opacity: 0.15;
+      top: 30mm;
+      right: -20mm;
+    }
+
+    .cover-glow-2 {
+      position: absolute;
+      width: 90mm;
+      height: 90mm;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #2563eb, #059669);
+      filter: blur(50px);
+      opacity: 0.12;
+      bottom: 50mm;
+      left: -15mm;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      background: rgba(37, 99, 235, 0.06);
+      font-size: 10pt;
+      font-weight: 500;
+      color: var(--color-primary);
+      margin-bottom: 18mm;
+      letter-spacing: 0.05em;
+    }
+
+    .cover-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-accent);
+    }
+
+    .cover-title {
+      font-size: 36pt;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--color-heading);
+      margin-bottom: 8mm;
+    }
+
+    .cover-title span {
+      background: var(--gradient-ai);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-subtitle {
+      font-size: 13pt;
+      color: var(--color-text-muted);
+      max-width: 130mm;
+      line-height: 1.7;
+      margin-bottom: 22mm;
+    }
+
+    .cover-meta {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 10pt;
+      color: var(--color-text-muted);
+    }
+
+    .cover-meta .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+
+    .cover-brand {
+      position: absolute;
+      bottom: 18mm;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--color-heading);
+      letter-spacing: 0.08em;
+    }
+
+    .cover-brand span {
+      background: var(--gradient-ai);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Content pages */
+    .page {
+      padding-top: 6mm;
+    }
+
+    h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      color: var(--color-heading);
+      margin-bottom: 8mm;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 15pt;
+      font-weight: 700;
+      color: var(--color-heading);
+      margin-top: 10mm;
+      margin-bottom: 5mm;
+      padding-bottom: 2mm;
+      border-bottom: 1.5px solid rgba(37, 99, 235, 0.15);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: 700;
+      color: var(--color-heading);
+      margin-top: 7mm;
+      margin-bottom: 3mm;
+    }
+
+    p {
+      margin-bottom: 4.5mm;
+      font-size: 10.5pt;
+      line-height: 1.75;
+      color: var(--color-text);
+    }
+
+    .lead {
+      font-size: 11.5pt;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 7mm;
+      padding-left: 5mm;
+      border-left: 3px solid var(--color-primary);
+    }
+
+    ul, ol {
+      margin-bottom: 5mm;
+      padding-left: 6mm;
+    }
+
+    li {
+      font-size: 10.5pt;
+      line-height: 1.7;
+      margin-bottom: 1.5mm;
+      color: var(--color-text);
+    }
+
+    .toc {
+      page: toc;
+    }
+
+    .toc h1 {
+      margin-bottom: 10mm;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .toc-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 4mm;
+      padding: 2.5mm 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      font-size: 11pt;
+    }
+
+    .toc-list li strong {
+      color: var(--color-heading);
+      font-weight: 600;
+    }
+
+    .toc-list li .dots {
+      flex: 1;
+      border-bottom: 1px dotted #cbd5e1;
+      margin-bottom: 2px;
+    }
+
+    .toc-list li .page-num {
+      color: var(--color-text-muted);
+      font-variant-numeric: tabular-nums;
+      font-size: 10pt;
+    }
+
+    /* Cards */
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 8px;
+      padding: 5mm;
+      margin-bottom: 5mm;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-title {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--color-heading);
+      margin-bottom: 2.5mm;
+    }
+
+    .card p, .card li {
+      font-size: 10pt;
+      line-height: 1.65;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 5mm;
+      font-size: 9.5pt;
+    }
+
+    th {
+      background: rgba(37, 99, 235, 0.06);
+      font-weight: 600;
+      text-align: left;
+      padding: 2.5mm 3mm;
+      border-bottom: 2px solid rgba(37, 99, 235, 0.2);
+      color: var(--color-heading);
+    }
+
+    td {
+      padding: 2.5mm 3mm;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(248, 250, 252, 0.5);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      font-weight: 500;
+      margin-right: 2px;
+    }
+
+    .tag-primary {
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--color-primary);
+    }
+
+    .tag-accent {
+      background: rgba(5, 150, 105, 0.1);
+      color: var(--color-accent);
+    }
+
+    .tag-warn {
+      background: rgba(217, 119, 6, 0.1);
+      color: #d97706;
+    }
+
+    /* Quote / Highlight */
+    blockquote {
+      margin: 5mm 0;
+      padding: 4mm 5mm;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.04), rgba(124, 58, 237, 0.04));
+      border-left: 3px solid var(--color-primary);
+      border-radius: 0 6px 6px 0;
+      font-size: 10.5pt;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* Framework steps */
+    .step {
+      display: flex;
+      gap: 4mm;
+      margin-bottom: 4mm;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 7mm;
+      height: 7mm;
+      min-width: 7mm;
+      border-radius: 50%;
+      background: var(--gradient-ai);
+      color: white;
+      font-size: 9pt;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1mm;
+    }
+
+    .step-content h4 {
+      font-size: 11pt;
+      font-weight: 600;
+      color: var(--color-heading);
+      margin-bottom: 1mm;
+    }
+
+    .step-content p {
+      font-size: 10pt;
+      margin-bottom: 0;
+      color: var(--color-text-muted);
+    }
+
+    /* CTA page */
+    .cta-page {
+      text-align: center;
+      padding-top: 30mm;
+    }
+
+    .cta-page h1 {
+      font-size: 20pt;
+      margin-bottom: 6mm;
+    }
+
+    .cta-page p {
+      font-size: 11pt;
+      max-width: 130mm;
+      margin: 0 auto 8mm;
+    }
+
+    .cta-url {
+      display: inline-block;
+      padding: 3mm 8mm;
+      background: var(--gradient-ai);
+      color: white;
+      font-weight: 700;
+      font-size: 11pt;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 4mm;
+    }
+
+    .footer-brand {
+      text-align: center;
+      margin-top: 15mm;
+      font-size: 10pt;
+      color: var(--color-text-muted);
+    }
+
+    .footer-brand strong {
+      background: var(--gradient-ai);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+    }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="cover-bg-grid"></div>
+  <div class="cover-glow"></div>
+  <div class="cover-glow-2"></div>
+  
+  <div class="cover-badge">PETERCLAW EXCLUSIVE</div>
+  
+  <h1 class="cover-title">
+    2026<br><span>AI 编程工具</span><br>选型白皮书
+  </h1>
+  
+  <p class="cover-subtitle">
+    一份面向开发者的决策框架：从需求分析到工具落地的完整方法论，帮你避开选型陷阱，找到最适合团队的 AI 编程搭档。
+  </p>
+  
+  <div class="cover-meta">
+    <span>2026  edition</span>
+    <span class="dot"></span>
+    <span>v1.0</span>
+    <span class="dot"></span>
+    <span>免费版</span>
+  </div>
+  
+  <div class="cover-brand">Presented by <span>PeterClaw</span></div>
+</div>
+
+<!-- TOC -->
+<div class="page toc">
+  <h1>目录</h1>
+  <ul class="toc-list">
+    <li><strong>引言</strong> <span class="dots"></span> <span class="page-num">3</span></li>
+    <li><strong>第一章：2026 年 AI 编程工具全景图</strong> <span class="dots"></span> <span class="page-num">4</span></li>
+    <li><strong>第二章：选型决策框架</strong> <span class="dots"></span> <span class="page-num">6</span></li>
+    <li><strong>第三章：主流工具深度解析</strong> <span class="dots"></span> <span class="page-num">8</span></li>
+    <li><strong>第四章：场景化选型矩阵</strong> <span class="dots"></span> <span class="page-num">11</span></li>
+    <li><strong>第五章：落地实施路线图</strong> <span class="dots"></span> <span class="page-num">13</span></li>
+    <li><strong>结语与资源</strong> <span class="dots"></span> <span class="page-num">15</span></li>
+  </ul>
+</div>
+
+<!-- Introduction -->
+<div class="page">
+  <h1>引言</h1>
+  <p class="lead">
+    2025–2026 年是 AI 编程工具从"玩具"走向"生产工具"的关键拐点。Cursor、Windsurf、GitHub Copilot、Cline、Kiro……工具爆发式增长，选择反而变得更难。
+  </p>
+  
+  <p>
+    本白皮书不是一份简单的功能对比表。我们试图回答一个更本质的问题：<strong>在不同团队规模、技术栈和开发场景下，如何系统性地选出最适合的 AI 编程工具？</strong>
+  </p>
+  
+  <p>
+    基于过去 12 个月对 20+ 款工具的实测、与 50+ 位开发者的深度访谈，以及多个生产项目的落地经验，我们提炼出了一套可复用的选型决策框架。
+  </p>
+  
+  <div class="card">
+    <div class="card-title">你将从这份白皮书获得什么</div>
+    <ul>
+      <li>2026 年主流 AI 编程工具的能力边界与定价全景</li>
+      <li>一套可落地的 5 步选型决策框架</li>
+      <li>不同场景（个人/创业/企业）的推荐配置方案</li>
+      <li>团队导入 AI 工具时的常见陷阱与避坑指南</li>
+    </ul>
+  </div>
+  
+  <blockquote>
+    "选对工具只是开始，让工具真正融入团队的工作流，才是 AI 编程ROI 最大化的关键。"
+  </blockquote>
+</div>
+
+<!-- Chapter 1 -->
+<div class="page">
+  <h1>第一章：2026 年 AI 编程工具全景图</h1>
+  
+  <p class="lead">
+    当前市场已明显分化出三大阵营：IDE 原生型、编辑器插件型、Agent 自动化型。理解这个格局，是做出正确选择的第一步。
+  </p>
+  
+  <h2>1.1 三大阵营概览</h2>
+  
+  <table>
+    <thead>
+      <tr>
+        <th style="width:18%">阵营</th>
+        <th style="width:22%">代表产品</th>
+        <th style="width:30%">核心优势</th>
+        <th style="width:30%">适合场景</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>IDE 原生型</strong></td>
+        <td>Cursor, Windsurf</td>
+        <td>深度集成、上下文感知最强、Agent 能力领先</td>
+        <td>全栈开发、复杂项目、需要深度代码理解</td>
+      </tr>
+      <tr>
+        <td><strong>插件型</strong></td>
+        <td>GitHub Copilot, Codeium</td>
+        <td>零切换成本、生态最广、企业合规成熟</td>
+        <td>大型团队、已有成熟 IDE 工作流、合规要求高</td>
+      </tr>
+      <tr>
+        <td><strong>Agent 型</strong></td>
+        <td>Cline, Kiro, Roo Code</td>
+        <td>自动化执行、多文件重构、CI/CD 集成</td>
+        <td>自动化任务、DevOps、需要批量处理代码</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2>1.2 关键能力维度</h2>
+  
+  <p>评估 AI 编程工具时，建议关注以下 6 个核心维度：</p>
+  
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">1. 上下文理解深度</div>
+      <p>能处理多大的代码库？跨文件引用是否准确？对项目架构的理解程度？</p>
+    </div>
+    <div class="card">
+      <div class="card-title">2. 生成质量与可控性</div>
+      <p>代码是否符合团队规范？是否支持自定义规则（.cursorrules 等）？</p>
+    </div>
+    <div class="card">
+      <div class="card-title">3. Agent 执行能力</div>
+      <p>能否自动运行终端命令？能否执行多步骤任务？失败时如何回滚？</p>
+    </div>
+    <div class="card">
+      <div class="card-title">4. 协作与团队功能</div>
+      <p>是否支持团队共享上下文？是否有代码审查辅助？权限管理如何？</p>
+    </div>
+    <div class="card">
+      <div class="card-title">5. 安全与合规</div>
+      <p>代码是否上传云端？是否支持本地模型？SOC2 / GDPR 认证情况？</p>
+    </div>
+    <div class="card">
+      <div class="card-title">6. 成本结构</div>
+      <p>按请求计费还是按席位？免费额度是否够用？团队规模扩大后的成本曲线？</p>
+    </div>
+  </div>
+</div>
+
+<!-- Chapter 2 -->
+<div class="page">
+  <h1>第二章：选型决策框架</h1>
+  
+  <p class="lead">
+    基于上百个团队的选型实践，我们提炼出"5 步决策法"：从明确需求到小规模验证，每一步都有明确的判断标准和输出物。
+  </p>
+  
+  <h2>2.1 五步法总览</h2>
+  
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h4>明确核心痛点</h4>
+      <p>不是为了用 AI 而用 AI。先回答：当前开发流程中，哪 1–2 个环节最耗时？是代码补全、代码审查、还是自动化重构？</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h4>划定约束边界</h4>
+      <p>列出不可妥协的约束：代码是否允许上传第三方？预算上限？必须支持的 IDE？团队技术栈？</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h4>候选工具筛选</h4>
+      <p>根据前两步，从全景图中筛选出 2–3 个候选。不要贪多，对比超过 3 个工具会导致决策疲劳。</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h4>POC 验证（2 周）</h4>
+      <p>在真实项目中试用，设定明确的验收标准：代码接受率、团队满意度、是否引入回归 Bug。</p>
+    </div>
+  </div>
+  
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <h4>渐进式推广</h4>
+      <p>从 1–2 名先锋开发者开始，建立内部最佳实践文档，再逐步扩展到全团队。</p>
+    </div>
+  </div>
+  
+  <h2>2.2 决策检查清单</h2>
+  
+  <div class="card">
+    <ul>
+      <li><input type="checkbox" disabled> 已识别 1–2 个最想优化的开发环节</li>
+      <li><input type="checkbox" disabled> 已确认数据安全与合规要求</li>
+      <li><input type="checkbox" disabled> 已评估 2–3 个候选工具的核心能力</li>
+      <li><input type="checkbox" disabled> 已完成 2 周真实项目 POC</li>
+      <li><input type="checkbox" disabled> 已制定团队推广计划和培训方案</li>
+      <li><input type="checkbox" disabled> 已设定 30/60/90 天效果评估指标</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Chapter 3 -->
+<div class="page">
+  <h1>第三章：主流工具深度解析</h1>
+  
+  <p class="lead">
+    本章聚焦 2026 年最值得关注的 5 款工具，从实际使用角度给出选型建议。
+  </p>
+  
+  <h2>3.1 Cursor —— 当前综合实力最强</h2>
+  
+  <p>
+    Cursor 基于 VS Code  fork，在代码补全、Agent 执行和多文件重构方面领先。其 Composer 功能允许 AI 同时修改多个文件，是目前最接近"AI 软件工程师"体验的工具。
+  </p>
+  
+  <div class="card">
+    <div class="card-title">关键数据</div>
+    <ul>
+      <li>上下文窗口：200K tokens（支持整个代码库索引）</li>
+      <li>Agent 能力：可执行终端命令、读取文件、多步骤任务</li>
+      <li>定价：Pro $20/月，Team $40/人/月</li>
+      <li>最佳场景：全栈开发、大型项目、需要深度代码理解</li>
+    </ul>
+  </div>
+  
+  <p><span class="tag tag-primary">推荐</span> 个人开发者、技术负责人、需要 Agent 能力的团队</p>
+  
+  <h2>3.2 Windsurf —— 协作体验最佳</h2>
+  
+  <p>
+    Windsurf（原 Codeium）在实时协作和团队共享上下文方面表现突出。其 Cascade 功能支持多轮对话式编程，适合需要频繁沟通的团队。
+  </p>
+  
+  <div class="card">
+    <div class="card-title">关键数据</div>
+    <ul>
+      <li>上下文窗口：支持超大型代码库索引</li>
+      <li>Agent 能力：支持，但不如 Cursor 激进</li>
+      <li>定价：Pro $15/月，Team $35/人/月</li>
+      <li>最佳场景：团队协作、远程开发、结对编程</li>
+    </ul>
+  </div>
+  
+  <p><span class="tag tag-primary">推荐</span> 分布式团队、重视协作体验的开发者</p>
+  
+  <h2>3.3 GitHub Copilot —— 企业合规首选</h2>
+  
+  <p>
+    Copilot 在企业级安全、合规和生态集成方面仍是标杆。2026 年新增的 Agent 模式（Copilot Workspace）弥补了其在自动化方面的短板。
+  </p>
+  
+  <p><span class="tag tag-accent">企业</span> 大型组织、已有 GitHub Enterprise、合规要求严格</p>
+  
+  <h2>3.4 Cline / Roo Code —— 开源自动化之王</h2>
+  
+  <p>
+    Cline 和 Roo Code 是 VS Code 插件，主打"让 AI 替你写代码"。支持调用外部 API、执行终端命令、自动提交代码，是自动化重度用户的理想选择。
+  </p>
+  
+  <p><span class="tag tag-warn">注意</span> 需要一定的配置成本，适合技术能力强的开发者</p>
+  
+  <h2>3.5 Kiro —— 新兴挑战者</h2>
+  
+  <p>
+    Kiro 以"意图驱动开发"为卖点，强调通过自然语言描述功能需求，由 AI 自动生成完整实现。在原型开发阶段效率极高。
+  </p>
+  
+  <p><span class="tag tag-primary">推荐</span> 快速原型、MVP 开发、非核心系统的迭代</p>
+</div>
+
+<!-- Chapter 4 -->
+<div class="page">
+  <h1>第四章：场景化选型矩阵</h1>
+  
+  <p class="lead">
+    没有最好的工具，只有最适合当前场景的工具。以下矩阵基于真实团队数据整理。
+  </p>
+  
+  <h2>4.1 按团队规模</h2>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>团队规模</th>
+        <th>首选</th>
+        <th>备选</th>
+        <th>关键考量</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>个人开发者</td>
+        <td>Cursor Pro</td>
+        <td>Windsurf Pro</td>
+        <td>性价比、个人项目深度</td>
+      </tr>
+      <tr>
+        <td>2–10 人初创</td>
+        <td>Cursor Team</td>
+        <td>Windsurf Team</td>
+        <td>协作成本、快速迭代</td>
+      </tr>
+      <tr>
+        <td>10–50 人团队</td>
+        <td>Cursor Team / Copilot Business</td>
+        <td>Windsurf Team</td>
+        <td>权限管理、代码规范</td>
+      </tr>
+      <tr>
+        <td>50–500 人</td>
+        <td>Copilot Business</td>
+        <td>Cursor Enterprise</td>
+        <td>合规、SSO、审计日志</td>
+      </tr>
+      <tr>
+        <td>500 人以上</td>
+        <td>Copilot Enterprise</td>
+        <td>自托管方案</td>
+        <td>数据主权、定制化、成本谈判</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2>4.2 按技术栈</h2>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>技术栈</th>
+        <th>推荐工具</th>
+        <th>理由</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>前端 / 全栈 (React/Vue/Node)</td>
+        <td>Cursor</td>
+        <td>对现代前端框架的上下文理解最强</td>
+      </tr>
+      <tr>
+        <td>Python / 数据科学</td>
+        <td>Cursor / Jupyter Copilot</td>
+        <td>Notebook 支持与代码补全的平衡</td>
+      </tr>
+      <tr>
+        <td>Java / 企业后端</td>
+        <td>Copilot / IntelliJ AI Assistant</td>
+        <td>企业级生态、IDE 深度集成</td>
+      </tr>
+      <tr>
+        <td>DevOps / 基础设施</td>
+        <td>Cline / Roo Code</td>
+        <td>自动化脚本、多步骤执行</td>
+      </tr>
+      <tr>
+        <td>移动端 (iOS/Android)</td>
+        <td>Cursor / Copilot</td>
+        <td>Xcode/Android Studio 兼容性</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Chapter 5 -->
+<div class="page">
+  <h1>第五章：落地实施路线图</h1>
+  
+  <p class="lead">
+    工具选定了，真正的挑战才开始。本章提供从试点到全面推广的完整路线图。
+  </p>
+  
+  <h2>5.1 第 1–2 周：先锋试点</h2>
+  
+  <ul>
+    <li>选定 1–2 名技术能力强、接受度高的开发者作为先锋</li>
+    <li>确定 1 个真实项目作为试点（建议复杂度中等）</li>
+    <li>制定试点验收标准：代码接受率 ≥70%、零重大回归 Bug</li>
+    <li>每日 15 分钟站会同步使用心得和遇到的问题</li>
+  </ul>
+  
+  <h2>5.2 第 3–4 周：最佳实践沉淀</h2>
+  
+  <ul>
+    <li>整理团队专属的 <code>.cursorrules</code> 或 prompt 模板</li>
+    <li>建立"AI 生成代码审查清单"，确保质量不下降</li>
+    <li>编写内部 Wiki：常见任务的标准操作流程（SOP）</li>
+    <li>收集量化数据：开发速度变化、Bug 率变化、开发者满意度</li>
+  </ul>
+  
+  <h2>5.3 第 5–8 周：团队推广</h2>
+  
+  <ul>
+    <li>分批次推广，每批 3–5 人，确保充分支持</li>
+    <li>安排 1 次内部分享会，由先锋成员演示最佳实践</li>
+    <li>建立 Slack/飞书频道，实时解答使用问题</li>
+    <li>与工具销售对接，谈判团队折扣或企业方案</li>
+  </ul>
+  
+  <h2>5.4 常见陷阱与避坑指南</h2>
+  
+  <div class="card">
+    <div class="card-title">陷阱 1：过度信任 AI 生成代码</div>
+    <p>AI 生成的代码在表面上往往看起来正确，但可能隐藏边界条件漏洞。<strong>对策：</strong>将 AI 代码视为"高级草稿"，必须经过人工审查和测试。</p>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">陷阱 2：忽视上下文管理</div>
+    <p>长对话中 AI 可能"遗忘"早期约束，导致代码风格不一致。<strong>对策：</strong>定期开启新会话，使用项目级规则文件统一风格。</p>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">陷阱 3：团队使用习惯参差不齐</div>
+    <p>有人用 AI 写全部代码，有人完全不用，导致代码库风格分裂。<strong>对策：</strong>制定团队公约，明确哪些场景必须用、哪些场景建议用、哪些场景禁止用。</p>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">陷阱 4：成本失控</div>
+    <p>按请求计费模式下，大型重构可能产生意外高额账单。<strong>对策：</strong>设置预算警报，定期审查使用情况，优先使用本地模型处理敏感代码。</p>
+  </div>
+</div>
+
+<!-- Conclusion -->
+<div class="page cta-page">
+  <h1>结语</h1>
+  
+  <p>
+    AI 编程工具的选择不是一锤子买卖。市场在快速变化，今天的主流可能半年后就会被颠覆。最重要的是建立一套<strong>持续评估、快速迭代</strong>的选型机制。
+  </p>
+  
+  <p>
+    记住：工具是手段，不是目的。真正提升开发效率的，是团队对工具的熟练运用，以及在实践中不断优化的工作流。
+  </p>
+  
+  <div class="card" style="text-align:left; max-width: 140mm; margin: 8mm auto;">
+    <div class="card-title">持续关注</div>
+    <ul>
+      <li>订阅 PeterClaw Newsletter，获取最新工具评测与团队实践</li>
+      <li>访问 peterclaw.com 阅读深度技术文章</li>
+      <li>在 GitHub 关注我们的开源项目与实验</li>
+    </ul>
+  </div>
+  
+  <div class="footer-brand">
+    <p style="margin-bottom:2mm;">Presented by <strong>PeterClaw</strong></p>
+    <p style="font-size:9pt; color:#8896aa;">peterclaw.com · newsletter.peterclaw.com</p>
+    <p style="font-size:8.5pt; color:#a0aec0; margin-top:3mm;">© 2026 PeterClaw. 本白皮书仅供个人学习参考，转载请注明出处。</p>
+  </div>
+</div>
+
+</body>
+</html>
