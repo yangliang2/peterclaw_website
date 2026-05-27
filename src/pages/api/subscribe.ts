@@ -3,6 +3,12 @@ import type { APIRoute } from 'astro';
 export const prerender = false;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VALID_LOCALES = ['zh', 'en'] as const;
+type ValidLocale = (typeof VALID_LOCALES)[number];
+
+function isValidLocale(value: string | undefined): value is ValidLocale {
+  return VALID_LOCALES.includes(value as ValidLocale);
+}
 
 export const POST: APIRoute = async ({ request }) => {
   const apiKey = import.meta.env.BUTTONDOWN_API_KEY;
@@ -15,7 +21,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  let body: { email?: string };
+  let body: { email?: string; locale?: string; source?: string };
   try {
     body = await request.json();
   } catch {
@@ -33,6 +39,11 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
+  const locale = isValidLocale(body.locale) ? body.locale : 'zh';
+  const source = body.source?.trim().slice(0, 50) || 'website';
+
+  const tags = [`locale:${locale}`, `source:${source}`];
+
   try {
     const response = await fetch('https://api.buttondown.com/v1/subscribers', {
       method: 'POST',
@@ -41,7 +52,14 @@ export const POST: APIRoute = async ({ request }) => {
         'Content-Type': 'application/json',
         'X-Buttondown-Collision-Behavior': 'overwrite',
       },
-      body: JSON.stringify({ email_address: email }),
+      body: JSON.stringify({
+        email_address: email,
+        tags,
+        metadata: {
+          subscribed_from: source,
+          locale,
+        },
+      }),
     });
 
     if (response.ok) {

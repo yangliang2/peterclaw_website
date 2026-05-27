@@ -67,7 +67,7 @@ const copy = locale === 'zh'
 
     if (!emailInput || !status) return;
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = emailInput.value.trim();
       if (!emailInput.checkValidity()) {
@@ -78,9 +78,24 @@ const copy = locale === 'zh'
 
       if (!email) return;
 
-      window.trackEvent('newsletter_subscribe', { location: 'footer' });
-      form.hidden = true;
-      status.hidden = false;
+      window.trackEvent?.('newsletter_subscribe', { location: 'footer' });
+
+      try {
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, locale: '${locale}', source: 'footer' }),
+        });
+
+        if (response.ok) {
+          form.hidden = true;
+          status.hidden = false;
+        } else {
+          emailInput.focus();
+        }
+      } catch {
+        // Silently fail UI-side; user can retry.
+      }
     });
   });
 </script>
