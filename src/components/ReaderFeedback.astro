@@ -76,9 +76,13 @@ const Container = compact ? 'details' : 'section';
       status.className = 'reader-feedback-status';
 
       if (!form.checkValidity()) {
+        const invalidField = form.querySelector(':invalid');
         status.textContent = messages.invalid;
         status.classList.add('is-error');
         status.hidden = false;
+        if (invalidField instanceof HTMLElement) {
+          invalidField.focus();
+        }
         return;
       }
 
