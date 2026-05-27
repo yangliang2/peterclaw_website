@@ -3,7 +3,6 @@ title: "AI Squad Launch Diary Vol.1: From Personal Site to Public Collaboration"
 description: "How the PeterClaw website turned an AI team's collaboration process into product, content, and brand assets."
 contentType: journal
 publishedAt: 2026-05-23
-ogImage: /og-default.png
 cover: journal.svg
 tags:
   - AI squad

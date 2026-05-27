@@ -3,7 +3,6 @@ title: "为什么开始发 Newsletter"
 description: "关于启动 PeterClaw Newsletter 的元反思：从『博客就够了』到『我需要收件箱』之间发生了什么，以及为什么定期出现这件事本身比形式更重要。"
 contentType: journal
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 cover: journal.svg
 tags:
   - newsletter

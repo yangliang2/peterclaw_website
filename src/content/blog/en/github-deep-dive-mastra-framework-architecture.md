@@ -4,7 +4,6 @@ description: "A comprehensive teardown of Mastra's core architecture, Agent/Tool
 contentType: review
 publishedAt: 2026-05-28
 lang: en
-ogImage: /og-default.png
 tags:
   - GitHub Hot Projects
   - AI Agent

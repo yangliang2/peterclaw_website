@@ -3,7 +3,6 @@ title: "GitHub 热门项目深潜 Vol.3：Mastra 深度解析：TypeScript Agent
 description: "从 Gatsby 团队到 TypeScript-native Agent 框架，拆解 Mastra 的 Observational Memory 如何实现 4-10x Token 成本削减，以及它的设计对 AI 工程化的启示。"
 contentType: review
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - GitHub 热门项目
   - AI Agent

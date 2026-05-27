@@ -3,7 +3,6 @@ title: "AI Tool Review Series Vol.5: Antigravity 2.0 / Kiro / Cline Deep Review:
 description: "After two weeks of real-project testing, we compare the three defining Agent IDEs of Q2 2026 across multi-agent collaboration, spec-driven workflows, and open-source freedom, with clear recommendations for indie developers."
 contentType: review
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - AI Tool Review
   - Productivity Tools

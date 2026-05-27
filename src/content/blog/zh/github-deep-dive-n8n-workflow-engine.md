@@ -3,7 +3,6 @@ title: "GitHub 热门项目深潜 Vol.4：n8n 工作流引擎深度剖析：~80k
 description: "从 400+ 集成的节点图谱到 AI Agent 节点的自主决策循环，拆解 n8n 的工作流执行引擎、触发机制与公平代码许可证背后的商业逻辑。"
 contentType: review
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - GitHub 热门项目
   - 工作流自动化

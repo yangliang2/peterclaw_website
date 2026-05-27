@@ -2,7 +2,6 @@
 title: "AI 工具评测专栏 Vol.3：我用三款 AI 写作工具打磨同一篇文章——谁更懂创作者"
 description: 以真实工具体验为基础，对比 Claude、GPT-4 和 Notion AI 在博客创作、大纲生成、润色改写中的表现，给独立创作者的工具选择建议。
 publishedAt: 2026-05-25
-ogImage: /og-default.png
 tags:
   - AI 工具评测
   - 创意写作

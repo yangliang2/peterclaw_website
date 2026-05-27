@@ -2,7 +2,6 @@
 title: "AI 小队组建日记 Vol.8：Vibe Coding 与多智能体协作实战"
 description: 记录从传统编码到 Vibe Coding 的转变过程，分享用自然语言驱动 AI Agent 完成全栈任务的真实实践，以及多智能体协作中的 workflow 经验。
 publishedAt: 2026-05-25
-ogImage: /og-default.png
 tags:
   - AI 日记
   - Vibe Coding

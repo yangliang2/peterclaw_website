@@ -3,7 +3,6 @@ title: "AI 工具评测专栏 Vol.7：n8n vs Make vs Zapier 2026 深度横评：
 description: "历时两周真实业务场景测试，从价格/免费额度、自定义节点能力、AI 节点集成、社区生态、上手难度和稳定性六个维度，深度对比 n8n、Make 与 Zapier 三款主流 AI 工作流自动化工具，为中文独立开发者和中小企业提供明确选型建议。"
 contentType: review
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 tags:
   - AI 工具评测
   - 效率工具

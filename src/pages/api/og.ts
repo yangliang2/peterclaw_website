@@ -1,17 +1,12 @@
-import { ImageResponse } from '@vercel/og';
-import type { APIRoute } from 'astro';
-import notoSansScBoldUrl from '@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff?url';
 import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import type { APIRoute } from 'astro';
+import { Resvg } from '@resvg/resvg-js';
+import satori from 'satori';
 import { siteConfig } from '@/config/site';
 import type { Locale } from '@/lib/i18n';
 
 export const prerender = false;
-
-type OgElement = {
-  type: string;
-  props: Record<string, unknown>;
-};
 
 type Section = 'blog' | 'knowledge' | 'review' | 'product';
 
@@ -20,7 +15,28 @@ const HEIGHT = 630;
 const MAX_TITLE_LENGTH = 92;
 const MAX_DESCRIPTION_LENGTH = 138;
 const MAX_CATEGORY_LENGTH = 28;
-let fontPromise: Promise<ArrayBuffer> | undefined;
+const FONT_FAMILY = 'Noto Sans SC';
+
+const regularFontPath = resolve(
+  process.cwd(),
+  'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff'
+);
+const boldFontPath = resolve(
+  process.cwd(),
+  'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff'
+);
+
+let fontPromise: Promise<{ regular: ArrayBuffer; bold: ArrayBuffer }> | undefined;
+
+async function loadFonts() {
+  fontPromise ??= Promise.all([readFile(regularFontPath), readFile(boldFontPath)]).then(
+    ([regular, bold]) => ({
+      regular: regular.buffer.slice(regular.byteOffset, regular.byteOffset + regular.byteLength),
+      bold: bold.buffer.slice(bold.byteOffset, bold.byteOffset + bold.byteLength),
+    })
+  );
+  return fontPromise;
+}
 
 const sectionLabels: Record<Locale, Record<Section, string>> = {
   zh: {
@@ -44,24 +60,6 @@ const sectionColors: Record<Section, { accent: string; band: string }> = {
   product: { accent: '#7c3aed', band: '#ede9fe' },
 };
 
-const localFontUrl = new URL(
-  '../../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff',
-  import.meta.url
-);
-
-function h(type: string, props: Record<string, unknown>, ...children: Array<OgElement | string>) {
-  return {
-    type,
-    props:
-      children.length === 0
-        ? props
-        : {
-            ...props,
-            children: children.length === 1 ? children[0] : children,
-          },
-  };
-}
-
 function truncate(value: string, maxLength: number) {
   const normalized = value.trim().replace(/\s+/g, ' ');
   return normalized.length > maxLength ? `${normalized.slice(0, maxLength - 1)}...` : normalized;
@@ -74,17 +72,17 @@ function param(url: URL, key: string, fallback = '') {
   );
 }
 
-async function loadFont(url: URL) {
-  fontPromise ??= import.meta.env.DEV
-    ? readFile(fileURLToPath(localFontUrl)).then((buffer) => {
-        const arrayBuffer = new ArrayBuffer(buffer.byteLength);
-        new Uint8Array(arrayBuffer).set(buffer);
-        return arrayBuffer;
-      })
-    : fetch(new URL(notoSansScBoldUrl, url.origin)).then((response) =>
-        response.arrayBuffer()
-      );
-  return fontPromise;
+function h(type: string, props: Record<string, unknown>, ...children: Array<unknown>) {
+  return {
+    type,
+    props:
+      children.length === 0
+        ? props
+        : {
+            ...props,
+            children: children.length === 1 ? children[0] : children,
+          },
+  };
 }
 
 export const GET: APIRoute = async ({ url }) => {
@@ -104,22 +102,23 @@ export const GET: APIRoute = async ({ url }) => {
     MAX_CATEGORY_LENGTH
   );
 
-  return new ImageResponse(
+  const fonts = await loadFonts();
+
+  const svg = await satori(
     h(
       'div',
       {
         style: {
-          width: '100%',
-          height: '100%',
+          width: `${WIDTH}px`,
+          height: `${HEIGHT}px`,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '60px 68px',
           color: '#111827',
           backgroundColor: '#f8fafc',
-          backgroundImage:
-            'linear-gradient(135deg, #f8fafc 0%, #f3f4f6 48%, #ecfeff 100%)',
-          fontFamily: 'Noto Sans SC',
+          backgroundImage: 'linear-gradient(135deg, #f8fafc 0%, #f3f4f6 48%, #ecfeff 100%)',
+          fontFamily: FONT_FAMILY,
         },
       },
       h(
@@ -138,17 +137,17 @@ export const GET: APIRoute = async ({ url }) => {
             style: {
               display: 'flex',
               alignItems: 'center',
-              gap: 14,
-              fontSize: 25,
+              gap: '14px',
+              fontSize: '25px',
               fontWeight: 700,
               color: palette.accent,
             },
           },
           h('div', {
             style: {
-              width: 18,
-              height: 18,
-              borderRadius: 999,
+              width: '18px',
+              height: '18px',
+              borderRadius: '999px',
               backgroundColor: palette.accent,
             },
           }),
@@ -160,11 +159,11 @@ export const GET: APIRoute = async ({ url }) => {
             style: {
               display: 'flex',
               alignItems: 'center',
-              borderRadius: 999,
+              borderRadius: '999px',
               padding: '12px 20px',
               color: palette.accent,
               backgroundColor: palette.band,
-              fontSize: 23,
+              fontSize: '23px',
               fontWeight: 700,
             },
           },
@@ -177,7 +176,7 @@ export const GET: APIRoute = async ({ url }) => {
           style: {
             display: 'flex',
             flexDirection: 'column',
-            gap: 26,
+            gap: '26px',
             width: '100%',
           },
         },
@@ -186,8 +185,8 @@ export const GET: APIRoute = async ({ url }) => {
           {
             style: {
               display: 'flex',
-              maxWidth: 990,
-              fontSize: locale === 'zh' ? 68 : 64,
+              maxWidth: '990px',
+              fontSize: locale === 'zh' ? '68px' : '64px',
               lineHeight: 1.12,
               fontWeight: 700,
               letterSpacing: 0,
@@ -200,8 +199,8 @@ export const GET: APIRoute = async ({ url }) => {
           {
             style: {
               display: 'flex',
-              maxWidth: 900,
-              fontSize: 31,
+              maxWidth: '900px',
+              fontSize: '31px',
               lineHeight: 1.45,
               color: '#4b5563',
             },
@@ -218,7 +217,7 @@ export const GET: APIRoute = async ({ url }) => {
             justifyContent: 'space-between',
             width: '100%',
             color: '#6b7280',
-            fontSize: 24,
+            fontSize: '24px',
           },
         },
         h('div', { style: { display: 'flex' } }, sectionLabels[locale][section]),
@@ -230,15 +229,38 @@ export const GET: APIRoute = async ({ url }) => {
       height: HEIGHT,
       fonts: [
         {
-          name: 'Noto Sans SC',
-          data: await loadFont(url),
+          name: FONT_FAMILY,
+          data: fonts.regular,
+          weight: 400,
+          style: 'normal',
+        },
+        {
+          name: FONT_FAMILY,
+          data: fonts.bold,
           weight: 700,
           style: 'normal',
         },
       ],
-      headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable',
-      },
     }
   );
+
+  const image = new Resvg(svg, {
+    fitTo: {
+      mode: 'width',
+      value: WIDTH,
+    },
+  }).render();
+
+  const pngBuffer = image.asPng();
+  const body = pngBuffer.buffer.slice(
+    pngBuffer.byteOffset,
+    pngBuffer.byteOffset + pngBuffer.byteLength
+  ) as ArrayBuffer;
+
+  return new Response(body, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  });
 };

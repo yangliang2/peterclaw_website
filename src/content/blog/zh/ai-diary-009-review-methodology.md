@@ -3,7 +3,6 @@ title: "AI 日记 Vol.9：AI 工具评测背后的方法论——我们是如何
 description: 从 PeterClaw Squad 的内部视角，公开 AI 工具评测专栏的评测方法论：维度选择逻辑、踩坑实录、Agent 协作流程，以及对读者的真实承诺。
 contentType: journal
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - AI 日记
   - 工具评测方法论

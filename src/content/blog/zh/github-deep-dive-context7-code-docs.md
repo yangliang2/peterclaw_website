@@ -3,7 +3,6 @@ title: "GitHub 热门项目深潜 Vol.2：Context7 架构解读：为 LLM 而生
 description: "拆解 Context7 如何将任意代码库转化为 LLM 友好的结构化文档，以及它的『结构化提取 + 语义索引』双引擎设计对 AI 编程工作流的启示。"
 contentType: review
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - GitHub 热门项目
   - LLM

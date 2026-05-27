@@ -3,7 +3,6 @@ title: "Why I Started Sending a Newsletter"
 description: "A meta-reflection on launching the PeterClaw Newsletter: what changed between 'blogs are enough' and 'I need an inbox,' and why the act of showing up regularly matters more than the format."
 contentType: journal
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 cover: journal.svg
 tags:
   - newsletter

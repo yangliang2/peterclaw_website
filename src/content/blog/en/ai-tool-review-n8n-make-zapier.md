@@ -3,7 +3,6 @@ title: "AI Tool Review Column Vol.7: n8n vs Make vs Zapier 2026 — Which AI Wor
 description: "Two weeks of real-world business scenario testing across pricing/free tiers, custom node capabilities, AI node integration, community ecosystem, ease of use, and stability. A definitive comparison of n8n, Make, and Zapier for indie developers and SMBs."
 contentType: review
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 tags:
   - AI 工具评测
   - 效率工具

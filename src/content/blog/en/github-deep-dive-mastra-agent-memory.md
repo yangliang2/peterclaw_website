@@ -4,7 +4,6 @@ description: "From the Gatsby team to a TypeScript-native Agent framework — di
 contentType: review
 publishedAt: 2026-05-26
 lang: en
-ogImage: /og-default.png
 tags:
   - GitHub Hot Projects
   - AI Agent

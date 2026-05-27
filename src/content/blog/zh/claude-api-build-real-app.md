@@ -9,7 +9,6 @@ tags:
   - 教程
   - Python
 draft: true
-ogImage: /og-default.png
 cover: tutorial.svg
 difficultyLevel: intermediate
 prerequisites:

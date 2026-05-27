@@ -3,7 +3,6 @@ title: "MCP（Model Context Protocol）深度解析：原理、生态与实战"
 description: "从协议设计原理到 Server/Client 架构，全面对比 MCP 与现有 Tool Use 方案的差异，盘点主流 MCP Server 生态，并附 Claude Code / Cursor 中的真实实战配置。"
 contentType: review
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 tags:
   - GitHub 热门项目
   - AI Agent
