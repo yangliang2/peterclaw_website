@@ -3,19 +3,41 @@
 </div>
 
 <script>
-  const bar = document.querySelector<HTMLElement>('[data-reading-progress-bar]');
+  let scrollHandler: (() => void) | null = null;
+  let resizeHandler: (() => void) | null = null;
 
-  if (bar) {
+  function teardownReadingProgress() {
+    if (scrollHandler) {
+      window.removeEventListener('scroll', scrollHandler);
+      scrollHandler = null;
+    }
+    if (resizeHandler) {
+      window.removeEventListener('resize', resizeHandler);
+      resizeHandler = null;
+    }
+  }
+
+  function initReadingProgress() {
+    teardownReadingProgress();
+
+    const bar = document.querySelector<HTMLElement>('[data-reading-progress-bar]');
+    if (!bar) return;
+
     const update = () => {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0;
       bar.style.width = `${progress}%`;
     };
 
+    scrollHandler = update;
+    resizeHandler = update;
     update();
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
   }
+
+  initReadingProgress();
+  document.addEventListener('astro:page-load', initReadingProgress);
 </script>
 
 <style>

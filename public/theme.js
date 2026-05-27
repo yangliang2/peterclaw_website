@@ -7,6 +7,7 @@
   const PREFERENCES = ['light', 'dark', 'system'];
   const root = document.documentElement;
   const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  let themeTransitionPending = false;
 
   function isPreference(value) {
     return value === 'light' || value === 'dark' || value === 'system';
@@ -29,23 +30,40 @@
   }
 
   function applyPreference(preference, persist) {
-    const resolved = resolveTheme(preference);
-    root.dataset.theme = resolved;
-    root.dataset.themePreference = preference;
+    const update = () => {
+      const resolved = resolveTheme(preference);
+      root.dataset.theme = resolved;
+      root.dataset.themePreference = preference;
 
-    if (persist) {
-      try {
-        localStorage.setItem(STORAGE_KEY, preference);
-      } catch {
-        // Theme still applies when storage is unavailable.
+      if (persist) {
+        try {
+          localStorage.setItem(STORAGE_KEY, preference);
+        } catch {
+          // Theme still applies when storage is unavailable.
+        }
       }
+
+      root.dispatchEvent(
+        new CustomEvent('peterclaw-theme-change', {
+          detail: { preference, resolved },
+        })
+      );
+    };
+
+    if (!persist || typeof document.startViewTransition !== 'function') {
+      update();
+      return;
     }
 
-    root.dispatchEvent(
-      new CustomEvent('peterclaw-theme-change', {
-        detail: { preference, resolved },
-      })
-    );
+    if (themeTransitionPending) return;
+
+    themeTransitionPending = true;
+    root.classList.add('theme-view-transition');
+    const transition = document.startViewTransition(update);
+    transition.finished.finally(() => {
+      themeTransitionPending = false;
+      root.classList.remove('theme-view-transition');
+    });
   }
 
   function nextPreference(current) {
@@ -54,6 +72,10 @@
   }
 
   function cyclePreference() {
+    if (themeTransitionPending) {
+      return root.dataset.themePreference ?? 'system';
+    }
+
     const current = root.dataset.themePreference;
     const resolved = root.dataset.theme === 'dark' ? 'dark' : 'light';
 

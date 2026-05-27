@@ -94,6 +94,7 @@ test('RSS feed returns XML containing article entries', async ({ request }) => {
 });
 
 test('theme toggle cycles light, dark, and system preferences', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/en/');
 
   const toggle = page.locator('.theme-toggle');

@@ -312,7 +312,7 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   initSearchTracking();
   initEmptyStateObserver();
   maybeAutoFocus();
-  document.addEventListener('astro:after-swap', () => {
+  document.addEventListener('astro:page-load', () => {
     const root = getSearchRoot();
     if (root) root.dataset.filtersReady = 'false';
     initSearchFilters();

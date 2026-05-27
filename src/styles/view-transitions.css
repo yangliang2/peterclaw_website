@@ -1,0 +1,81 @@
+/* Page navigation (ClientRouter) */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.2s;
+    animation-timing-function: ease;
+  }
+
+  ::view-transition-old(root) {
+    animation-name: pc-page-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: pc-page-fade-in;
+  }
+}
+
+@keyframes pc-page-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pc-page-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Theme toggle (document.startViewTransition in theme.js) */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-view-transition::view-transition-old(root),
+  html.theme-view-transition::view-transition-new(root) {
+    animation-duration: 0.25s;
+    animation-timing-function: ease;
+  }
+
+  html.theme-view-transition::view-transition-old(root) {
+    animation-name: pc-theme-fade-out;
+  }
+
+  html.theme-view-transition::view-transition-new(root) {
+    animation-name: pc-theme-fade-in;
+  }
+}
+
+@keyframes pc-theme-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.92;
+  }
+}
+
+@keyframes pc-theme-fade-in {
+  from {
+    opacity: 0.92;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

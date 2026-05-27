@@ -6,7 +6,10 @@ import Footer from '@/components/Footer.astro';
 import Navbar from '@/components/Navbar.astro';
 import { ui, type Locale } from '@/lib/i18n';
 import type { JsonLdSchema } from '@/utils/seo';
+import { ClientRouter } from 'astro:transitions';
+import { fade } from 'astro:transitions';
 import '@/styles/theme.css';
+import '@/styles/view-transitions.css';
 
 interface Props {
   title?: string;
@@ -70,11 +73,13 @@ const pageDescription = description ?? copy.tagline;
       noindex={noindex}
     />
     <BaseAnalytics />
+    <ClientRouter />
   </head>
   <body>
     <a class="skip-link" href="#main-content">{copy.skipToContent}</a>
     <Navbar locale={locale} languageSwitchPath={languageSwitchPath} />
-    <main id="main-content" tabindex="-1">
+    <main id="main-content" tabindex="-1" transition:animate={fade({ duration: '0.2s' })}>
+
       <slot />
     </main>
     <Footer locale={locale} />
