@@ -1,5 +1,5 @@
 ---
-title: "Mastra 深度解析：TypeScript Agent 框架的 Observational Memory 架构"
+title: "GitHub 热门项目深潜 Vol.3：Mastra 深度解析：TypeScript Agent 框架的 Observational Memory 架构"
 description: "从 Gatsby 团队到 TypeScript-native Agent 框架，拆解 Mastra 的 Observational Memory 如何实现 4-10x Token 成本削减，以及它的设计对 AI 工程化的启示。"
 contentType: review
 publishedAt: 2026-05-26
@@ -40,6 +40,8 @@ reviews:
     status: "approved"
     date: "2026-05-25"
 ---
+
+> 🌐 [English version available](/en/blog/github-deep-dive-mastra-agent-memory/)
 
 > 23,000 Stars，Apache 2.0 协议，来自 Gatsby.js 原班人马——Mastra 可能是 2026 年 TypeScript 生态中最被低估的 Agent 框架。
 >

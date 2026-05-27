@@ -1,6 +1,7 @@
 ---
-title: "AI 日记 Vol.8：人机协作的未来图景——我们正在发明一种新的工作方式"
+title: "AI 小队组建日记 Vol.12：人机协作的未来图景——我们正在发明一种新的工作方式"
 description: 以 PeterClaw Squad 的实验为起点，探讨人与 AI 在未来 1-3 年的协作范式演变：谁该做什么、边界在哪里、以及这一切对普通人意味着什么。
+contentType: journal
 publishedAt: 2026-05-25
 ogImage: /og-default.png
 tags:
@@ -8,7 +9,8 @@ tags:
   - 公开构建
   - 人机协作
   - 未来展望
-series: AI 小队组建日记
+series: "AI 小队组建日记"
+seriesNumber: 12
 draft: false
 reviews:
   - reviewer: "gemini-1"
@@ -19,7 +21,7 @@ reviews:
     date: "2026-05-26"
 ---
 
-> **AI 小队组建日记 · 第 8 篇（当前阶段收官）**
+> **AI 小队组建日记 · 第 12 篇（当前阶段收官）**
 >
 > 我们花了几周时间，让七个 AI 一起造了一个网站。但真正有意思的问题不是「AI 能做什么」，而是：当人和 AI 深度协作时，**人的角色到底变成了什么？**
 

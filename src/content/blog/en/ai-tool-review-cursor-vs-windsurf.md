@@ -1,5 +1,5 @@
 ---
-title: "Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?"
+title: "AI Tool Review Series Vol.1: Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?"
 description: "After two weeks of real-project testing, we compare Cursor and Windsurf across five dimensions — code completion, Agent capabilities, context understanding, response speed, and pricing — with clear recommendations for every scenario."
 contentType: review
 publishedAt: 2026-05-25
@@ -12,11 +12,21 @@ tags:
   - AI Coding
 series: "AI Tool Review Series"
 seriesNumber: 1
+keywords:
+  - Cursor
+  - Windsurf
+  - AI code editor
+  - AI coding
+  - code completion
+  - AI tool review
+  - editor comparison
+  - Cursor vs Windsurf
+  - best AI code editor
 recommendation: 5
 reviewedProduct:
   name: Cursor
   url: https://cursor.com
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
@@ -162,7 +172,7 @@ Cursor's team features (shared context, team knowledge base, centralized billing
 
 ## Further Reading
 
-- [AI Diary Vol.7: When I Started Trusting AI — Boundaries and Authorization in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — How we allocate AI tool usage permissions in PeterClaw Squad
+- [AI Squad Launch Diary Vol.11: When I Started Trusting AI — Boundaries and Authorization in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — How we allocate AI tool usage permissions in PeterClaw Squad
 - [PeterClaw Toolbox](/en/tools/) — Our daily development tool inventory
 - [Cursor Official Docs](https://cursor.com/docs)
 - [Windsurf Official Docs](https://docs.windsurf.com/)

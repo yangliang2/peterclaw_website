@@ -1,5 +1,5 @@
 ---
-title: "TypeScript 库打包工具链进化论：从 tsup 到 Rolldown，工程效率的代际跃迁"
+title: "GitHub 热门项目深潜 Vol.5：TypeScript 库打包工具链进化论：从 tsup 到 Rolldown，工程效率的代际跃迁"
 description: "对比 tsup、unbuild、pkgroll 和 Rolldown 的架构差异，理解为什么 2026 年的 TypeScript 库作者不再写 Rollup 配置文件。"
 contentType: review
 publishedAt: 2026-05-26
