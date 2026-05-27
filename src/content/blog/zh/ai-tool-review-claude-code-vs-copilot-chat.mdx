@@ -26,6 +26,8 @@ reviews:
     date: "2026-05-26"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI 工具评测专栏 · 第 2 篇**
 >
 > 当 AI 编程助手从 IDE 插件下沉到命令行，代码编写的边界被彻底打破——但 Claude Code 和 GitHub Copilot Chat，谁能真正接管你的 Terminal？
@@ -59,6 +61,36 @@ reviews:
 3. **代码补全质量**——TypeScript 和 Python 场景下的代码生成精准度
 4. **价格与可访问性**——订阅费用、国内网络访问难度、免费额度
 5. **安全性与隐私**——代码是否上传至云端、数据保留策略、企业合规性
+
+<ReviewScoreCard
+  title="Claude Code 评分卡"
+  subtitle="将文末对比总表映射为 8 个关键维度（满分 5）。"
+  dimensions={[
+    { label: '上下文理解', score: 5, maxScore: 5, weight: 0.2 },
+    { label: '命令行 UX', score: 5, maxScore: 5, weight: 0.15 },
+    { label: '代码补全（TS）', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '代码补全（Python）', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '价格', score: 4, maxScore: 5, weight: 0.15 },
+    { label: '国内可访问性', score: 3, maxScore: 5, weight: 0.1 },
+    { label: '隐私与合规', score: 4, maxScore: 5, weight: 0.1 },
+    { label: 'GitHub 集成', score: 3, maxScore: 5, weight: 0.1 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="GitHub Copilot Chat 评分卡"
+  subtitle="同维度、同权重，用于快速横向对比。"
+  dimensions={[
+    { label: '上下文理解', score: 4, maxScore: 5, weight: 0.2 },
+    { label: '命令行 UX', score: 4, maxScore: 5, weight: 0.15 },
+    { label: '代码补全（TS）', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '代码补全（Python）', score: 4, maxScore: 5, weight: 0.1 },
+    { label: '价格', score: 5, maxScore: 5, weight: 0.15 },
+    { label: '国内可访问性', score: 4, maxScore: 5, weight: 0.1 },
+    { label: '隐私与合规', score: 4, maxScore: 5, weight: 0.1 },
+    { label: 'GitHub 集成', score: 5, maxScore: 5, weight: 0.1 },
+  ]}
+/>
 
 ---
 

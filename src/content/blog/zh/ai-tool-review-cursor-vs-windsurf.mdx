@@ -36,6 +36,8 @@ reviews:
     date: "2026-05-26"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI 工具评测专栏 · 第 1 篇**
 >
 > 当 AI 代码编辑器从「尝鲜玩具」变成「日常生产工具」，选一个对的，比选十个便宜的更重要。
@@ -67,6 +69,30 @@ reviews:
 3. **上下文理解**——对大型代码库的理解深度，能否跨文件关联
 4. **响应速度**——从输入到获得建议的延迟，以及 Agent 任务的执行速度
 5. **价格与性价比**——订阅费用、免费额度、团队版定价
+
+<ReviewScoreCard
+  title="Cursor 评分卡"
+  subtitle="评分维度与权重与本文一致（满分 5）。"
+  dimensions={[
+    { label: '代码补全', score: 5, maxScore: 5, weight: 0.25 },
+    { label: 'Agent 任务', score: 5, maxScore: 5, weight: 0.25 },
+    { label: '上下文理解', score: 5, maxScore: 5, weight: 0.2 },
+    { label: '响应速度', score: 4, maxScore: 5, weight: 0.15 },
+    { label: '价格/性价比', score: 4, maxScore: 5, weight: 0.15 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Windsurf 评分卡"
+  subtitle="同维度、同权重，用于快速横向对比。"
+  dimensions={[
+    { label: '代码补全', score: 4, maxScore: 5, weight: 0.25 },
+    { label: 'Agent 任务', score: 4, maxScore: 5, weight: 0.25 },
+    { label: '上下文理解', score: 4, maxScore: 5, weight: 0.2 },
+    { label: '响应速度', score: 5, maxScore: 5, weight: 0.15 },
+    { label: '价格/性价比', score: 5, maxScore: 5, weight: 0.15 },
+  ]}
+/>
 
 ---
 
