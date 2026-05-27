@@ -44,6 +44,11 @@ This document defines the user behavior events tracked on the PeterClaw website 
 - **Trigger**: Click on X or LinkedIn share buttons.
 - **Attributes**: `platform`, `url`
 
+### 7. Page Not Found (404)
+- **Event Name**: `page_not_found`
+- **Trigger**: Load of the custom 404 page.
+- **Attributes**: `path` (requested pathname), `referrer` (document referrer when present)
+
 ## Verification
 - Use Browser DevTools (Network tab) to verify requests to `https://analytics.eu.umami.is/api/send` or the configured Plausible endpoint.
 - In development, analytics are disabled by default (`import.meta.env.PROD` check).
