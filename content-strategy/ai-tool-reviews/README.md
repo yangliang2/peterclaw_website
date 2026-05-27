@@ -18,6 +18,7 @@
 | 第 5 篇 | Antigravity 2.0 / Kiro / Cline 深度评测 | 2026-05-26 | `src/content/blog/zh/ai-tool-review-antigravity-kiro-cline.md` | Antigravity, Kiro, Cline | 已发布 |
 | 第 6 篇 | **Kiro vs Cline 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kiro-vs-cline.mdx` | Kiro, Cline | **已提交 PR** |
 | 第 7 篇 | **Gemini 2.5 Pro vs GPT-4o 全面横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-gemini-2-5-pro-vs-gpt-4o.mdx` | Gemini 2.5 Pro, GPT-4o | 已提交 |
+| 第 8 篇 | **Kimi vs 豆包 vs 文心一言 深度横评** | 2026-05-28 | `src/content/blog/zh/ai-tool-review-kimi-vs-doubao-vs-wenxin.mdx` | Kimi, 豆包, 文心一言 | 待审核 |
 
 ---
 
@@ -93,6 +94,25 @@
 
 ---
 
+## 第 8 篇核心结论摘要
+
+**《中文 AI 写作助手横评（Kimi vs 豆包 vs 文心一言）》**
+
+- **Kimi**：长文本之王，200K 上下文实测可用，中文语感最自然，免费版额度 generous，适合技术博客、文献综述、翻译；联网时效性弱于文心一言，多模态能力尚在追赶
+- **豆包**：网感最强，多模态交互流畅，字节生态集成度高，适合短视频脚本、社媒文案、轻量创作；长文一致性弱，深度内容偏「浅」，API 对个人开发者封闭
+- **文心一言**：联网检索最强（背靠百度搜索），结构化输出最规范，适合行业报告、数据分析、知识密集型工作；免费版限制严，创意表达偏保守，有「百科体」倾向
+
+**场景推荐矩阵**：
+- 技术博客 / 长文写作 / 翻译 → Kimi
+- 短视频脚本 / 社媒文案 / 追热点 → 豆包
+- 行业报告 / 数据分析 / 实时检索 → 文心一言
+- 文献综述 / 论文整理 → Kimi + 文心一言组合
+- 预算敏感 / 零成本使用 → Kimi 免费版为主 + 豆包免费版为辅
+
+**SEO 关键词**：Kimi 评测、豆包 AI 写作、文心一言 vs Kimi、中文 AI 写作助手、国产大模型评测、长文本 AI、AI 内容创作
+
+---
+
 ## 内容规范
 
 所有评测文章统一遵循 `docs/content-templates/review.md` 模板，frontmatter 必须包含：
@@ -113,3 +133,4 @@
 - [x] 第 4 篇 PR 合并后更新本索引状态为「已发布」
 - [ ] 第 6 篇 PR 合并后更新本索引状态为「已发布」
 - [ ] 第 7 篇 PR 合并后更新本索引状态为「已发布」
+- [ ] 第 8 篇完成双重审核后更新状态为「已发布」
