@@ -1,0 +1,19 @@
+---
+import { getContentTypeLabel, type ContentSection } from '@/lib/search';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  section: ContentSection;
+  contentType?: string;
+}
+
+const { locale, section, contentType } = Astro.props;
+const resolvedType =
+  contentType ?? (section === 'knowledge' ? 'knowledge' : 'journal');
+const typeLabel = getContentTypeLabel(resolvedType, section, locale);
+---
+
+<span data-pagefind-meta={`section:${section}`} hidden></span>
+<span data-pagefind-meta={`content_type:${resolvedType}`} hidden></span>
+<span data-pagefind-meta={`type_label:${typeLabel}`} hidden></span>

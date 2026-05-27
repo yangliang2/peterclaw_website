@@ -5,9 +5,10 @@ import { popularArticles } from '@/config/popular';
 
 interface Props {
   locale: Locale;
+  limit?: number;
 }
 
-const { locale } = Astro.props;
+const { locale, limit = 5 } = Astro.props;
 const copy = ui[locale];
 
 const [blog, knowledge] = await Promise.all([
@@ -22,7 +23,7 @@ for (const entry of knowledge) allEntries.set(`knowledge:${entry.id}`, entry);
 const entries = popularArticles[locale]
   .map((item) => allEntries.get(`${item.collection}:${item.id}`))
   .filter((entry): entry is CollectionEntry<'blog' | 'knowledge'> => !!entry)
-  .slice(0, 5);
+  .slice(0, limit);
 ---
 
 {

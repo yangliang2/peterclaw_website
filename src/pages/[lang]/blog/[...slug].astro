@@ -31,6 +31,7 @@ import {
 } from '@/utils/reading';
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
+import PagefindMeta from '@/components/PagefindMeta.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -136,6 +137,11 @@ if (
   <div class="article-layout">
     <ArticleToc locale={lang} entries={tocEntries} />
     <article class="article-main" data-pagefind-body>
+      <PagefindMeta
+        locale={lang}
+        section="blog"
+        contentType={post.data.contentType}
+      />
       <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
       <h1>{post.data.title}</h1>
       <p class="reading-time">{readingTimeLabel}</p>
