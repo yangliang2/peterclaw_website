@@ -35,3 +35,12 @@ Blog posts embed [Giscus](https://giscus.app) comments backed by this repo’s G
 The About page and blog posts expose a bilingual reader feedback form. Blog posts use an opt-in expandable prompt so it does not interrupt reading. Submissions are proxied through `/api/feedback` to Formspree.
 
 Set `FORMSPREE_FEEDBACK_FORM_ID` in the deployment environment to the form ID from a Formspree form (the value after `/f/` in its endpoint URL).
+
+## Plausible Pageviews
+
+Blog article headers can display Plausible pageview totals at build time. Set `PLAUSIBLE_STATS_API_KEY` to a Stats API key and set either `PLAUSIBLE_SITE_ID` or `PLAUSIBLE_DOMAIN` to the site domain configured in Plausible. Optional overrides:
+
+- `PLAUSIBLE_STATS_API_URL` defaults to `https://plausible.io/api/v2/query`.
+- `PLAUSIBLE_STATS_DATE_RANGE` defaults to `all`.
+
+These variables are only read during server-side rendering/builds and are not exposed to browser JavaScript.
