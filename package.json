@@ -8,6 +8,7 @@
     "quality:content": "node scripts/validate-content.mjs",
     "quality:hreflang": "node scripts/validate-hreflang.mjs",
     "health:content": "node scripts/content-health-report.mjs",
+    "health:smoke": "node scripts/production-smoke-test.mjs",
     "build": "astro check && astro build && npm run quality:hreflang",
     "preview": "astro preview",
     "preview:e2e": "vite preview --outDir dist/client",
