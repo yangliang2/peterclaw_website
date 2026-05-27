@@ -130,6 +130,20 @@ const structuredData: JsonLdSchema[] = [
   </p>
 </BaseLayout>
 
+<script>
+  document.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="/go/"]');
+    if (!link) return;
+
+    const slug = link.pathname.split('/').filter(Boolean).at(-1);
+    window.trackEvent?.('affiliate_link_click', {
+      slug,
+      label: link.innerText.trim(),
+      source: 'tools',
+    });
+  });
+</script>
+
 <style>
   .tools-category {
     margin-top: var(--space-xl);
