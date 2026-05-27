@@ -93,6 +93,32 @@ test('RSS feed returns XML containing article entries', async ({ request }) => {
   expect(feed).toContain('<item>');
 });
 
+test('theme toggle cycles light, dark, and system preferences', async ({ page }) => {
+  await page.goto('/en/');
+
+  const toggle = page.locator('.theme-toggle');
+  await expect(toggle).toBeVisible();
+
+  await page.evaluate(() => localStorage.setItem('peterclaw-theme', 'light'));
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-preference', 'light');
+
+  await toggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-preference', 'dark');
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem('peterclaw-theme')))
+    .toBe('dark');
+
+  await toggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme-preference', 'system');
+
+  await toggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-preference', 'light');
+});
+
 test('language switcher moves between Chinese and English homepages', async ({ page }) => {
   await page.goto('/zh/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh');
