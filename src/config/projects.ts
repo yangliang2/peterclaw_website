@@ -111,6 +111,7 @@ export const projects: Project[] = [
     },
     stack: ['Multica', 'AI Agents', 'Git Worktrees', 'GitHub PRs'],
     github: 'https://github.com/yangliang2/peterclaw_website',
+    githubRepo: 'yangliang2/peterclaw_website',
   },
   {
     title: 'PeterClaw /now',
@@ -130,6 +131,7 @@ export const projects: Project[] = [
       en: '/en/now/',
     },
     stack: ['Astro', 'Edge API', 'GitHub Events', 'CSS Grid'],
+    githubRepo: 'yangliang2/peterclaw_website',
   },
   {
     title: 'Article AI Q&A',
@@ -150,6 +152,7 @@ export const projects: Project[] = [
     },
     stack: ['Astro', 'Anthropic API', 'Vercel Edge', 'TypeScript'],
     github: 'https://github.com/yangliang2/peterclaw_website',
+    githubRepo: 'yangliang2/peterclaw_website',
   },
   {
     title: 'AI Squad Launch Diary',
@@ -169,5 +172,6 @@ export const projects: Project[] = [
       en: '/en/blog/ai-squad-launch-diary/',
     },
     stack: ['Astro Content', 'Markdown', 'Bilingual i18n'],
+    githubRepo: 'yangliang2/peterclaw_website',
   },
 ];

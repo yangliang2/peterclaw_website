@@ -1,11 +1,39 @@
-import { fetchProjectRepositories } from '../src/lib/github-client';
+import { getFeaturedRepositories } from '../src/lib/github';
 
 export const config = {
   runtime: 'edge',
 };
 
 const CACHE_SECONDS = 30 * 60;
-const REPOSITORIES = ['yangliang2/peterclaw_website'] as const;
+const FALLBACK_REPOSITORIES = [
+  {
+    repo: 'yangliang2/peterclaw_website',
+    stars: 0,
+    forks: 0,
+    language: 'TypeScript',
+    updatedAt: '2026-05-24T12:00:00Z',
+    url: 'https://github.com/yangliang2/peterclaw_website',
+  },
+  {
+    repo: 'yangliang2/multica-agent-plugin',
+    stars: 0,
+    forks: 0,
+    language: 'Shell',
+    updatedAt: '2026-05-24T15:01:40Z',
+    url: 'https://github.com/yangliang2/multica-agent-plugin',
+  },
+] as const;
+
+type ApiRepository = {
+  repo: string;
+  stars: number;
+  forks: number;
+  language: string | null;
+  updatedAt: string;
+  url: string;
+};
+
+let responseCache: { data: ApiRepository[]; fetchedAt: number } | null = null;
 
 function json(body: unknown, status = 200) {
   const cacheControl =
@@ -28,15 +56,33 @@ export default async function handler(request: Request) {
     return json({ error: 'Method not allowed' }, 405);
   }
 
+  const now = Date.now();
+  if (responseCache && now - responseCache.fetchedAt < CACHE_SECONDS * 1000) {
+    return json({ repositories: responseCache.data, fromCache: true });
+  }
+
   try {
-    const repositories = await fetchProjectRepositories(REPOSITORIES, {
-      token: process.env.GITHUB_TOKEN,
-      userAgent: 'peterclaw-website-projects',
+    const { repositories: featuredRepos } = await getFeaturedRepositories();
+    const featured = featuredRepos.slice(0, 8).map<ApiRepository>((repo) => {
+      const fullName = new URL(repo.html_url).pathname.replace(/^\//, '');
+      return {
+        repo: fullName,
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        language: repo.language,
+        updatedAt: repo.pushed_at ?? repo.updated_at,
+        url: repo.html_url,
+      };
     });
 
-    return json({ repositories });
+    const data = featured.length ? featured : [...FALLBACK_REPOSITORIES];
+    responseCache = { data, fetchedAt: now };
+    return json({ repositories: data, fromCache: false });
   } catch (error) {
-    console.error('GitHub projects API failed.', error);
-    return json({ error: 'GitHub data is temporarily unavailable' }, 502);
+    if (responseCache) {
+      return json({ repositories: responseCache.data, fromCache: true });
+    }
+    console.warn('Using fallback GitHub repositories for projects.', error);
+    return json({ repositories: [...FALLBACK_REPOSITORIES], fromCache: true }, 200);
   }
 }
