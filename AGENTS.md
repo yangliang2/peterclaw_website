@@ -29,6 +29,16 @@ A plain `@Name` or bare name does NOT trigger the agent — the task will never 
 
 Look up UUIDs in `peterclaw-squad-private/team/MENTION_MAP.md`. Never guess a UUID.
 
+## Issue Creation Rule (MANDATORY)
+
+Every `multica issue create` call MUST include the project ID to prevent "orphan issues":
+
+```bash
+multica issue create --title "..." --project 833434fa-85a4-4616-8d98-2f32c91abc58 ...
+```
+
+Failure to include the project ID will cause automation tasks to fail.
+
 ## Git Identity
 
 All commits must use the owner's GitHub identity. Never commit as an agent:
