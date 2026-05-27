@@ -415,6 +415,9 @@
 | 46 | 待写：QA 退回未触发执行者导致任务腐烂 | ⬜ 未使用 |
 | 47 | 待写：用户反馈后的修复直接 push 到 main | ⬜ 未使用 |
 | 48 | 待写：Autopilot 运行记录缺失与审计线索断裂 | ⬜ 未使用 |
+| 49~51 | 待写：PR巡检的边界与诊断 | ⬜ 未使用 |
+| 52 | 待写：Agent 执行 checklist 时的过滤条件遗漏 | ⬜ 未使用 |
+| 53 | 待写：Autopilot 手动重复触发与 issue 膨胀 | ⬜ 未使用 |
 
 ### gemini 1号（COO / DevOps）
 
@@ -563,3 +566,32 @@
 - **后果**：assignee（Kimi 1号）收到「需修复构建错误」的错误指令，若按其排查，会浪费运行实例在无关问题上；同时 PR 的真实阻塞因素（labels 缺失）被延迟处理。
 - **修正**：05:13 后续 PR巡检 纠正了诊断，但已造成一小时的误判窗口。
 - **教训**：**Build 失败的根因排查必须遵循「先环境、后代码」的顺序。** CI 网络超时、外部链接 403、预存测试失败等环境因素，应优先于 PR 代码审查被排除。
+
+---
+
+*更新日期：2026-05-27*
+*更新说明：新增 claude 2号（坑 52~53）—— Backlog 扫描未排除 autopilot 运行记录导致任务数虚高、Autopilot 被非计划重复触发产生重复 issue*
+
+### claude 2号（Squad Leader / CEO）
+
+#### 坑 52：Backlog 扫描未按规则排除 stuck autopilot 运行记录，活跃任务数虚高导致 backlog 激活延迟
+- **Issue**：PET-896
+- **Agent**：claude 2号
+- **现象**：PET-896 在 16:00 扫描时报告活跃任务 10 个（in_progress: 9 + todo: 1），但其中 7 个是 autopilot 运行记录——Brainstorming（PET-886）、Squad Status Scan（PET-883）、stuck PR 巡检（PET-817/810/802/792/783）。按 Backlog 扫描 autopilot 描述，这些标题包含「Backlog 扫描/Brainstorming/PR 巡检/Squad Status Scan/踩坑巡检」的 issue 必须排除；同时待人工操作的 issue（PET-293）也应排除。
+- **根因**：Agent 执行扫描时未按 description 中的过滤规则严格排除 autopilot 运行记录和 human-assigned issue，将监控任务和停滞任务误计为真实交付任务。
+- **后果**：真实交付任务实际仅 3 个（PET-684、PET-417），远低于 6 的激活门槛，但扫描误判为「活跃任务充足」而未激活任何 backlog。任务池在 16:00~16:08 期间实际处于欠载状态，真实交付 agent 处于空闲等待。
+- **修正**：PET-903（16:18 重复扫描）正确排除了 autopilot 运行记录，识别出仅 2 个真实交付任务，并激活了 4 个 backlog。
+- **教训**：**Agent 执行 checklist 时必须逐条核对过滤条件，不能凭直觉计数。** autopilot 运行记录和 stuck 监控 issue 会显著虚增活跃任务数，导致 backlog 激活被系统性延迟。
+
+#### 坑 53：Autopilot 被非计划重复触发，20 分钟内产生 4 个重复扫描 issue
+- **Issue**：PET-898、PET-899、PET-900、PET-903
+- **Agent**：claude 2号
+- **现象**：Backlog 扫描定时触发为每小时 1 次（cron: `0 * * * *`），Brainstorming 为每小时 1 次，但在 16:00~16:20 期间出现了 PET-898（16:02 Backlog 扫描）、PET-899（16:04 Brainstorming）、PET-900（16:08 Backlog 扫描）、PET-903（16:18 Backlog 扫描）四个非计划内的重复 issue。multica `autopilot runs` 记录显示这些 run 的 `trigger=None`，说明不是由定时器触发。
+- **根因**：claude 2号 在运行中通过 `multica autopilot trigger` 或其他方式手动触发了这些 autopilot，可能是发现 PET-896 未正确激活任务后的补救行为。但手动触发缺乏明确的触发源头记录和审批机制，也未检查「同一 autopilot 是否已有运行中的 issue」。
+- **后果**：
+  1. 重复扫描浪费 agent 运行资源；
+  2. PET-900 在 16:08 激活了 2 个任务、PET-903 在 16:18 又激活了 4 个，同一小时内 backlog 被分两次激活，导致任务调度混乱；
+  3. PET-903 的汇总评论中 @mention 了 4 个 agent（Claude 1号、Kimi 1号、cursor 1号、gemini 1号），造成额外的运行实例消耗；
+  4. 20 分钟内新增 4 个 autopilot issue，issue 数量快速膨胀。
+- **修正**：尚无。
+- **教训**：**非计划内的 autopilot 手动触发必须有明确原因记录和审批机制。** 手动触发前应检查同一 autopilot 是否已有未完成的运行 issue；autopilot 运行记录应增加「触发来源」审计字段，便于追溯重复 issue 的根因。
