@@ -142,6 +142,7 @@ if (
         locale={lang}
         section="blog"
         contentType={post.data.contentType}
+        tags={post.data.tags}
       />
       <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
       <h1>{post.data.title}</h1>
