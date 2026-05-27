@@ -57,6 +57,14 @@ const languageColor = languageColors[githubStats?.language ?? ''] ?? '#8b949e';
   {
     githubStats && (
       <div class="github-stats" aria-live="polite">
+        {
+          githubStats.description && (
+            <p class="github-description">
+              <span>{copy.repoDescription}</span>
+              {githubStats.description}
+            </p>
+          )
+        }
         <dl>
           <div>
             <dt>{copy.stars}</dt>
@@ -187,6 +195,24 @@ const languageColor = languageColors[githubStats?.language ?? ''] ?? '#8b949e';
 
   .github-stats {
     min-height: 4.9rem;
+  }
+
+  .github-description {
+    display: grid;
+    gap: 0.25rem;
+    padding: var(--space-sm) 0 0;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .github-description span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .github-stats-loading {

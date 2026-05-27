@@ -45,6 +45,7 @@ export const projectsCopy = {
     forks: 'Forks',
     language: '主语言',
     updated: '最近更新',
+    repoDescription: '仓库描述',
     githubStatsLoading: '正在获取 GitHub 数据',
   },
   en: {
@@ -67,6 +68,7 @@ export const projectsCopy = {
     forks: 'Forks',
     language: 'Language',
     updated: 'Updated',
+    repoDescription: 'Repo',
     githubStatsLoading: 'Loading GitHub data',
   },
 };

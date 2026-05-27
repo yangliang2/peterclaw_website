@@ -85,6 +85,44 @@ const product = defineCollection({
 const github = defineCollection({
   loader: githubContentLoader({
     projectRepositories: ['yangliang2/peterclaw_website'],
+    fallbackFeaturedRepositories: [
+      {
+        name: 'peterclaw_website',
+        full_name: 'yangliang2/peterclaw_website',
+        description:
+          'Personal website built with Astro, TypeScript, bilingual content, and AI-assisted publishing workflows.',
+        html_url: 'https://github.com/yangliang2/peterclaw_website',
+        stargazers_count: 0,
+        forks_count: 0,
+        language: 'Astro',
+        fork: false,
+        archived: false,
+        private: false,
+        updated_at: '2026-05-28T00:00:00.000Z',
+      },
+    ],
+    fallbackRecentCommits: [
+      {
+        sha: '2d033a9',
+        message: 'Search UX: tag browse, empty results, Ctrl/Cmd+K (#196)',
+        repo: 'peterclaw_website',
+        html_url:
+          'https://github.com/yangliang2/peterclaw_website/commit/2d033a9e0c19e313358079daea1351f9c97a7b73',
+        committed_at: '2026-05-27T22:02:27.000Z',
+      },
+    ],
+    fallbackProjectRepositories: [
+      {
+        repo: 'yangliang2/peterclaw_website',
+        description:
+          'Personal website built with Astro, TypeScript, bilingual content, and AI-assisted publishing workflows.',
+        stars: 0,
+        forks: 0,
+        language: 'Astro',
+        updatedAt: '2026-05-28T00:00:00.000Z',
+        url: 'https://github.com/yangliang2/peterclaw_website',
+      },
+    ],
   }),
   schema: githubContentEntrySchema,
 });
