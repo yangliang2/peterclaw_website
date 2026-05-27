@@ -1,5 +1,6 @@
 ---
 import PagefindConfig from 'astro-pagefind/components/PagefindConfig.astro';
+import PopularArticles from '@/components/PopularArticles.astro';
 import type { Locale } from '@/lib/i18n';
 import { ui } from '@/lib/i18n';
 import { isSearchFilterType, type SearchFilterType } from '@/lib/search';
@@ -56,10 +57,17 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   >
     <Fragment set:html={pagefindResultTemplate} />
   </pagefind-searchbox>
+
+  <section class="search-empty" hidden aria-live="polite">
+    <h2 class="search-empty__title">{copy.searchNoResultsTitle}</h2>
+    <p class="search-empty__hint">{copy.searchNoResultsHint}</p>
+    <PopularArticles locale={locale} />
+  </section>
 </div>
 
 <script>
   import { getInstanceManager } from '@pagefind/component-ui';
+  import type { PagefindSearchResult } from '@pagefind/component-ui';
   import {
     isSearchFilterType,
     pagefindFiltersForType,
@@ -67,15 +75,120 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   } from '@/lib/search';
 
   const INSTANCE_NAME = 'site-search';
+  const HIGHLIGHT_ATTR = 'data-search-highlight';
 
   function getSearchRoot() {
     return document.querySelector<HTMLElement>('.search-root');
+  }
+
+  function getEmptyState(root: HTMLElement) {
+    return root.querySelector<HTMLElement>('.search-empty');
+  }
+
+  function setEmptyStateVisible(root: HTMLElement, visible: boolean) {
+    const empty = getEmptyState(root);
+    if (!empty) return;
+    empty.toggleAttribute('hidden', !visible);
   }
 
   function getActiveFilterType(root: HTMLElement): SearchFilterType {
     const active = root.querySelector<HTMLButtonElement>('.search-filter-tab.active');
     const type = active?.dataset.filterType ?? 'all';
     return isSearchFilterType(type) ? type : 'all';
+  }
+
+  function escapeRegExp(value: string) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function normalizeQueryTerms(query: string): string[] {
+    const raw = query
+      .trim()
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    const unique: string[] = [];
+    for (const term of raw) {
+      if (term.length < 2) continue;
+      if (unique.includes(term)) continue;
+      unique.push(term);
+      if (unique.length >= 6) break;
+    }
+    return unique;
+  }
+
+  function unwrapHighlights(container: HTMLElement) {
+    container.querySelectorAll(`mark[${HIGHLIGHT_ATTR}]`).forEach((mark) => {
+      const parent = mark.parentNode;
+      if (!parent) return;
+      parent.replaceChild(document.createTextNode(mark.textContent ?? ''), mark);
+      parent.normalize();
+    });
+  }
+
+  function highlightInContainer(container: HTMLElement, terms: string[]) {
+    if (terms.length === 0) return;
+
+    unwrapHighlights(container);
+
+    const pattern = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'MARK') {
+          return NodeFilter.FILTER_REJECT;
+        }
+        if (!node.nodeValue || !node.nodeValue.trim()) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+
+    const textNodes: Text[] = [];
+    while (walker.nextNode()) {
+      textNodes.push(walker.currentNode as Text);
+    }
+
+    for (const node of textNodes) {
+      const text = node.nodeValue ?? '';
+      if (!pattern.test(text)) continue;
+      pattern.lastIndex = 0;
+
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0;
+      let match: RegExpExecArray | null;
+      while ((match = pattern.exec(text)) !== null) {
+        const start = match.index;
+        const end = start + match[0].length;
+        if (start > lastIndex) frag.append(text.slice(lastIndex, start));
+        const mark = document.createElement('mark');
+        mark.setAttribute(HIGHLIGHT_ATTR, 'true');
+        mark.textContent = text.slice(start, end);
+        frag.append(mark);
+        lastIndex = end;
+      }
+      if (lastIndex < text.length) frag.append(text.slice(lastIndex));
+
+      node.parentNode?.replaceChild(frag, node);
+    }
+  }
+
+  function applyHighlights(root: HTMLElement, query: string) {
+    const terms = normalizeQueryTerms(query);
+    if (terms.length === 0) {
+      root.querySelectorAll<HTMLElement>('.pf-result-card, .pagefind-ui__result').forEach((card) => {
+        unwrapHighlights(card);
+      });
+      return;
+    }
+
+    root
+      .querySelectorAll<HTMLElement>('.pf-result-card, .pagefind-ui__result')
+      .forEach((card) => highlightInContainer(card, terms));
   }
 
   function syncUrlParams(root: HTMLElement) {
@@ -106,6 +219,41 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
 
     instance.triggerSearchWithFilters(term, pagefindFiltersForType(type));
     syncUrlParams(root);
+  }
+
+  function initEmptyStateAndHighlighting() {
+    const root = getSearchRoot();
+    if (!root || root.dataset.resultsHookReady === 'true') return;
+
+    const manager = getInstanceManager();
+    const instance = manager.getInstance(INSTANCE_NAME);
+
+    root.dataset.resultsHookReady = 'true';
+
+    instance.on(
+      'results',
+      (results) => {
+        const parsed = results as PagefindSearchResult;
+        const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+        const query = input?.value.trim() ?? '';
+        const hasQuery = query.length > 0;
+        const empty =
+          hasQuery && Array.isArray(parsed?.results) && parsed.results.length === 0;
+        setEmptyStateVisible(root, empty);
+
+        if (!hasQuery) return;
+        requestAnimationFrame(() => requestAnimationFrame(() => applyHighlights(root, query)));
+      },
+      root,
+    );
+
+    instance.on(
+      'search',
+      () => {
+        setEmptyStateVisible(root, false);
+      },
+      root,
+    );
   }
 
   function initSearchFilters() {
@@ -170,11 +318,14 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   }
 
   initSearchFilters();
+  initEmptyStateAndHighlighting();
   initSearchTracking();
   document.addEventListener('astro:after-swap', () => {
     const root = getSearchRoot();
     if (root) root.dataset.filtersReady = 'false';
+    if (root) root.dataset.resultsHookReady = 'false';
     initSearchFilters();
+    initEmptyStateAndHighlighting();
     initSearchTracking();
   });
 </script>
@@ -273,6 +424,31 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+  }
+
+  .search-root :global(mark[data-search-highlight]) {
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    color: inherit;
+    padding: 0 0.15em;
+    border-radius: 0.25em;
+  }
+
+  .search-empty {
+    margin-top: var(--space-xl);
+    border: var(--border-glass);
+    border-radius: var(--radius-lg);
+    background: var(--gradient-glass);
+    padding: 1.25rem 1.25rem 0.25rem;
+  }
+
+  .search-empty__title {
+    margin: 0 0 0.5rem;
+    color: var(--color-heading);
+  }
+
+  .search-empty__hint {
+    margin: 0 0 1rem;
+    color: var(--color-text-muted);
   }
 
   .search-root--compact {
