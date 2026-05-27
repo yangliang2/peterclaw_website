@@ -25,6 +25,13 @@ keywords:
   - 工作流自动化
 recommendation: 5
 draft: true
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **差异化招牌内容 · PeterClaw Squad 真实经验首发**
