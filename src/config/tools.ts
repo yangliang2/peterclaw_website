@@ -20,6 +20,8 @@ export type ToolsCopy = {
   heroTitle: string;
   heroLede: string;
   categories: ToolCategory[];
+  ratingLabel: string;
+  reviewLinkLabel: string;
   disclaimer: string;
   lastUpdatedLabel: string;
 };
@@ -305,6 +307,8 @@ export const toolsCopy = {
     heroLede:
       '这份清单收录了我日常高频使用的效率利器，从 AI 编程助手到内容发布全链路。没有无脑堆砌，每一个都有真实的使用场景与个人评测。',
     categories: categoriesZh,
+    ratingLabel: 'PeterClaw 评分',
+    reviewLinkLabel: '阅读详细评测',
     disclaimer:
       '推荐指数基于个人主观体验（满分 5 ⭐️）。',
     lastUpdatedLabel: '本页最后更新于',
@@ -317,6 +321,8 @@ export const toolsCopy = {
     heroLede:
       'A living inventory of the high-efficiency tools I use daily, from AI code editors to the entire content publishing pipeline. Hand-picked, tested, and reviewed.',
     categories: categoriesEn,
+    ratingLabel: 'PeterClaw rating',
+    reviewLinkLabel: 'Read full review',
     disclaimer:
       'Ratings are based on personal subjective experience (out of 5 ⭐️).',
     lastUpdatedLabel: 'Last updated',
