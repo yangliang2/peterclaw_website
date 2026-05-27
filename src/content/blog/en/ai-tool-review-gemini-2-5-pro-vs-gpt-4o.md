@@ -211,7 +211,7 @@ Choose based on your existing cloud provider: GCP teams → Gemini; Azure teams 
 ## Further Reading
 
 - [Cursor vs Windsurf 2026 Deep Review: Which Is the Strongest AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Vol. 1
-- [Claude Code vs GitHub Copilot Chat Deep Review: Which CLI AI Assistant Wins?](/en/blog/ai-tool-review-claude-code-vs-copilot-chat/) — AI Tool Review Series Vol. 2
+
 - [AI Tool Review Vol.5: Antigravity 2.0 / Kiro / Cline Deep Review](/en/blog/ai-tool-review-antigravity-kiro-cline/) — Includes real-world Gemini 2.5 Pro performance in Agent IDEs
 - [Gemini Official Documentation](https://ai.google.dev/gemini-api/docs)
 - [OpenAI GPT-4o Documentation](https://platform.openai.com/docs/models/gpt-4o)

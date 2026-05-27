@@ -249,7 +249,7 @@ Zapier's 7,000+ app directory covers a vast long tail of SaaS. If your tools lac
 
 - [Cursor vs Windsurf 2026 Deep Review](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Column Issue 1
 - [Notion AI vs Obsidian Copilot vs Capacities 2026](/en/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/) — AI Tool Review Column Issue 3
-- [AI Diary Vol.4: Automation](/en/blog/ai-diary-004-automation/) — How we build AI workflows in PeterClaw Squad
+
 - [GitHub Deep Dive: n8n Workflow Engine Architecture](/en/blog/github-deep-dive-n8n-workflow-engine/) — Technical analysis of n8n's open-source codebase
 - [PeterClaw Toolbox](/en/tools/) — Our daily development and productivity tool stack
 - [n8n Official Docs](https://docs.n8n.io/)
