@@ -41,6 +41,8 @@ reviews:
     date: "2026-05-25"
 ---
 
+> 🌐 [English version available](/en/blog/github-deep-dive-mastra-agent-memory/)
+
 > 23,000 Stars，Apache 2.0 协议，来自 Gatsby.js 原班人马——Mastra 可能是 2026 年 TypeScript 生态中最被低估的 Agent 框架。
 >
 > 它的杀手级功能不是「能连多少 LLM」，而是一个叫 **Observational Memory** 的文本压缩系统：把 Agent 的运行记忆压缩 3-6 倍，工具输出压缩 5-40 倍，同时让长上下文任务的表现**超过**传统 RAG。
