@@ -32,7 +32,7 @@ const categoriesZh: ToolCategory[] = [
     items: [
       {
         name: 'Cursor',
-        url: 'https://cursor.com',
+        url: '/go/cursor/',
         description: '基于 VS Code 的 AI 原生编辑器，当前代码生成的行业标杆。',
         rating: '5/5',
         review: '日常编码的绝对主力。Composer 模式在多文件重构时大幅减少了上下文切换的时间，Tab 补全的准确度极高。',
@@ -40,7 +40,7 @@ const categoriesZh: ToolCategory[] = [
       },
       {
         name: 'Windsurf',
-        url: 'https://codeium.com/windsurf',
+        url: '/go/windsurf/',
         description: 'Codeium 推出的下一代智能 IDE，拥有独创的 Cascade 协作流。',
         rating: '4.5/5',
         review: '在理解长上下文和复杂项目架构时表现优异。作为 Cursor 的有力竞争者，非常适合探索性编程。',
@@ -48,7 +48,7 @@ const categoriesZh: ToolCategory[] = [
       },
       {
         name: 'Claude Code',
-        url: 'https://docs.anthropic.com/en/docs/agents-and-tools/claude-code',
+        url: '/go/claude/',
         description: 'Anthropic 官方出品的 CLI 驱动编码助手。',
         rating: '4/5',
         review: '在终端中直接进行深度代码分析与系统级重构的利器。相比于图形界面 IDE，它更贴近底层逻辑与自动化工作流。',
@@ -61,7 +61,7 @@ const categoriesZh: ToolCategory[] = [
     items: [
       {
         name: 'Notion AI',
-        url: 'https://notion.so/product/ai',
+        url: '/go/notion-ai/',
         description: '无缝集成于 Notion 工作区的 AI 助手。',
         rating: '4.5/5',
         review: '处理会议纪要、头脑风暴和初稿生成的效率神器。它的优势在于能直接读取和调用你现有的 Notion 数据库。',
@@ -82,14 +82,14 @@ const categoriesZh: ToolCategory[] = [
     items: [
       {
         name: 'Astro',
-        url: 'https://astro.build',
+        url: '/go/astro/',
         description: '专为内容驱动型网站优化的现代静态生成器。',
         rating: '5/5',
         review: 'PeterClaw 网站的基础框架。默认零 JS 以及对 Markdown/MDX 的原生支持，非常适合构建高性能博客。',
       },
       {
         name: 'Vercel',
-        url: 'https://vercel.com',
+        url: '/go/vercel/',
         description: '极速前端托管与 Serverless 平台。',
         rating: '5/5',
         review: '自动化 CI/CD 和每个 PR 的即时预览环境体验极佳，与 Astro 框架集成只需零配置。',
@@ -108,7 +108,7 @@ const categoriesZh: ToolCategory[] = [
     items: [
       {
         name: 'Plausible Analytics',
-        url: 'https://plausible.io',
+        url: '/go/plausible/',
         description: '轻量级、开源且注重隐私的网站分析工具。',
         rating: '5/5',
         review: 'Google Analytics 的完美替代品。不需要繁琐的 Cookie 弹窗，脚本体积极小，对网站性能几乎没有影响。',
@@ -127,7 +127,7 @@ const categoriesZh: ToolCategory[] = [
     items: [
       {
         name: 'Buttondown',
-        url: 'https://buttondown.email',
+        url: '/go/buttondown/',
         description: '极简的 Markdown 原生邮件订阅发布平台。',
         rating: '4.5/5',
         review: '对开发者极度友好。界面克制，API 强大，直接支持 Markdown 编写邮件，完美契合独立创作者的工作流。',
@@ -168,7 +168,7 @@ const categoriesEn: ToolCategory[] = [
     items: [
       {
         name: 'Cursor',
-        url: 'https://cursor.com',
+        url: '/go/cursor/',
         description: 'An AI-first code editor based on VS Code, the current industry benchmark.',
         rating: '5/5',
         review: 'The absolute daily driver for coding. Composer mode drastically cuts context switching during large refactors, and Tab completion is highly accurate.',
@@ -176,7 +176,7 @@ const categoriesEn: ToolCategory[] = [
       },
       {
         name: 'Windsurf',
-        url: 'https://codeium.com/windsurf',
+        url: '/go/windsurf/',
         description: 'The next-generation smart IDE from Codeium featuring the unique Cascade workflow.',
         rating: '4.5/5',
         review: 'Excels at understanding long contexts and complex architectures. A strong competitor to Cursor and great for exploratory programming.',
@@ -184,7 +184,7 @@ const categoriesEn: ToolCategory[] = [
       },
       {
         name: 'Claude Code',
-        url: 'https://docs.anthropic.com/en/docs/agents-and-tools/claude-code',
+        url: '/go/claude/',
         description: 'Anthropic’s official CLI-driven coding assistant.',
         rating: '4/5',
         review: 'A powerful tool for deep code analysis and system-level refactoring directly in the terminal, leaning heavily towards underlying logic and automation.',
@@ -197,7 +197,7 @@ const categoriesEn: ToolCategory[] = [
     items: [
       {
         name: 'Notion AI',
-        url: 'https://notion.so/product/ai',
+        url: '/go/notion-ai/',
         description: 'An AI assistant seamlessly integrated into the Notion workspace.',
         rating: '4.5/5',
         review: 'An efficiency booster for meeting summaries, brainstorming, and initial drafting. Its main advantage is reading directly from your Notion databases.',
@@ -218,14 +218,14 @@ const categoriesEn: ToolCategory[] = [
     items: [
       {
         name: 'Astro',
-        url: 'https://astro.build',
+        url: '/go/astro/',
         description: 'A modern static site generator optimized for content-driven websites.',
         rating: '5/5',
         review: 'The foundational framework for PeterClaw. Zero-JS by default and native Markdown/MDX support make it perfect for building high-performance blogs.',
       },
       {
         name: 'Vercel',
-        url: 'https://vercel.com',
+        url: '/go/vercel/',
         description: 'Blazing fast frontend hosting and Serverless platform.',
         rating: '5/5',
         review: 'The automated CI/CD and instant preview environments for every PR provide a top-tier experience. Integration with Astro is zero-config.',
@@ -244,7 +244,7 @@ const categoriesEn: ToolCategory[] = [
     items: [
       {
         name: 'Plausible Analytics',
-        url: 'https://plausible.io',
+        url: '/go/plausible/',
         description: 'A lightweight, open-source, privacy-focused website analytics tool.',
         rating: '5/5',
         review: 'The perfect alternative to Google Analytics. No annoying cookie banners, tiny script size, and almost zero impact on website performance.',
@@ -263,7 +263,7 @@ const categoriesEn: ToolCategory[] = [
     items: [
       {
         name: 'Buttondown',
-        url: 'https://buttondown.email',
+        url: '/go/buttondown/',
         description: 'A minimalist, Markdown-native email newsletter platform.',
         rating: '4.5/5',
         review: 'Extremely developer-friendly. A restrained UI, powerful API, and direct Markdown support fit an independent creator’s workflow perfectly.',
@@ -310,7 +310,7 @@ export const toolsCopy = {
     ratingLabel: 'PeterClaw 评分',
     reviewLinkLabel: '阅读详细评测',
     disclaimer:
-      '推荐指数基于个人主观体验（满分 5 ⭐️）。',
+      '推荐指数基于个人主观体验（满分 5 星）。部分工具链接可能包含联盟或推广追踪标识；若你通过这些链接注册或购买，我可能获得佣金，但不会增加你的费用。相关评价不构成购买承诺、收益保证或广告代言，请结合自身需求独立判断。',
     lastUpdatedLabel: '本页最后更新于',
   },
   en: {
@@ -324,7 +324,7 @@ export const toolsCopy = {
     ratingLabel: 'PeterClaw rating',
     reviewLinkLabel: 'Read full review',
     disclaimer:
-      'Ratings are based on personal subjective experience (out of 5 ⭐️).',
+      'Ratings are based on personal subjective experience (out of 5 stars). Some tool links may include affiliate or promotional tracking. If you sign up or buy through them, I may earn a commission at no extra cost to you. Reviews are not purchase commitments, earnings guarantees, or endorsements; evaluate each tool for your own needs.',
     lastUpdatedLabel: 'Last updated',
   },
 } satisfies Record<Locale, ToolsCopy>;

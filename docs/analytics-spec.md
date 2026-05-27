@@ -45,6 +45,10 @@ This document defines the user behavior events tracked on the PeterClaw website 
 - **Attributes**: `platform`, `url`
 
 ### 7. Affiliate Shortlink Redirect
+- **Event Name**: `affiliate_link_click`
+- **Trigger**: Click on any `/go/*` link from the toolbox page.
+- **Attributes**: `slug`, `label`, `source`
+
 - **Event Name**: `affiliate_click`
 - **Trigger**: A visit to any `/go/*` shortlink page.
 - **Attributes**: `slug`, `destination`
