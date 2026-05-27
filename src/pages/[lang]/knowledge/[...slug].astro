@@ -19,6 +19,7 @@ import {
   extractTocFromMarkdown,
   formatReadingTime,
 } from '@/utils/reading';
+import { resolveSearchCategory, searchCategoryBadgeLabel } from '@/lib/search';
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 
@@ -72,6 +73,9 @@ const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(article.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);
 const tocEntries = extractTocFromMarkdown(article.body ?? '');
+const searchCategory = resolveSearchCategory('knowledge', article.data.contentType);
+const searchCategoryLabel = searchCategoryBadgeLabel(lang, searchCategory);
+const pagefindContentType = article.data.contentType ?? 'tutorial';
 const structuredData = [
   buildArticleSchema({
     title: article.data.title,
@@ -107,6 +111,9 @@ const structuredData = [
   <div class="article-layout">
     <ArticleToc locale={lang} entries={tocEntries} />
     <article class="article-main" data-pagefind-body>
+      <span data-pagefind-meta="section:knowledge" hidden></span>
+      <span data-pagefind-meta={`contentType:${pagefindContentType}`} hidden></span>
+      <span data-pagefind-meta={`category_label:${searchCategoryLabel}`} hidden></span>
       <p class="meta">{article.data.area}</p>
       <h1>{article.data.title}</h1>
       <p class="reading-time">{readingTimeLabel}</p>

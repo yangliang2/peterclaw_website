@@ -1,6 +1,7 @@
 ---
 title: "AI Agent Workflow Design Patterns: Seven Reusable Principles from the PeterClaw Squad"
 description: "Seven workflow patterns distilled from 200+ issues and 50+ PRs in a real multi-agent AI team: CEO-agent distribution, parallel vs serial design, context passing, anti-loop design, and cost routing."
+contentType: tutorial
 publishedAt: 2026-05-26
 tags:
   - AI squad

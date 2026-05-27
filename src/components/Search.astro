@@ -2,6 +2,11 @@
 import PagefindSearch from 'astro-pagefind/components/Search.astro';
 import type { Locale } from '@/lib/i18n';
 import { ui } from '@/lib/i18n';
+import {
+  isSearchFilterType,
+  searchFilterLabels,
+  type SearchFilterType,
+} from '@/lib/search';
 
 interface Props {
   locale: Locale;
@@ -10,9 +15,34 @@ interface Props {
 const { locale } = Astro.props;
 const copy = ui[locale];
 const initialQuery = Astro.url.searchParams.get('q') ?? '';
+const rawType = Astro.url.searchParams.get('type');
+const initialType: SearchFilterType = isSearchFilterType(rawType) ? rawType : 'all';
+const filterLabels = searchFilterLabels(locale);
+const filterTypes: SearchFilterType[] = ['all', 'blog', 'knowledge', 'review'];
 ---
 
-<div class="search-root">
+<div
+  class="search-root"
+  data-locale={locale}
+  data-initial-type={initialType}
+  data-initial-query={initialQuery}
+>
+  <div class="search-filters" role="tablist" aria-label={copy.searchFiltersLabel}>
+    {
+      filterTypes.map((type) => (
+        <button
+          class:list={['search-filter', { 'is-active': type === initialType }]}
+          type="button"
+          role="tab"
+          data-filter-type={type}
+          aria-selected={type === initialType ? 'true' : 'false'}
+        >
+          {filterLabels[type]}
+        </button>
+      ))
+    }
+  </div>
+
   <PagefindSearch
     instance="site-search"
     className="pagefind-ui"
@@ -20,20 +50,153 @@ const initialQuery = Astro.url.searchParams.get('q') ?? '';
       placeholder: copy.searchPlaceholder,
       ...(initialQuery ? { 'initial-query': initialQuery } : {}),
     }}
-  />
+  >
+    <script type="text/pagefind-template" is:inline>
+      {`<a class="pf-searchbox-result" id="{{ aria.result_id }}" href="{{ meta.url | default(url) | safeUrl }}" role="option" aria-selected="false" aria-labelledby="{{ aria.title_id }}">
+  {{#if meta.category_label}}
+  <span class="pf-searchbox-result-badge">{{ meta.category_label }}</span>
+  {{/if}}
+  <p class="pf-searchbox-result-title" id="{{ aria.title_id }}">{{ meta.title | default("Untitled") }}</p>
+  {{#if excerpt}}
+  <p class="pf-searchbox-result-excerpt">{{+ excerpt +}}</p>
+  {{/if}}
+</a>`}
+    </script>
+  </PagefindSearch>
 </div>
 
 <script>
+  import { getInstanceManager } from '@pagefind/component-ui';
+  import {
+    isSearchFilterType,
+    parseSearchFilterType,
+    searchFiltersForType,
+    type SearchFilterType,
+  } from '@/lib/search';
+
+  const INSTANCE_NAME = 'site-search';
+
+  function readSearchRoot() {
+    return document.querySelector<HTMLElement>('.search-root');
+  }
+
+  function setActiveFilter(root: HTMLElement, type: SearchFilterType) {
+    root.querySelectorAll<HTMLButtonElement>('.search-filter').forEach((button) => {
+      const isActive = button.dataset.filterType === type;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+    root.dataset.initialType = type;
+  }
+
+  function syncUrl(query: string, type: SearchFilterType) {
+    const url = new URL(window.location.href);
+
+    if (query.trim()) {
+      url.searchParams.set('q', query.trim());
+    } else {
+      url.searchParams.delete('q');
+    }
+
+    if (type === 'all') {
+      url.searchParams.delete('type');
+    } else {
+      url.searchParams.set('type', type);
+    }
+
+    window.history.replaceState({}, '', url);
+  }
+
+  async function waitForSearchInstance() {
+    const manager = getInstanceManager();
+
+    for (let attempt = 0; attempt < 200; attempt += 1) {
+      const instance = manager.getInstance(INSTANCE_NAME);
+      if (instance) {
+        await instance.triggerLoad();
+        return instance;
+      }
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
+
+    return null;
+  }
+
+  function initSearchFilters() {
+    const root = readSearchRoot();
+    if (!root) return;
+
+    const initialType = isSearchFilterType(root.dataset.initialType ?? null)
+      ? (root.dataset.initialType as SearchFilterType)
+      : 'all';
+
+    let activeType = initialType;
+    let instanceReady = false;
+
+    const applyFilters = (type: SearchFilterType, term?: string) => {
+      const manager = getInstanceManager();
+      const instance = manager.getInstance(INSTANCE_NAME);
+      if (!instance) return;
+
+      const input = root.querySelector<HTMLInputElement>('.pf-searchbox-input');
+      const query = term ?? input?.value ?? '';
+      const filters = searchFiltersForType(type);
+
+      if (query.trim()) {
+        instance.triggerSearchWithFilters(query, filters);
+      } else {
+        instance.triggerFilters(filters);
+      }
+    };
+
+    root.querySelectorAll<HTMLButtonElement>('.search-filter').forEach((button) => {
+      button.addEventListener('click', () => {
+        const nextType = parseSearchFilterType(button.dataset.filterType);
+        if (!nextType || nextType === activeType) {
+          return;
+        }
+
+        activeType = nextType;
+        setActiveFilter(root, nextType);
+
+        const input = root.querySelector<HTMLInputElement>('.pf-searchbox-input');
+        syncUrl(input?.value ?? '', nextType);
+
+        if (instanceReady) {
+          applyFilters(nextType);
+        }
+      });
+    });
+
+    void waitForSearchInstance().then((instance) => {
+      if (!instance) return;
+
+      instanceReady = true;
+
+      instance.on(
+        'search',
+        (term) => {
+          const query = typeof term === 'string' ? term : '';
+          syncUrl(query, activeType);
+        },
+        root
+      );
+
+      if (initialType !== 'all') {
+        applyFilters(initialType, root.dataset.initialQuery ?? '');
+      }
+    });
+  }
+
   function initSearchTracking() {
-    const searchRoot = document.querySelector('.search-root');
+    const searchRoot = readSearchRoot();
     if (!searchRoot) return;
 
     let searchTimeout: ReturnType<typeof setTimeout>;
 
-    // Track search input with debouncing
     searchRoot.addEventListener('input', (event) => {
       const input = event.target as HTMLInputElement;
-      if (!input.classList.contains('pagefind-ui__search-input')) return;
+      if (!input.classList.contains('pf-searchbox-input')) return;
 
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
@@ -44,26 +207,31 @@ const initialQuery = Astro.url.searchParams.get('q') ?? '';
       }, 1000);
     });
 
-    // Track result clicks
     searchRoot.addEventListener('click', (event) => {
-      const resultLink = (event.target as HTMLElement).closest('.pagefind-ui__result-link') as HTMLAnchorElement;
+      const resultLink = (event.target as HTMLElement).closest(
+        '.pf-searchbox-result'
+      ) as HTMLAnchorElement;
       if (!resultLink) return;
 
-      const queryInput = searchRoot.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
-      const title = resultLink.innerText;
+      const queryInput = searchRoot.querySelector('.pf-searchbox-input') as HTMLInputElement;
+      const title =
+        resultLink.querySelector('.pf-searchbox-result-title')?.textContent?.trim() ?? '';
       const url = resultLink.getAttribute('href');
 
       window.trackEvent('search_result_click', {
         query: queryInput?.value || '',
         title,
-        url
+        url,
       });
     });
   }
 
-  // Initialize on load and on view transitions (if used)
+  initSearchFilters();
   initSearchTracking();
-  document.addEventListener('astro:after-swap', initSearchTracking);
+  document.addEventListener('astro:after-swap', () => {
+    initSearchFilters();
+    initSearchTracking();
+  });
 </script>
 
 <style>
@@ -80,11 +248,45 @@ const initialQuery = Astro.url.searchParams.get('q') ?? '';
     --pagefind-ui-font: var(--font-sans);
   }
 
-  .search-root :global(.pagefind-ui) {
+  .search-filters {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 0.15rem;
+  }
+
+  .search-filter {
+    flex: 0 0 auto;
+    min-height: 2.5rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-soft-bg);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .search-filter:hover,
+  .search-filter.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft-bg);
+    color: var(--color-text);
+  }
+
+  .search-root :global(.pagefind-ui),
+  .search-root :global(.pf-searchbox) {
     width: 100%;
   }
 
-  .search-root :global(.pagefind-ui__search-input) {
+  .search-root :global(.pf-searchbox-input) {
     background: var(--color-input-bg);
     color: var(--color-text);
     border-color: var(--color-line);
@@ -92,16 +294,31 @@ const initialQuery = Astro.url.searchParams.get('q') ?? '';
     padding: 0.85rem 1rem;
   }
 
-  .search-root :global(.pagefind-ui__result) {
+  .search-root :global(.pf-searchbox-result) {
+    display: grid;
+    gap: 0.35rem;
     border-color: var(--color-line);
     background: var(--gradient-glass);
   }
 
-  .search-root :global(.pagefind-ui__result-title) {
+  .search-root :global(.pf-searchbox-result-badge) {
+    width: fit-content;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--color-primary-soft-bg);
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .search-root :global(.pf-searchbox-result-title) {
     color: var(--color-heading);
   }
 
-  .search-root :global(.pagefind-ui__result-excerpt) {
+  .search-root :global(.pf-searchbox-result-excerpt) {
     color: var(--color-text-muted);
   }
 </style>

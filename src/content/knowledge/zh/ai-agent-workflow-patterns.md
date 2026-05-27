@@ -1,6 +1,7 @@
 ---
 title: AI Agent 工作流设计模式：从 PeterClaw Squad 实战中提炼的七条可复用原则
 description: 基于 PeterClaw Squad 真实运行经验，总结多 Agent 协作的可复用模式：CEO-agent 分发模型、并行 vs 串行子任务设计、上下文传递方式、防循环触发设计、成本路由原则。
+contentType: tutorial
 publishedAt: 2026-05-26
 tags:
   - AI 小队

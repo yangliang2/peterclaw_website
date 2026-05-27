@@ -1,6 +1,7 @@
 ---
 title: "Content Architecture: Blog and Knowledge Base"
 description: "PeterClaw's content system uses the blog for narratives and the knowledge base for reusable methods."
+contentType: tutorial
 publishedAt: 2026-05-23
 tags:
   - content architecture

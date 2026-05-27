@@ -29,6 +29,7 @@ import {
   extractTocFromMarkdown,
   formatReadingTime,
 } from '@/utils/reading';
+import { resolveSearchCategory, searchCategoryBadgeLabel } from '@/lib/search';
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 
@@ -83,6 +84,9 @@ const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);
 const tocEntries = extractTocFromMarkdown(post.body ?? '');
+const searchCategory = resolveSearchCategory('blog', post.data.contentType);
+const searchCategoryLabel = searchCategoryBadgeLabel(lang, searchCategory);
+const pagefindContentType = post.data.contentType ?? 'journal';
 const structuredData: JsonLdSchema[] = [
   buildArticleSchema({
     title: post.data.title,
@@ -136,6 +140,9 @@ if (
   <div class="article-layout">
     <ArticleToc locale={lang} entries={tocEntries} />
     <article class="article-main" data-pagefind-body>
+      <span data-pagefind-meta="section:blog" hidden></span>
+      <span data-pagefind-meta={`contentType:${pagefindContentType}`} hidden></span>
+      <span data-pagefind-meta={`category_label:${searchCategoryLabel}`} hidden></span>
       <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
       <h1>{post.data.title}</h1>
       <p class="reading-time">{readingTimeLabel}</p>

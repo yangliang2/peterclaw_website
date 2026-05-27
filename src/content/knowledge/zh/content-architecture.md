@@ -1,6 +1,7 @@
 ---
 title: 内容架构：博客与知识库双轨
 description: PeterClaw 网站的内容系统以博客承载叙事，以知识库沉淀可复用方法。
+contentType: tutorial
 publishedAt: 2026-05-23
 tags:
   - 内容架构
