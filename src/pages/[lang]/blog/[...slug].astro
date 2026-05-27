@@ -172,8 +172,39 @@ if (
   <ArticleChat locale={lang} articleContent={post.body ?? ''} />
   <ReaderFeedback locale={lang} source={canonicalPath} compact />
   <EmailSignup locale={lang} />
+  <EmailSignup locale={lang} variant="floating" />
   <Giscus locale={lang} />
 </BaseLayout>
+
+<script>
+  const floatingSignup = document.getElementById('floating-signup');
+  const DISMISS_KEY = 'newsletter_floating_dismissed';
+
+  if (floatingSignup && !localStorage.getItem(DISMISS_KEY)) {
+    let hasShown = false;
+
+    const handleScroll = () => {
+      if (hasShown) return;
+
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+
+      if (scrollPercent > 50) {
+        floatingSignup.classList.add('is-visible');
+        hasShown = true;
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+
+    const closeButton = floatingSignup.querySelector('[data-close-signup]');
+    closeButton?.addEventListener('click', () => {
+      localStorage.setItem(DISMISS_KEY, '1');
+    });
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+</script>
 
 <style>
   .article-layout {
