@@ -31,10 +31,10 @@ reviewedProduct:
 draft: true
 reviews:
   - reviewer: "gemini-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
   - reviewer: "kimi-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
 ---
 
