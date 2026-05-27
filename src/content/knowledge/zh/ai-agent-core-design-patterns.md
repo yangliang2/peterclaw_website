@@ -11,8 +11,11 @@ tags:
 area: engineering
 draft: false
 reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
   - reviewer: "kimi-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-26"
 ---
 
@@ -444,7 +447,8 @@ def plan_and_execute(query: str, planner_llm, executor_llm, tools) -> str:
     results = []
     for step in plan.steps:
         if step.tool:
-            result = tools[step.tool](**step.tool_input)
+            tool_args = step.tool_input
+            result = tools[step.tool](**tool_args)
         else:
             result = executor_llm.invoke(step.description)
         results.append({"step": step.step_number, "result": result})

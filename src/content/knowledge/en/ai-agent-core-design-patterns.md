@@ -11,8 +11,11 @@ tags:
 area: engineering
 draft: false
 reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-26"
   - reviewer: "kimi-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-26"
 ---
 
@@ -442,7 +445,8 @@ def plan_and_execute(query: str, planner_llm, executor_llm, tools) -> str:
     results = []
     for step in plan.steps:
         if step.tool:
-            result = tools[step.tool](**step.tool_input)
+            tool_args = step.tool_input
+            result = tools[step.tool](**tool_args)
         else:
             result = executor_llm.invoke(step.description)
         results.append({"step": step.step_number, "result": result})
@@ -727,4 +731,3 @@ Agent internal flow:
 - [AI Agent Workflow Design Patterns](/en/knowledge/ai-agent-workflow-patterns/) — Multi-agent collaboration patterns
 - [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — PeterClaw's content system design
 - [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Natural-language-driven full-stack development
-- [When Seven AIs Form a Company](/en/blog/ai-diary-005-multi-agent-collaboration/) — Complete collaboration log of a seven-agent team
