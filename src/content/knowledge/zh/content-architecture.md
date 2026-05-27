@@ -1,6 +1,6 @@
 ---
-title: 内容架构：博客与知识库双轨
-description: PeterClaw 网站的内容系统以博客承载叙事，以知识库沉淀可复用方法。
+title: "Astro SEO 优化实战：博客与知识库双轨内容架构设计"
+description: "如何利用 Astro 构建极致 SEO 友好的内容站点？深度解析 PeterClaw 的「博客+知识库」双轨架构：涵盖 i18n 路径策略、结构化数据沉淀与 100 分 Lighthouse 性能优化方案。"
 publishedAt: 2026-05-23
 tags:
   - 内容架构

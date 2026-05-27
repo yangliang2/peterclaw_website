@@ -1,6 +1,6 @@
 ---
-title: "Midjourney v7 vs Flux vs Ideogram 深度评测：2026 年 AI 图像生成三强横评，设计师该把钱花在哪？"
-description: "基于 2026 年最新公开 benchmark、官方文档与大量社区实测案例，从出图质量、prompt 遵从度、中文支持、价格配额和商用授权五个维度，深度横评 Midjourney v7、Flux 2 系列与 Ideogram 3.0，给出插图/社媒/产品设计/印刷四大场景的明确选型建议。"
+title: "Midjourney v7 vs Flux vs Ideogram：2026 年谁才是 AI 绘画天花板？(内附同 Prompt 对比)"
+description: "2026 年 AI 绘画选谁？深度横评 Midjourney 的艺术感、Flux 的真实感与 Ideogram 的排版能力。实测四大商业场景，带你避坑选出最强生产力工具。"
 contentType: review
 publishedAt: 2026-05-26
 ogImage: /og-default.png

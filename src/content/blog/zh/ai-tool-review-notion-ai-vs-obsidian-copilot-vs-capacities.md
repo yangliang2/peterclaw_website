@@ -1,6 +1,6 @@
 ---
-title: "Notion AI vs Obsidian Copilot vs Capacities 深度评测：AI 笔记工具三强争霸，知识工作者该选谁？"
-description: "历时两周真实知识管理场景测试，从 AI 写作辅助、知识图谱、Markdown 支持、跨设备同步和价格五个维度，深度对比三款主流 AI 笔记工具，为中文知识工作者提供明确选型建议。"
+title: "别再瞎记了！Notion AI vs Obsidian vs Capacities：2026 最全 AI 笔记工具选型指南"
+description: "实测三款主流 AI 笔记工具：Notion AI 的全能、Obsidian 的自由、Capacities 的结构化，究竟哪一种更适合你的大脑？2026 年知识工作者必看的第二大脑升级指南。"
 contentType: review
 publishedAt: 2026-05-26
 ogImage: /og-default.png

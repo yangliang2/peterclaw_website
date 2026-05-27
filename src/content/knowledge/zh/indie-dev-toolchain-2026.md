@@ -1,6 +1,6 @@
 ---
-title: "独立开发者工具链 2026：从想法到上线的全栈选型指南"
-description: "为独立开发者梳理 2026 年从原型设计、开发、部署到运营变现的完整工具链，每个工具附带免费额度、适用场景和替代方案，可直接执行。"
+title: "独立开发者工具链 2026：从 0 到 1 快速上线的全栈保姆级选型指南"
+description: "2026 年独立开发如何一个人打通全链路？从原型(v0/Figma)、开发(Cursor)、部署(Vercel)到收款(Stripe/LemonSqueezy)，为你精选最省时省钱的 10+ 款神器。"
 contentType: tutorial
 publishedAt: 2026-05-26
 ogImage: /og-default.png
