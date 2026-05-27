@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#faf9f7"/>
+  <rect x="20" y="20" width="760" height="460" rx="10" fill="#ffffff" stroke="#e8e6e1" stroke-width="2"/>
+  <rect x="20" y="20" width="200" height="460" rx="10" fill="#f5f4f0"/>
+  <text x="40" y="55" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#1a1a1a">Capacities</text>
+  <text x="40" y="85" font-family="system-ui, sans-serif" font-size="12" fill="#6b6b6b">Today</text>
+  <text x="40" y="110" font-family="system-ui, sans-serif" font-size="12" fill="#6b6b6b">Projects</text>
+  <text x="40" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">AI Tool Review #3</text>
+  <text x="40" y="160" font-family="system-ui, sans-serif" font-size="12" fill="#6b6b6b">People</text>
+  <text x="40" y="185" font-family="system-ui, sans-serif" font-size="12" fill="#6b6b6b">Ideas</text>
+  <text x="40" y="210" font-family="system-ui, sans-serif" font-size="12" fill="#6b6b6b">Books</text>
+  <rect x="240" y="40" width="520" height="420" rx="8" fill="#ffffff"/>
+  <rect x="240" y="40" width="520" height="50" rx="8" fill="#f5f4f0"/>
+  <text x="260" y="72" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#1a1a1a">Project: AI Tool Review #3</text>
+  <rect x="260" y="110" width="480" height="80" rx="6" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="275" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#9a3412">🤖 AI Summary</text>
+  <text x="275" y="160" font-family="system-ui, sans-serif" font-size="12" fill="#7c2d12">This project references 3 tools (Notion AI, Obsidian, Capacities) and 12 source articles.</text>
+  <text x="275" y="178" font-family="system-ui, sans-serif" font-size="12" fill="#7c2d12">Key分歧点: 本地优先 vs 云端协作 vs 对象化管理.</text>
+  <text x="260" y="220" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#1a1a1a">Linked Objects</text>
+  <rect x="260" y="240" width="150" height="60" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="275" y="265" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#166534">Daily Note</text>
+  <text x="275" y="285" font-family="system-ui, sans-serif" font-size="11" fill="#166534">2026-05-20 Testing</text>
+  <rect x="425" y="240" width="150" height="60" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="440" y="265" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1e40af">Source Article</text>
+  <text x="440" y="285" font-family="system-ui, sans-serif" font-size="11" fill="#1e40af">Notion AI changelog</text>
+  <rect x="590" y="240" width="150" height="60" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="605" y="265" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#6b21a8">Idea</text>
+  <text x="605" y="285" font-family="system-ui, sans-serif" font-size="11" fill="#6b21a8">对象化知识管理</text>
+  <text x="260" y="340" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#1a1a1a">Today View</text>
+  <rect x="260" y="360" width="480" height="80" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="275" y="385" font-family="system-ui, sans-serif" font-size="12" fill="#334155">📝 Yesterday: 完成 Notion AI 写作测试</text>
+  <text x="275" y="405" font-family="system-ui, sans-serif" font-size="12" fill="#334155">📊 Today: 整理对比表格 + 跨设备同步测试</text>
+  <text x="275" y="425" font-family="system-ui, sans-serif" font-size="12" fill="#334155">⏰ Due:  Capacities Pro 评测截止 (5/25)</text>
+  <text x="260" y="470" font-family="system-ui, sans-serif" font-size="11" fill="#9ca3af">截图时间：2026-05-21 | Capacities Pro €12/月 | macOS 15.4</text>
+</svg>
