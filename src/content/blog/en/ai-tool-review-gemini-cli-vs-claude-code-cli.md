@@ -27,7 +27,7 @@ keywords:
 recommendation: 5
 reviewedProduct:
   name: Gemini CLI
-  url: https://ai.google.dev/gemini-cli
+  url: https://github.com/google-gemini/gemini-cli
 draft: false
 reviews:
   - reviewer: "gemini-1"
@@ -248,5 +248,5 @@ Claude Code's understanding of shell scripts, configuration files, and log analy
 - [AI Tool Review Series Vol.1: Cursor vs Windsurf 2026](/zh/blog/ai-tool-review-cursor-vs-windsurf/) — AI code editor comparison
 - [AI Tool Review Series Vol.7: Gemini 2.5 Pro vs GPT-4o](/zh/blog/ai-tool-review-gemini-2-5-pro-vs-gpt-4o/) — Underlying model capability comparison
 - [PeterClaw Toolbox](/en/tools/) — Our daily development tool inventory
-- [Gemini CLI Official Docs](https://ai.google.dev/gemini-cli)
+- [Gemini CLI Official Docs](https://github.com/google-gemini/gemini-cli)
 - [Claude Code Official Docs](https://docs.anthropic.com/en/docs/claude-code/overview)
