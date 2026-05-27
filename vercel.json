@@ -5,6 +5,9 @@
   "framework": "astro",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "crons": [
+    { "path": "/api/newsletter/weekly-draft", "schedule": "0 9 * * 1" }
+  ],
   "headers": [
     {
       "source": "/_astro/:path*",
