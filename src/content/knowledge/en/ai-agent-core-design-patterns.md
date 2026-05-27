@@ -8,7 +8,7 @@ tags:
   - Function Calling
   - Design Patterns
   - Tool Use
-area: engineering
+area: architecture
 draft: false
 reviews:
   - reviewer: "gemini-1"

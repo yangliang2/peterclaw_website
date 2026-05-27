@@ -8,7 +8,7 @@ tags:
   - Function Calling
   - 设计模式
   - 工具调用
-area: engineering
+area: architecture
 draft: false
 reviews:
   - reviewer: "gemini-1"
