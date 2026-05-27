@@ -325,7 +325,6 @@ If you are about to build your own AI squad, do not hire seven agents at once. O
 - [Why Do AI Teams Get Blocked? A Serial Dispatch Post-Mortem](/en/blog/ai-squad-diary-02-serialization/) — Real-world lessons on parallel vs serial dispatch
 - [From Reactive to Proactive: How Scheduled Tasks Stopped Our AI Squad from Waiting for Work](/zh/blog/ai-squad-diary-03-workflow/) — Evolution of the CEO model and batch backlog planning
 - [When Seven AIs Form a Company: Real-World Multi-Agent Collaboration](/zh/blog/ai-diary-005-multi-agent-collaboration/) — Full collaboration chronicle of the seven-agent team
-- [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Technical practices for natural-language-driven full-stack development
 - [When Autopilot Counted Itself as an Active Task](/zh/blog/ai-diary-004-automation/) — Design flaws and fixes in automated patrol workflows
 - [Boundaries and Trust in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — Authorization gradients and safety-valve design for human intervention
 - [AI Agent Core Design Patterns](/en/knowledge/ai-agent-core-design-patterns/) — RAG, tool use, reasoning chains, and memory management patterns for single-agent internals

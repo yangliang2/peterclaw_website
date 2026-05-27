@@ -21,6 +21,7 @@ interface Props {
   structuredData?: JsonLdSchema | JsonLdSchema[];
   alternateLocales?: { locale: Locale; path: string }[];
   noindex?: boolean;
+  languageSwitchPath?: string;
 }
 
 const {
@@ -36,6 +37,7 @@ const {
   structuredData,
   alternateLocales,
   noindex,
+  languageSwitchPath,
 } = Astro.props;
 const copy = ui[locale];
 const pageTitle = title ? `${title} | ${copy.siteTitle}` : copy.siteTitle;
@@ -71,7 +73,7 @@ const pageDescription = description ?? copy.tagline;
   </head>
   <body>
     <a class="skip-link" href="#main-content">{copy.skipToContent}</a>
-    <Navbar locale={locale} />
+    <Navbar locale={locale} languageSwitchPath={languageSwitchPath} />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>

@@ -234,8 +234,7 @@ Cline is fully open-source and auditable line-by-line; paired with Ollama runnin
 
 ## Further Reading
 
-- [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1
-- [AI Tool Review Series Vol.5: Antigravity 2.0 / Kiro / Cline Deep Review](/en/blog/ai-tool-review-antigravity-kiro-cline/) — The full three-way comparison
-- [AI Squad Launch Diary Vol.8: Vibe Coding and Multi-Agent Collaboration in Practice](/en/blog/ai-diary-005-vibe-coding/) — How we use AI-assisted coding in the PeterClaw project
+- [Notion AI vs Obsidian Copilot vs Capacities](/en/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/) — AI Tool Review Series
+- [Midjourney v7 vs Flux vs Ideogram](/en/blog/ai-tool-review-midjourney-flux-ideogram/) — AI Tool Review Series
 - [Kiro Official Documentation](https://kiro.dev)
 - [Cline GitHub Repository](https://github.com/cline/cline)

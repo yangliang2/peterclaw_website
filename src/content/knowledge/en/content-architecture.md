@@ -30,4 +30,3 @@ Every piece of content must declare `publishedAt`, `description`, and `tags`; th
 
 - [AI Agent Core Design Patterns](/en/knowledge/ai-agent-core-design-patterns/) — Example of an engineering knowledge base article
 - [AI Squad Launch Diary: From Personal Site to Public Collaboration](/en/blog/ai-squad-launch-diary/) — How the content architecture evolves through public collaboration
-- [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Technical practices for natural-language-driven content production

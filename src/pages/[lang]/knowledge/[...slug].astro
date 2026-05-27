@@ -5,6 +5,7 @@ import SocialShare from '@/components/SocialShare.astro';
 import RelatedPosts from '@/components/RelatedPosts.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ArticleFooter from '@/components/ArticleFooter.astro';
+import EmailSignup from '@/components/EmailSignup.astro';
 import {
   buildContentAlternateLocales,
   collectionPath,
@@ -90,6 +91,8 @@ const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(article.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);
 const tocEntries = extractTocFromMarkdown(article.body ?? '');
+const languageSwitchPath =
+  alternateLocales.find(({ locale }) => locale !== lang)?.path ?? `/${lang === 'zh' ? 'en' : 'zh'}/knowledge/`;
 const structuredData = [
   buildArticleSchema({
     title: article.data.title,
@@ -120,6 +123,7 @@ const structuredData = [
   modifiedTime={modifiedTime}
   structuredData={structuredData}
   alternateLocales={alternateLocales}
+  languageSwitchPath={languageSwitchPath}
 >
   <ReadingProgress />
   <div class="article-layout">
@@ -137,6 +141,7 @@ const structuredData = [
     </article>
   </div>
   <ArticleChat locale={lang} articleContent={article.body ?? ''} />
+  <EmailSignup locale={lang} />
 </BaseLayout>
 
 <style>

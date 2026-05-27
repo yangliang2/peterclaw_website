@@ -341,7 +341,6 @@ A：不是具体的工具，而是**一个版本控制仓库**。哪怕你还在
 - [为什么 AI 团队也会"阻塞"？一次并行开发中的串行派工实录](/zh/blog/ai-squad-diary-02-serialization/) —— 并行 vs 串行的实战教训
 - [从被动响应到主动规划：定时任务如何让 AI 小队不再「等活干」](/zh/blog/ai-squad-diary-03-workflow/) —— CEO 模型与批量 backlog 的演化
 - [当七个 AI 组成一家公司——多智能体协作的真实体验](/zh/blog/ai-diary-005-multi-agent-collaboration/) —— 七人小队完整协作实录
-- [AI 日记 Vol.5：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) —— 自然语言驱动全栈开发的技术实践
 - [当 Autopilot 把自己算进活跃任务](/zh/blog/ai-diary-004-automation/) —— 自动化巡检的设计缺陷与修复
 - [人机协作中的边界与授权](/zh/blog/ai-diary-007-boundaries-trust/) —— 授权梯度与人工干预的安全阀设计
 - [Cursor vs Windsurf 2026 深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/) —— AI 工具评测专栏 Vol.1
