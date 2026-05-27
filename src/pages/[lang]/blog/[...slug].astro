@@ -34,13 +34,23 @@ import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 import PagefindMeta from '@/components/PagefindMeta.astro';
 import { siteConfig } from '@/config/site';
+import { blogOgImagePath } from '@/utils/og';
+import { formatPageviews, getPlausiblePageviews } from '@/lib/plausible';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   const postIds = posts.map((entry) => entry.id);
+  const postPaths = new Map(
+    posts.map((post) => {
+      const lang = localeFromId(post.id);
+      return [post.id, collectionPath(lang, 'blog', post.id)];
+    })
+  );
+  const pageviewsByPath = await getPlausiblePageviews(Array.from(postPaths.values()));
 
   return posts.map((post) => {
     const lang = localeFromId(post.id);
+    const canonicalPath = postPaths.get(post.id) ?? collectionPath(lang, 'blog', post.id);
     const relatedPosts = posts
       .filter((candidate) => candidate.id !== post.id && localeFromId(candidate.id) === lang)
       .map((candidate) => ({
@@ -64,13 +74,14 @@ export async function getStaticPaths() {
       props: {
         post,
         relatedPosts,
-        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds)
+        alternateLocales: buildContentAlternateLocales('blog', post.id, postIds),
+        pageviews: pageviewsByPath.get(canonicalPath) ?? null,
       }
     };
   });
 }
 
-const { post, relatedPosts, alternateLocales } = Astro.props;
+const { post, relatedPosts, alternateLocales, pageviews } = Astro.props;
 const { lang } = Astro.params;
 if (!isLocale(lang)) {
   return Astro.redirect('/zh/blog/');
@@ -98,6 +109,12 @@ const faq = post.data.faq ?? [];
 const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);
+const pageviewsLabel =
+  typeof pageviews === 'number'
+    ? lang === 'zh'
+      ? `${formatPageviews(pageviews, 'zh-CN')} 次阅读`
+      : `${formatPageviews(pageviews, 'en-US')} views`
+    : null;
 const tocEntries = extractTocFromMarkdown(post.body ?? '');
 const languageSwitchPath =
   alternateLocales.find(({ locale }) => locale !== lang)?.path ?? `/${lang === 'zh' ? 'en' : 'zh'}/blog/`;
@@ -163,7 +180,10 @@ if (
       />
       <p class="meta">{post.data.publishedAt.toISOString().slice(0, 10)}</p>
       <h1>{post.data.title}</h1>
-      <p class="reading-time">{readingTimeLabel}</p>
+      <p class="article-stats">
+        <span>{readingTimeLabel}</span>
+        {pageviewsLabel && <span>{pageviewsLabel}</span>}
+      </p>
       <p class="lede">{post.data.description}</p>
       <Content />
     {
@@ -250,11 +270,25 @@ if (
     }
   }
 
-  .reading-time {
+  .article-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
     margin: -0.75rem 0 1.25rem;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.9rem;
+  }
+
+  .article-stats span + span::before {
+    content: '';
+    display: inline-block;
+    width: 0.35rem;
+    height: 0.35rem;
+    margin: 0 0.65rem 0.12rem 0;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.55;
   }
 
   .faq dl {

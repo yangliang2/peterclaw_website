@@ -21,3 +21,14 @@ interface DocumentEventMap {
     resolved: 'light' | 'dark';
   }>;
 }
+
+interface ImportMetaEnv {
+  readonly PLAUSIBLE_DOMAIN?: string;
+  readonly PLAUSIBLE_SCRIPT_URL?: string;
+  readonly PLAUSIBLE_SITE_ID?: string;
+  readonly PLAUSIBLE_STATS_API_KEY?: string;
+  readonly PLAUSIBLE_STATS_API_URL?: string;
+  readonly PLAUSIBLE_STATS_DATE_RANGE?: string;
+  readonly UMAMI_WEBSITE_ID?: string;
+  readonly UMAMI_SCRIPT_URL?: string;
+}
