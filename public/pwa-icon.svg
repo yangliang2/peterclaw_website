@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>PeterClaw</title>
+  <rect width="512" height="512" rx="112" fill="#0f172a"/>
+  <path d="M96 112h320v288H96z" fill="#f8fafc" opacity=".08"/>
+  <path d="M128 152h256v48H128zM128 232h176v48H128zM128 312h224v48H128z" fill="#38bdf8"/>
+  <path d="M336 216l48 48-48 48-48-48z" fill="#a78bfa"/>
+  <path d="M136 384l96-248h48l96 248h-56l-18-52H210l-18 52h-56zm92-104h56l-28-82-28 82z" fill="#ffffff"/>
+</svg>
