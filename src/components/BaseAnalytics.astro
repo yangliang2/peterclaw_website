@@ -27,9 +27,11 @@ const isProd = import.meta.env.PROD;
 <script>
   declare global {
     interface Window {
-      umami: any;
-      plausible: any;
-      trackEvent: (name: string, props?: Record<string, any>) => void;
+      umami?: {
+        track: (name: string, props?: Record<string, unknown>) => void;
+      };
+      plausible?: (name: string, options?: { props?: Record<string, unknown> }) => void;
+      trackEvent: (name: string, props?: Record<string, unknown>) => void;
     }
   }
 

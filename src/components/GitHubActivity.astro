@@ -1,6 +1,7 @@
 ---
 import { getFeaturedRepositories, githubProfile } from '@/lib/github';
 import type { Locale } from '@/lib/i18n';
+import { Image } from 'astro:assets';
 
 interface Props {
   locale: Locale;
@@ -47,10 +48,10 @@ const copy = {
   <figure class="chart-card glass-card">
     <figcaption>{copy.chartCaption}</figcaption>
     <div class="chart-scroll">
-      <img
+      <Image
         src={githubProfile.contributionChartUrl}
-        width="663"
-        height="104"
+        width={663}
+        height={104}
         loading="lazy"
         decoding="async"
         alt={copy.chartAlt}

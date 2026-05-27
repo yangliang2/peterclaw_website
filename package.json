@@ -10,9 +10,11 @@
     "health:content": "node scripts/content-health-report.mjs",
     "build": "astro check && astro build && npm run quality:hreflang",
     "preview": "astro preview",
+    "preview:e2e": "vite preview --outDir dist/client",
     "astro": "astro",
     "validate-schema": "tsx scripts/validate-schema.ts",
-    "test:performance": "lhci autorun"
+    "test:performance": "lhci autorun",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",
+    "@playwright/test": "^1.60.0",
     "@types/jsdom": "^28.0.3",
     "jsdom": "^29.1.1",
     "tsx": "^4.22.3"

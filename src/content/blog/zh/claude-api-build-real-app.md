@@ -8,7 +8,7 @@ tags:
   - AI 开发
   - 教程
   - Python
-draft: false
+draft: true
 ogImage: /og-default.png
 difficultyLevel: intermediate
 prerequisites:
