@@ -27,6 +27,8 @@ reviews:
     date: "2026-05-25"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI 工具评测专栏 · 第 5 篇**
 >
 > 当 AI 编程工具从「辅助补全」进化到「多 Agent 自主协作」，选工具的逻辑已经变了——不再是选一个更快的输入法，而是选一个更靠谱的「虚拟技术合伙人」。
@@ -65,6 +67,51 @@ reviews:
 4. **代码生成与编辑质量**——日常编码时的精准度、跨文件修改的可靠性
 5. **生态与集成**——与云服务商、CI/CD、第三方工具的整合深度
 6. **价格与可访问性**——订阅费用、国内网络环境、免费额度
+
+<ReviewScoreCard
+  title="Antigravity 2.0 评分卡"
+  subtitle="从对比总表中抽取 8 个关键维度（满分 5）。"
+  dimensions={[
+    { label: '多 Agent 并行', score: 5, maxScore: 5, weight: 0.125 },
+    { label: 'Spec 驱动', score: 3, maxScore: 5, weight: 0.125 },
+    { label: '模型自由度', score: 3, maxScore: 5, weight: 0.125 },
+    { label: '代码生成质量', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '响应速度', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.125 },
+    { label: '国内可访问性', score: 3, maxScore: 5, weight: 0.125 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Kiro 评分卡"
+  subtitle="同维度、同权重，用于快速横向对比。"
+  dimensions={[
+    { label: '多 Agent 并行', score: 3, maxScore: 5, weight: 0.125 },
+    { label: 'Spec 驱动', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '模型自由度', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '生态与集成', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '响应速度', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.125 },
+    { label: '国内可访问性', score: 4, maxScore: 5, weight: 0.125 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Cline 评分卡"
+  subtitle="同维度、同权重，用于快速横向对比。"
+  dimensions={[
+    { label: '多 Agent 并行', score: 4, maxScore: 5, weight: 0.125 },
+    { label: 'Spec 驱动', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '模型自由度', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '响应速度', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '价格友好度', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '国内可访问性', score: 5, maxScore: 5, weight: 0.125 },
+  ]}
+/>
 
 ---
 
