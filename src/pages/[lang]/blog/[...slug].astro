@@ -32,6 +32,7 @@ import {
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 import PagefindMeta from '@/components/PagefindMeta.astro';
+import { blogOgImagePath } from '@/utils/og';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -78,7 +79,7 @@ const { Content } = await render(post);
 const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
-const ogImage = post.data.ogImage;
+const ogImage = blogOgImagePath(post.id);
 const faq = post.data.faq ?? [];
 const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(post.body ?? '');

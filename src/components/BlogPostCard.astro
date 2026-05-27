@@ -23,6 +23,7 @@ const contentTypeCovers: Partial<Record<string, string>> = {
 const coverAsset =
   resolveCoverAsset(post.data.cover) ??
   resolveCoverAsset(post.data.contentType ? contentTypeCovers[post.data.contentType] : undefined);
+const coverFormat = coverAsset?.src.endsWith('.svg') ? 'svg' : 'webp';
 
 const placeholderGradient = tagCoverGradient(post.data.tags, post.id);
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
@@ -43,7 +44,7 @@ const coverAlt = locale === 'zh' ? `${post.data.title} 封面图` : `${post.data
           alt={coverAlt}
           width={640}
           height={360}
-          format="webp"
+          format={coverFormat}
           loading="lazy"
           decoding="async"
         />

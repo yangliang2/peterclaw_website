@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { Resvg } from '@resvg/resvg-js';
 import satori from 'satori';
 import { siteConfig } from '@/config/site';
@@ -16,13 +17,13 @@ type BlogOgImageInput = {
   locale: Locale;
 };
 
-const regularFontPath = new URL(
-  '../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff',
-  import.meta.url
+const regularFontPath = resolve(
+  process.cwd(),
+  'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff'
 );
-const boldFontPath = new URL(
-  '../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff',
-  import.meta.url
+const boldFontPath = resolve(
+  process.cwd(),
+  'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff'
 );
 
 let fontDataPromise: Promise<{ regular: ArrayBuffer; bold: ArrayBuffer }> | undefined;
@@ -129,7 +130,6 @@ function createElement(input: BlogOgImageInput) {
               alignItems: 'center',
               justifyContent: 'space-between',
               position: 'relative',
-              zIndex: 1,
             },
             children: [
               {
@@ -187,7 +187,6 @@ function createElement(input: BlogOgImageInput) {
               gap: '28px',
               textAlign: 'center',
               position: 'relative',
-              zIndex: 1,
               flex: 1,
             },
             children: [
@@ -201,7 +200,6 @@ function createElement(input: BlogOgImageInput) {
                     fontSize: `${titleFontSize(input.title)}px`,
                     lineHeight: 1.12,
                     fontWeight: 700,
-                    textWrap: 'balance',
                   },
                   children: input.title,
                 },
@@ -241,7 +239,6 @@ function createElement(input: BlogOgImageInput) {
               alignItems: 'center',
               justifyContent: 'space-between',
               position: 'relative',
-              zIndex: 1,
               color: '#ffedd5',
               fontSize: '24px',
             },
