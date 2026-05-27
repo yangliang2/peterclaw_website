@@ -1,0 +1,350 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale];
+---
+
+<section class="blog-chat glass-card" aria-label={copy.blogChatTitle} data-pagefind-ignore>
+  <div class="blog-chat-header">
+    <h2 class="blog-chat-title">{copy.blogChatTitle}</h2>
+    <p class="blog-chat-desc">{copy.blogChatDescription}</p>
+  </div>
+  <div class="blog-chat-body">
+    <div class="chat-presets" data-bc-presets>
+      <button type="button" class="chat-preset-btn">{copy.blogChatSuggest1}</button>
+      <button type="button" class="chat-preset-btn">{copy.blogChatSuggest2}</button>
+      <button type="button" class="chat-preset-btn">{copy.blogChatSuggest3}</button>
+    </div>
+    <div class="chat-result" data-bc-result hidden aria-live="polite"></div>
+    <div class="chat-sources" data-bc-sources hidden></div>
+    <p class="chat-status" data-bc-status role="status" aria-live="polite" hidden></p>
+    <form class="blog-chat-form" data-bc-form novalidate>
+      <label class="blog-chat-field">
+        <textarea
+          name="question"
+          rows="2"
+          placeholder={copy.blogChatPlaceholder}
+          required
+          maxlength="500"
+        ></textarea>
+      </label>
+      <div class="blog-chat-actions">
+        <button class="btn btn-primary" type="submit" data-bc-submit>{copy.blogChatSubmit}</button>
+        <button class="btn" type="button" data-bc-clear hidden>{copy.blogChatClear}</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script is:inline define:vars={{ locale, msgs: {
+  submit: copy.blogChatSubmit,
+  submitting: copy.blogChatSubmitting,
+  invalid: copy.blogChatErrorInvalid,
+  rateLimit: copy.blogChatErrorRateLimit,
+  generic: copy.blogChatErrorGeneric,
+  notReady: copy.blogChatErrorNotReady,
+  sources: copy.blogChatSources,
+} }}>
+  document.querySelectorAll('[data-bc-form]').forEach((element) => {
+    if (!(element instanceof HTMLFormElement) || element.dataset.ready === 'true') return;
+    element.dataset.ready = 'true';
+
+    const form = element;
+    const chatBody = form.closest('.blog-chat-body');
+    const submitBtn = form.querySelector('[data-bc-submit]');
+    const clearBtn = form.querySelector('[data-bc-clear]');
+    const resultEl = chatBody && chatBody.querySelector('[data-bc-result]');
+    const sourcesEl = chatBody && chatBody.querySelector('[data-bc-sources]');
+    const statusEl = chatBody && chatBody.querySelector('[data-bc-status]');
+    const presetsEl = chatBody && chatBody.querySelector('[data-bc-presets]');
+
+    if (!(submitBtn instanceof HTMLButtonElement) || !(clearBtn instanceof HTMLButtonElement)) return;
+
+    if (presetsEl) {
+      presetsEl.querySelectorAll('.chat-preset-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const ta = form.querySelector('textarea[name="question"]');
+          if (ta instanceof HTMLTextAreaElement) {
+            ta.value = (btn.textContent || '').trim();
+            ta.focus();
+          }
+        });
+      });
+    }
+
+    function setStatus(text, isError) {
+      if (!(statusEl instanceof HTMLElement)) return;
+      statusEl.textContent = text;
+      statusEl.className = 'chat-status' + (isError ? ' is-error' : '');
+      statusEl.hidden = !text;
+    }
+
+    function reset() {
+      if (resultEl instanceof HTMLElement) { resultEl.textContent = ''; resultEl.hidden = true; resultEl.classList.remove('is-streaming'); }
+      if (sourcesEl instanceof HTMLElement) { sourcesEl.innerHTML = ''; sourcesEl.hidden = true; }
+      clearBtn.hidden = true;
+      setStatus('', false);
+    }
+
+    clearBtn.addEventListener('click', () => { reset(); form.reset(); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('', false);
+
+      const ta = form.querySelector('textarea[name="question"]');
+      if (!(ta instanceof HTMLTextAreaElement) || !ta.value.trim()) {
+        setStatus(msgs.invalid, true);
+        return;
+      }
+
+      const question = ta.value.trim();
+
+      // Show streaming state
+      if (resultEl instanceof HTMLElement) {
+        resultEl.textContent = '';
+        resultEl.hidden = false;
+        resultEl.classList.add('is-streaming');
+      }
+      if (sourcesEl instanceof HTMLElement) { sourcesEl.innerHTML = ''; sourcesEl.hidden = true; }
+      clearBtn.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = msgs.submitting;
+      form.reset();
+
+      try {
+        const response = await fetch('/api/blog-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, locale }),
+        });
+
+        if (response.status === 429) {
+          setStatus(msgs.rateLimit, true);
+          if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
+          return;
+        }
+        if (response.status === 503) {
+          setStatus(msgs.notReady, true);
+          if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
+          return;
+        }
+        if (!response.ok || !response.body) {
+          setStatus(msgs.generic, true);
+          if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const dec = new TextDecoder();
+        let full = '';
+        const MARKER = '__SOURCES__';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          full += dec.decode(value, { stream: true });
+          if (resultEl instanceof HTMLElement) {
+            const mi = full.indexOf(MARKER);
+            resultEl.textContent = mi >= 0 ? full.slice(0, mi).trim() : full;
+          }
+        }
+        const tail = dec.decode();
+        if (tail) full += tail;
+
+        const mi = full.indexOf(MARKER);
+        const answerText = (mi >= 0 ? full.slice(0, mi) : full).trim();
+        const sourcesRaw = mi >= 0 ? full.slice(mi + MARKER.length) : '';
+
+        if (resultEl instanceof HTMLElement) {
+          resultEl.textContent = answerText;
+          resultEl.classList.remove('is-streaming');
+        }
+
+        if (sourcesRaw && sourcesEl instanceof HTMLElement) {
+          try {
+            const sources = JSON.parse(sourcesRaw);
+            if (Array.isArray(sources) && sources.length > 0) {
+              const label = document.createElement('p');
+              label.className = 'chat-sources-label';
+              label.textContent = msgs.sources;
+              const ul = document.createElement('ul');
+              ul.className = 'chat-sources-list';
+              for (const s of sources) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = s.url;
+                a.textContent = s.title;
+                a.className = 'chat-source-link';
+                li.appendChild(a);
+                ul.appendChild(li);
+              }
+              sourcesEl.appendChild(label);
+              sourcesEl.appendChild(ul);
+              sourcesEl.hidden = false;
+            }
+          } catch { /* ignore */ }
+        }
+
+        clearBtn.hidden = false;
+      } catch {
+        setStatus(msgs.generic, true);
+        if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = msgs.submit;
+      }
+    });
+  });
+</script>
+
+<style>
+  .blog-chat {
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .blog-chat-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .blog-chat-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0 0 var(--space-xs);
+  }
+
+  .blog-chat-desc {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .chat-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .chat-preset-btn {
+    padding: 0.3em 0.75em;
+    border: var(--border-glass);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .chat-preset-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .chat-result {
+    padding: var(--space-md) 0;
+    color: var(--color-article);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+  }
+
+  .chat-result.is-streaming::after {
+    content: '▊';
+    animation: bc-blink 1s step-end infinite;
+    margin-left: 1px;
+    color: var(--color-primary);
+  }
+
+  @keyframes bc-blink {
+    50% { opacity: 0; }
+  }
+
+  .chat-sources {
+    margin: var(--space-xs) 0 var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border-left: 3px solid var(--color-primary);
+    background: var(--color-soft-bg);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .chat-sources-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin: 0 0 0.35em;
+  }
+
+  .chat-sources-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+  }
+
+  .chat-source-link {
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .chat-source-link:hover {
+    text-decoration: underline;
+  }
+
+  .blog-chat-form {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .blog-chat-field textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    resize: vertical;
+  }
+
+  .blog-chat-field textarea:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .blog-chat-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .blog-chat-form .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .chat-status {
+    margin: 0 0 var(--space-sm);
+    font-size: 0.95rem;
+  }
+
+  .chat-status.is-error {
+    color: var(--color-error);
+  }
+</style>

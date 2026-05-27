@@ -1,4 +1,5 @@
 ---
+import BlogChat from '@/components/BlogChat.astro';
 import Search from '@/components/Search.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { buildHreflangAlternates, isLocale, ui } from '@/lib/i18n';
@@ -28,12 +29,17 @@ const prefix = `/${lang}`;
     <p class="lede">{copy.searchDescription}</p>
   </section>
 
+  <section class="blog-chat-section" data-pagefind-ignore="all">
+    <BlogChat locale={lang} />
+  </section>
+
   <section class="search-section" data-pagefind-ignore="all">
     <Search locale={lang} />
   </section>
 </BaseLayout>
 
 <style>
+  .blog-chat-section,
   .search-section {
     margin-top: var(--space-lg);
     max-width: 720px;
