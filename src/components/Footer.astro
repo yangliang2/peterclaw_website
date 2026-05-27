@@ -9,6 +9,7 @@ interface Props {
 const { locale = 'zh' } = Astro.props;
 const currentYear = new Date().getFullYear();
 const nowHref = `/${locale}/now/`;
+const sponsorHref = `/${locale}/sponsor/`;
 const footerEmailId = `footer-newsletter-email-${locale}`;
 const footerStatusId = `footer-newsletter-status-${locale}`;
 const copy = locale === 'zh'
@@ -18,7 +19,7 @@ const copy = locale === 'zh'
       emailPlaceholder: '接收更新的电子邮箱',
       subscribe: '订阅',
       subscribed: '感谢订阅！',
-      support: '支持我们',
+      sponsor: '赞助合作',
     }
   : {
       newsletterLabel: 'Subscribe for updates',
@@ -26,7 +27,7 @@ const copy = locale === 'zh'
       emailPlaceholder: 'Email for updates',
       subscribe: 'Subscribe',
       subscribed: 'Thanks for subscribing!',
-      support: 'Support',
+      sponsor: 'Sponsorship',
     };
 ---
 
@@ -39,6 +40,7 @@ const copy = locale === 'zh'
         <a href={siteConfig.afdianUrl} target="_blank" rel="noopener noreferrer">{copy.support}</a>
         <a href="/rss.xml">RSS</a>
         <a href={nowHref}>Now</a>
+        <a href={sponsorHref}>{copy.sponsor}</a>
       </div>
     </div>
     
