@@ -69,7 +69,7 @@ test('newsletter validates input and submits without a real subscription', async
 
   await page.goto('/en/');
 
-  const signup = page.locator('.email-signup');
+  const signup = page.locator('.email-signup').first();
   const email = signup.locator('input[name="email"]');
   const status = signup.getByRole('status');
 
