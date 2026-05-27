@@ -1,5 +1,4 @@
 import type { APIRoute } from 'astro';
-import Anthropic from '@anthropic-ai/sdk';
 
 export const prerender = false;
 
@@ -28,9 +27,9 @@ function json(payload: object, status: number) {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.ANTHROPIC_API_KEY;
+  const apiKey = import.meta.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
-    console.error('ANTHROPIC_API_KEY is not configured');
+    console.error('DEEPSEEK_API_KEY is not configured');
     return json({ error: 'server_config' }, 503);
   }
 
@@ -58,8 +57,6 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'invalid_request' }, 400);
   }
 
-  const client = new Anthropic({ apiKey });
-
   const systemPrompt =
     locale === 'en'
       ? `You are a helpful assistant answering reader questions about the following article. Answer based on the article content. Be concise and accurate. If the question is unrelated to the article, politely redirect to the article topic.\n\nArticle:\n${articleContent}`
@@ -69,19 +66,52 @@ export const POST: APIRoute = async ({ request }) => {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const messageStream = client.messages.stream({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1024,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: question }],
+        const response = await fetch('https://api.deepseek.com/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'deepseek-v4-pro',
+            stream: true,
+            max_tokens: 1024,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: question },
+            ],
+          }),
         });
 
-        for await (const event of messageStream) {
-          if (
-            event.type === 'content_block_delta' &&
-            event.delta.type === 'text_delta'
-          ) {
-            controller.enqueue(encoder.encode(event.delta.text));
+        if (!response.ok || !response.body) {
+          console.error('DeepSeek API error:', response.status);
+          controller.enqueue(encoder.encode('\n[Error generating response]'));
+          controller.close();
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() ?? '';
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith('data:')) continue;
+            const data = trimmed.slice(5).trim();
+            if (data === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(data);
+              const text = parsed.choices?.[0]?.delta?.content;
+              if (text) controller.enqueue(encoder.encode(text));
+            } catch {
+              // ignore malformed SSE chunks
+            }
           }
         }
       } catch (err) {
