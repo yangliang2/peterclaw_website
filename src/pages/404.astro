@@ -1,0 +1,100 @@
+---
+import Search from '@/components/Search.astro';
+import PopularArticles from '@/components/PopularArticles.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { isLocale, ui, type Locale } from '@/lib/i18n';
+
+function localeFromPath(pathname: string): Locale {
+  const match = pathname.match(/^\/(zh|en)(\/|$)/);
+  return match && isLocale(match[1]) ? match[1] : 'zh';
+}
+
+const locale = localeFromPath(Astro.url.pathname);
+const copy = ui[locale];
+const prefix = `/${locale}`;
+---
+
+<BaseLayout
+  locale={locale}
+  title={copy.notFoundTitle}
+  description={copy.notFoundDescription}
+  canonicalPath={`${prefix}/404/`}
+  noindex
+>
+  <section class="not-found-hero">
+    <p class="not-found-code" aria-hidden="true">404</p>
+    <h1>{copy.notFoundTitle}</h1>
+    <p class="lede">{copy.notFoundDescription}</p>
+    <a class="btn btn-primary not-found-home" href={`${prefix}/`}>{copy.notFoundHome}</a>
+  </section>
+
+  <section class="not-found-search" data-pagefind-ignore="all">
+    <h2>{copy.notFoundSearchHint}</h2>
+    <Search locale={locale} compact />
+  </section>
+
+  <section class="not-found-recommended" data-pagefind-ignore="all">
+    <PopularArticles locale={locale} limit={4} />
+  </section>
+</BaseLayout>
+
+<script>
+  window.trackEvent?.('404', {
+    path: window.location.pathname,
+    referrer: document.referrer || 'direct',
+  });
+</script>
+
+<style>
+  .not-found-hero {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
+  }
+
+  .not-found-code {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: clamp(4rem, 14vw, 7rem);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.85;
+  }
+
+  .not-found-hero h1 {
+    margin: 0 auto 1rem;
+    max-width: 16ch;
+  }
+
+  .not-found-hero .lede {
+    margin: 0 auto 1.75rem;
+  }
+
+  .not-found-home {
+    display: inline-flex;
+  }
+
+  .not-found-search {
+    margin-top: var(--space-lg);
+    max-width: 720px;
+  }
+
+  .not-found-search h2 {
+    margin: 0 0 1rem;
+    font-size: 1.15rem;
+    color: var(--color-heading);
+  }
+
+  .not-found-recommended :global(.popular-section h2) {
+    font-size: 1.15rem;
+  }
+
+  @media (max-width: 640px) {
+    .not-found-hero {
+      padding-top: 2rem;
+    }
+  }
+</style>

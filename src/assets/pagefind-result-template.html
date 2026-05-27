@@ -1,0 +1,13 @@
+<li class="pf-result">
+  <div class="pf-result-card">
+    <div class="pf-result-content">
+      <p class="pf-result-title">
+        {{#if meta.type_label}}
+        <span class="search-type-badge">{{ meta.type_label }}</span>
+        {{/if}}
+        <a class="pf-result-link" href="{{ meta.url | default(url) | safeUrl }}">{{ meta.title }}</a>
+      </p>
+      <p class="pf-result-excerpt">{{+ excerpt +}}</p>
+    </div>
+  </div>
+</li>
