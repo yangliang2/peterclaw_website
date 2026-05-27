@@ -5,6 +5,7 @@ export type ToolItem = {
   url: string;
   description: string;
   review: string;
+  rating: string;
 };
 
 export type ToolCategory = {
@@ -24,183 +25,172 @@ export type ToolsCopy = {
 
 const categoriesZh: ToolCategory[] = [
   {
+    title: 'AI 编程助手',
+    items: [
+      {
+        name: 'Cursor',
+        url: 'https://cursor.com',
+        description: '基于 VS Code 的 AI 原生编辑器，支持 Composer 和 Agent 模式。',
+        review: '当前 AI 编程的行业标杆。Composer 模式在多文件重构时极具优势，Agent 模式能自主执行复杂任务。详见[深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/)。',
+        rating: '5.0',
+      },
+      {
+        name: 'Windsurf',
+        url: 'https://codeium.com/windsurf',
+        description: 'Codeium 推出的 Agentic IDE，主打独创的 "Flow" 上下文管理机制。',
+        review: 'Cursor 的强力竞争者。其 Flow 特性能实现极流畅的人机协作，对上下文的自动感知非常敏锐。详见[深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/)。',
+        rating: '4.8',
+      },
+      {
+        name: 'Claude Code',
+        url: 'https://www.anthropic.com/news/claude-3-5-sonnet',
+        description: 'Anthropic 官方推出的命令行 Agent，能直接操作文件、运行命令并搜索代码库。',
+        review: '终端「Vibe Coding」的神器。能够自主运行测试并修复错误，处理代码库全局修改时非常高效。详见[对比评测](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/)。',
+        rating: '4.9',
+      },
+      {
+        name: 'Cline (v3)',
+        url: 'https://cline.bot',
+        description: 'VS Code 开源 Agent 插件，支持多种 LLM 提供商和完全自主的工具调用。',
+        review: '开源界的佼佼者。给予 Agent 极高的操作权限，适合喜欢折腾和追求极致自主性的开发者。详见[使用体验](/zh/blog/ai-tool-review-antigravity-kiro-cline/)。',
+        rating: '4.7',
+      },
+    ],
+  },
+  {
+    title: 'AI 写作与知识管理',
+    items: [
+      {
+        name: 'Notion AI',
+        url: 'https://www.notion.so/product/ai',
+        description: '深度集成在 Notion 笔记中的 AI 助手，支持内容润色、脑暴和知识问答。',
+        review: '内容日历和初稿撰写的核心。其 Q&A 功能能跨页面检索信息，让个人 Wiki 真正「活」了起来。',
+        rating: '4.7',
+      },
+      {
+        name: 'Obsidian Copilot',
+        url: 'https://github.com/logancyang/obsidian-copilot',
+        description: 'Obsidian 的本地 AI 助手插件，支持与本地库（Vault）进行对话。',
+        review: '在保护隐私的同时赋予本地笔记 AI 能力。非常适合在 Obsidian 中进行碎片想法的串联和深度思考。',
+        rating: '4.5',
+      },
+      {
+        name: 'Claude.ai',
+        url: 'https://claude.ai',
+        description: 'Anthropic 的长上下文对话助手，擅长分析复杂文档和代码逻辑。',
+        review: '小队的「数字大脑」。在处理长篇架构文档和需要极致推理能力的场景下，Claude 3.5 Sonnet 是首选。',
+        rating: '5.0',
+      },
+      {
+        name: 'ChatGPT',
+        url: 'https://chatgpt.com',
+        description: 'OpenAI 的旗舰模型，支持高级数据分析、DALL-E 3 绘图和自定义 GPTs。',
+        review: '多面手。在需要快速原型验证、联网搜索或使用特定 GPTs 处理任务时表现依然稳健。',
+        rating: '4.9',
+      },
+    ],
+  },
+  {
+    title: '网站构建',
+    items: [
+      {
+        name: 'Astro',
+        url: 'https://astro.build',
+        description: '为内容驱动网站优化的现代 Web 框架，支持极速的静态生成和 Islands 架构。',
+        review: 'PeterClaw 的技术基石。零 JS 默认和出色的 SEO 支持让它成为技术博客的最佳选择。',
+        rating: '5.0',
+      },
+      {
+        name: 'Vercel',
+        url: 'https://vercel.com',
+        description: '前端托管与 Serverless 平台，提供无缝的 CI/CD 和极致的开发者体验。',
+        review: '部署的最佳归宿。自动预览链接、边缘函数和极简的工作流，让开发者能专注于代码本身。',
+        rating: '5.0',
+      },
+      {
+        name: 'Tailwind CSS',
+        url: 'https://tailwindcss.com',
+        description: '原子类 CSS 框架，通过组合预设类名快速构建美观的界面。',
+        review: '彻底改变了 UI 开发方式。在 HTML 里就能完成大部分样式工作，维护性和开发效率极高。',
+        rating: '4.9',
+      },
+    ],
+  },
+  {
+    title: 'Analytics & SEO',
+    items: [
+      {
+        name: 'Plausible',
+        url: 'https://plausible.io',
+        description: '轻量、开源且注重隐私的网站分析工具，无 Cookie 且符合 GDPR。',
+        review: 'Google Analytics 的优雅替代品。界面简洁，对性能几乎无影响，且完全尊重用户隐私。',
+        rating: '4.8',
+      },
+      {
+        name: 'Google Search Console',
+        url: 'https://search.google.com/search-console',
+        description: 'Google 官方提供的 SEO 工具，监控网站在搜索结果中的表现。',
+        review: 'SEO 的北极星。通过它了解关键词排名、索引状态和抓取错误，是流量增长的必经之路。',
+        rating: '5.0',
+      },
+      {
+        name: 'Google Analytics 4',
+        url: 'https://analytics.google.com',
+        description: '功能最强大的网站流量与用户行为分析平台。',
+        review: '虽然配置复杂，但在进行深度用户转化分析和多渠道归因时，GA4 依然是不可或缺的重型武器。',
+        rating: '4.5',
+      },
+    ],
+  },
+  {
+    title: '工作流与协作',
+    items: [
+      {
+        name: 'GitHub',
+        url: 'https://github.com',
+        description: '全球领先的软件开发平台，集代码托管、CI/CD 与团队协作于一体。',
+        review: '不仅仅是代码库，更是小队的数字化办公室。Actions 自动化流程大大减少了手动操作。',
+        rating: '5.0',
+      },
+      {
+        name: 'Linear',
+        url: 'https://linear.app',
+        description: '专为高性能团队设计的项目管理工具，以极致的速度和设计感著称。',
+        review: '项目管理的艺术品。全键盘操作和极速响应，让任务跟踪不再成为负担，而是享受。',
+        rating: '4.9',
+      },
+      {
+        name: 'Cloudflare',
+        url: 'https://cloudflare.com',
+        description: '全球网络安全与性能专家，提供 DNS、CDN 和边缘计算服务。',
+        review: '网站的保护伞。其免费的 CDN 和 WAF 功能对个人开发者极其友好，DNS 解析速度也是业界顶尖。',
+        rating: '5.0',
+      },
+      {
+        name: 'Buttondown',
+        url: 'https://buttondown.email',
+        description: '极简且优雅的邮件通讯（Newsletter）分发服务。',
+        review: 'Newsletter 的最佳选择。专注于内容写作，去除了复杂的营销功能，支持 Markdown，简洁而不简单。',
+        rating: '4.7',
+      },
+    ],
+  },
+  {
     title: '硬件设备',
     items: [
       {
         name: 'MacBook Pro 14" (M3 Pro)',
         url: 'https://www.apple.com/macbook-pro/',
-        description: 'Apple Silicon 芯片的 14 英寸专业笔记本，续航与性能的平衡点。',
-        review: '主力开发机。18GB 统一内存足够同时跑多个 IDE、浏览器标签和本地服务，风扇几乎不转。',
-      },
-      {
-        name: 'Dell U2723QE 4K 显示器',
-        url: 'https://www.dell.com/en-us/shop/dell-ultrasharp-27-4k-usb-c-hub-monitor-u2723qe/apd/210-bdpf/monitors-monitor-accessories',
-        description: '27 英寸 4K IPS Black 面板显示器，支持 USB-C 一线通和 90W 反向供电。',
-        review: '代码阅读和文档并排时的刚需。4K 分辨率下字体锐利，USB-C 一线通让桌面线缆极简。',
+        description: 'Apple Silicon 芯片的专业笔记本，续航与性能的完美平衡。',
+        review: '主力开发机。18GB 内存足以应对多个本地 Agent 运行和高负载编译。',
+        rating: '5.0',
       },
       {
         name: 'Keychron Q1 Pro',
-        url: 'https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard',
-        description: '全铝客制化机械键盘，支持 QMK/VIA 改键和蓝牙双模。',
-        review: '从薄膜键盘换过来后打字体验质变。Gasket 结构 + 自定义键位让长时间编码的疲劳感大幅降低。',
-      },
-      {
-        name: 'Logitech MX Master 3S',
-        url: 'https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006556.html',
-        description: '人体工学无线鼠标，MagSpeed 电磁滚轮可在段落和极速模式间切换。',
-        review: '横向滚轮在浏览宽代码文件和 Figma 画布时意外好用。静音点击不会打扰深夜专注。',
-      },
-      {
-        name: 'Sony WH-1000XM5',
-        url: 'https://www.sony.com/electronics/headband-headphones/wh-1000xm5',
-        description: '旗舰级主动降噪头戴式耳机，轻量化设计适合长时间佩戴。',
-        review: '深度工作时的隔音罩。降噪一开，咖啡店瞬间变书房。续航足够一周通勤和办公。',
-      },
-    ],
-  },
-  {
-    title: '编辑器与 IDE',
-    items: [
-      {
-        name: 'Cursor',
-        url: 'https://cursor.com',
-        description: '内置 AI 的代码编辑器，基于 VS Code，支持 Composer 和 Tab 补全。',
-        review: '日常编码的默认环境。Composer 模式在多文件重构时省掉大量上下文切换，Tab 补全的准确率也在持续提升。',
-      },
-      {
-        name: 'VS Code',
-        url: 'https://code.visualstudio.com',
-        description: '微软出品的开源代码编辑器，拥有最丰富的插件生态。',
-        review: 'Cursor 之外的备用环境。某些语言服务器的稳定性更好，也是远程开发和容器开发的首选。',
-      },
-      {
-        name: 'Warp',
-        url: 'https://warp.dev',
-        description: '基于 Rust 构建的现代终端，支持 AI 命令提示和块级输出编辑。',
-        review: '命令行历史的块状设计让复制输出和分享截图变得优雅。AI 补全在记不起复杂参数时救了无数次。',
-      },
-      {
-        name: 'TablePlus',
-        url: 'https://tableplus.com',
-        description: '现代化的数据库管理 GUI，支持 MySQL、PostgreSQL、SQLite 等主流数据库。',
-        review: '比传统数据库客户端更轻量、更美观。本地开发和调试时快速查看表结构和执行查询很顺手。',
-      },
-    ],
-  },
-  {
-    title: 'AI 工具链',
-    items: [
-      {
-        name: 'Claude',
-        url: 'https://claude.ai',
-        description: 'Anthropic 出品的长上下文 AI 助手，擅长分析、写作与复杂推理。',
-        review: '小队里的「CEO」和「CTO」都是 Claude 实例。处理长文档和架构决策时，Claude 的上下文窗口和推理深度是首选。',
-      },
-      {
-        name: 'Kimi',
-        url: 'https://kimi.moonshot.cn',
-        description: 'Moonshot AI 推出的长文本 AI 助手，中文理解和生成能力突出。',
-        review: '中文内容架构和品牌叙事的主力。处理中文长文、知识库整理时，Kimi 的语义把握比多数模型更自然。',
-      },
-      {
-        name: 'ChatGPT',
-        url: 'https://chatgpt.com',
-        description: 'OpenAI 的旗舰对话模型，支持代码解释器、联网搜索和自定义 GPT。',
-        review: '快速验证想法和生成原型代码的便利工具。o 系列模型在数学和逻辑推理任务上表现突出。',
-      },
-      {
-        name: 'Midjourney',
-        url: 'https://midjourney.com',
-        description: 'AI 图像生成工具，以艺术感和氛围感著称。',
-        review: '网站封面图和博客配图的来源。提示词控制熟练后，能在几分钟内得到风格统一的视觉资产。',
-      },
-      {
-        name: 'v0.dev',
-        url: 'https://v0.dev',
-        description: 'Vercel 推出的 AI 界面生成工具，从自然语言描述生成可复制的 React 组件。',
-        review: '快速搭建页面原型和组件骨架的神器。生成的代码质量足够作为起点，再手动微调样式和交互。',
-      },
-    ],
-  },
-  {
-    title: '部署与运维',
-    items: [
-      {
-        name: 'Astro',
-        url: 'https://astro.build',
-        description: '为内容驱动网站优化的静态站点生成器，支持 Islands 架构。',
-        review: 'PeterClaw 的底层框架。内容站不需要太多客户端 JS，Astro 的零 JS 默认和 Markdown 原生支持恰到好处。',
-      },
-      {
-        name: 'Vercel',
-        url: 'https://vercel.com',
-        description: '前端托管与 Serverless 平台，支持自动预览部署和边缘函数。',
-        review: '每次 PR 自动生成预览链接，审查体验极佳。与 Astro 和 GitHub 的集成几乎零配置。',
-      },
-      {
-        name: 'GitHub',
-        url: 'https://github.com',
-        description: '代码托管、协作与 CI/CD 平台，Issues 和 Pull Requests 是团队工作流核心。',
-        review: '不只放代码，更是整个 AI 小队的「办公室」。Issues 驱动开发、PR 做代码审查、Actions 跑自动化测试。',
-      },
-      {
-        name: 'Cloudflare',
-        url: 'https://cloudflare.com',
-        description: 'CDN、DNS 和边缘计算服务，提供全球加速与安全防护。',
-        review: 'DNS 管理和免费 CDN 加速是标配。对于静态站点，Cloudflare Pages 也是 Vercel 之外的可靠备选。',
-      },
-      {
-        name: 'GitHub Actions',
-        url: 'https://github.com/features/actions',
-        description: 'GitHub 原生的 CI/CD 与工作流自动化服务。',
-        review: 'Lighthouse CI 评分、自动构建检查、发布前的质量门禁——全部写在 YAML 里，和代码一起版本管理。',
-      },
-      {
-        name: 'n8n',
-        url: 'https://n8n.io',
-        description: '开源的工作流自动化工具，支持自托管和可视化节点编排。',
-        review: '比 Zapier 更灵活，比写脚本更直观。内容发布后的多渠道分发、数据同步等场景用 n8n 搭流水线很顺手。',
-      },
-    ],
-  },
-  {
-    title: '日常 SaaS',
-    items: [
-      {
-        name: 'Notion',
-        url: 'https://notion.so',
-        description: '集笔记、数据库、Wiki 和项目管理于一体的协作工作空间。',
-        review: '内容日历、选题库和发布计划的管理中心。Notion AI 在整理会议纪要和生成初稿时也有不错表现。',
-      },
-      {
-        name: 'Obsidian',
-        url: 'https://obsidian.md',
-        description: '基于本地 Markdown 的知识库工具，支持双向链接和插件生态。',
-        review: '个人思考和大纲草稿的根据地。双向链接让碎片想法逐渐连成网络，后续再迁移到 Notion 或直接进入网站。',
-      },
-      {
-        name: 'Figma',
-        url: 'https://figma.com',
-        description: '基于浏览器的协作设计工具，支持原型、设计系统和开发者交付。',
-        review: 'AI 小队也需要视觉规范。Figma 的 Dev Mode 让设计到代码的交接更顺畅，组件系统也减少了重复劳动。',
-      },
-      {
-        name: 'Canva',
-        url: 'https://canva.com',
-        description: '在线平面设计工具，提供模板、素材和团队协作功能。',
-        review: '不需要从零设计时使用。社交媒体封面、Newsletter 头图等快速产出场景，Canva 的模板库省很多时间。',
-      },
-      {
-        name: 'Google Analytics',
-        url: 'https://analytics.google.com',
-        description: '网站流量与用户行为分析平台。',
-        review: 'SEO 效果的反馈回路。看哪些内容带来自然流量、用户在哪个页面离开——数据驱动下一批选题决策。',
-      },
-      {
-        name: 'Pagefind',
-        url: 'https://pagefind.app',
-        description: '专为静态网站设计的开源搜索库，零配置、低带宽占用。',
-        review: 'PeterClaw 站内搜索的实现方案。构建时自动索引，不需要外部服务，对静态站来说几乎是零成本。',
+        url: 'https://www.keychron.com',
+        description: '全铝客制化机械键盘，支持无线双模和 QMK/VIA 改键。',
+        review: '手指的延伸。良好的打击反馈和自定义键位极大缓解了长时间编码的疲劳。',
+        rating: '4.8',
       },
     ],
   },
@@ -208,183 +198,172 @@ const categoriesZh: ToolCategory[] = [
 
 const categoriesEn: ToolCategory[] = [
   {
+    title: 'AI Coding Assistants',
+    items: [
+      {
+        name: 'Cursor',
+        url: 'https://cursor.com',
+        description: 'AI-native code editor built on VS Code, featuring Composer and Agent modes.',
+        review: 'The gold standard for AI coding. Composer mode shines in multi-file refactors, and Agent mode autonomously handles complex tasks. See [Deep Review](/zh/blog/ai-tool-review-cursor-vs-windsurf/) (ZH).',
+        rating: '5.0',
+      },
+      {
+        name: 'Windsurf',
+        url: 'https://codeium.com/windsurf',
+        description: 'Agentic IDE by Codeium, featuring the unique "Flow" context management mechanism.',
+        review: 'A strong Cursor competitor. Its Flow feature enables fluid human-AI collaboration with acute context awareness. See [Deep Review](/zh/blog/ai-tool-review-cursor-vs-windsurf/) (ZH).',
+        rating: '4.8',
+      },
+      {
+        name: 'Claude Code',
+        url: 'https://www.anthropic.com/news/claude-3-5-sonnet',
+        description: 'Official CLI Agent by Anthropic that can manipulate files, run commands, and search codebases.',
+        review: 'The ultimate tool for terminal "Vibe Coding." Autonomously runs tests and fixes bugs, making codebase-wide changes highly efficient. See [Comparison Review](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/) (ZH).',
+        rating: '4.9',
+      },
+      {
+        name: 'Cline (v3)',
+        url: 'https://cline.bot',
+        description: 'Open-source VS Code Agent extension supporting multiple LLM providers and full autonomy.',
+        review: 'A standout in the open-source world. Gives the agent high permissions, perfect for developers who want extreme autonomy. See [User Experience](/zh/blog/ai-tool-review-antigravity-kiro-cline/) (ZH).',
+        rating: '4.7',
+      },
+    ],
+  },
+  {
+    title: 'AI Writing & Knowledge',
+    items: [
+      {
+        name: 'Notion AI',
+        url: 'https://www.notion.so/product/ai',
+        description: 'AI assistant deeply integrated into Notion for polishing, brainstorming, and Q&A.',
+        review: 'The core of our content calendar and first drafts. Its Q&A feature brings personal wikis to life by searching across all pages.',
+        rating: '4.7',
+      },
+      {
+        name: 'Obsidian Copilot',
+        url: 'https://github.com/logancyang/obsidian-copilot',
+        description: 'Local AI assistant plugin for Obsidian that interacts with your local vault.',
+        review: 'Brings AI power to local notes without compromising privacy. Great for connecting fragmented ideas and deep thinking.',
+        rating: '4.5',
+      },
+      {
+        name: 'Claude.ai',
+        url: 'https://claude.ai',
+        description: 'Anthropic\'s long-context assistant, excels at analyzing complex documents and code logic.',
+        review: 'Our squad\'s "Digital Brain." Claude 3.5 Sonnet is the go-to for long docs and extreme reasoning tasks.',
+        rating: '5.0',
+      },
+      {
+        name: 'ChatGPT',
+        url: 'https://chatgpt.com',
+        description: 'OpenAI\'s flagship model with advanced data analysis, DALL-E 3, and custom GPTs.',
+        review: 'The versatile all-rounder. Still solid for quick prototyping, web searches, and specific GPT-driven tasks.',
+        rating: '4.9',
+      },
+    ],
+  },
+  {
+    title: 'Site Building',
+    items: [
+      {
+        name: 'Astro',
+        url: 'https://astro.build',
+        description: 'Modern web framework optimized for content-driven sites with SSG and Islands architecture.',
+        review: 'PeterClaw\'s technical foundation. Zero JS by default and great SEO make it the best choice for tech blogs.',
+        rating: '5.0',
+      },
+      {
+        name: 'Vercel',
+        url: 'https://vercel.com',
+        description: 'Frontend hosting and serverless platform with seamless CI/CD and top-tier DX.',
+        review: 'The ultimate home for deployments. Auto-previews, edge functions, and simple workflows let developers focus on code.',
+        rating: '5.0',
+      },
+      {
+        name: 'Tailwind CSS',
+        url: 'https://tailwindcss.com',
+        description: 'Utility-first CSS framework for building custom interfaces directly in your HTML.',
+        review: 'Revolutionized UI development. Highly maintainable and efficient, allowing most styling work within the HTML.',
+        rating: '4.9',
+      },
+    ],
+  },
+  {
+    title: 'Analytics & SEO',
+    items: [
+      {
+        name: 'Plausible',
+        url: 'https://plausible.io',
+        description: 'Lightweight, open-source, and privacy-focused analytics, cookie-less and GDPR-compliant.',
+        review: 'An elegant Google Analytics alternative. Clean UI, minimal performance impact, and full respect for privacy.',
+        rating: '4.8',
+      },
+      {
+        name: 'Google Search Console',
+        url: 'https://search.google.com/search-console',
+        description: 'Google\'s official SEO tool to monitor site performance in search results.',
+        review: 'The North Star for SEO. Essential for understanding keyword rankings, indexing status, and crawl errors.',
+        rating: '5.0',
+      },
+      {
+        name: 'Google Analytics 4',
+        url: 'https://analytics.google.com',
+        description: 'The most powerful platform for analyzing website traffic and user behavior.',
+        review: 'While complex, it\'s still an indispensable heavy-duty tool for deep conversion analysis and multi-channel attribution.',
+        rating: '4.5',
+      },
+    ],
+  },
+  {
+    title: 'Workflow & Collaboration',
+    items: [
+      {
+        name: 'GitHub',
+        url: 'https://github.com',
+        description: 'The world\'s leading developer platform for code hosting, CI/CD, and collaboration.',
+        review: 'More than a code repo—it\'s our squad\'s digital office. Actions automation significantly reduces manual work.',
+        rating: '5.0',
+      },
+      {
+        name: 'Linear',
+        url: 'https://linear.app',
+        description: 'Project management built for high-performance teams, known for speed and design.',
+        review: 'A masterpiece of project management. Keyboard-centric and lightning-fast, making tracking a joy, not a chore.',
+        rating: '4.9',
+      },
+      {
+        name: 'Cloudflare',
+        url: 'https://cloudflare.com',
+        description: 'Global network expert providing DNS, CDN, and edge-computing services.',
+        review: 'The site\'s umbrella. Free CDN and WAF are incredibly friendly for indie devs, and DNS is top-tier.',
+        rating: '5.0',
+      },
+      {
+        name: 'Buttondown',
+        url: 'https://buttondown.email',
+        description: 'Minimalist and elegant service for distributing newsletters.',
+        review: 'The best choice for newsletters. Focused on writing, with Markdown support and no bloated marketing features.',
+        rating: '4.7',
+      },
+    ],
+  },
+  {
     title: 'Hardware',
     items: [
       {
         name: 'MacBook Pro 14" (M3 Pro)',
         url: 'https://www.apple.com/macbook-pro/',
-        description: 'Apple Silicon-powered 14-inch professional laptop balancing battery life and performance.',
-        review: 'My primary dev machine. 18GB unified memory is enough for multiple IDEs, browser tabs, and local services simultaneously—and the fan barely spins up.',
-      },
-      {
-        name: 'Dell U2723QE 4K Monitor',
-        url: 'https://www.dell.com/en-us/shop/dell-ultrasharp-27-4k-usb-c-hub-monitor-u2723qe/apd/210-bdpf/monitors-monitor-accessories',
-        description: '27-inch 4K IPS Black panel with USB-C single-cable connectivity and 90W power delivery.',
-        review: 'Essential for side-by-side code and documentation. 4K makes text razor-sharp, and USB-C single-cable keeps the desk minimalist.',
+        description: 'Professional laptop with Apple Silicon, perfect balance of battery and performance.',
+        review: 'Primary dev machine. 18GB RAM handles multiple local agents and heavy compilation with ease.',
+        rating: '5.0',
       },
       {
         name: 'Keychron Q1 Pro',
-        url: 'https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard',
-        description: 'Full-aluminum custom mechanical keyboard with QMK/VIA programmability and Bluetooth dual-mode.',
-        review: 'A transformative upgrade from membrane keyboards. The gasket mount + custom keymap significantly reduce fatigue during long coding sessions.',
-      },
-      {
-        name: 'Logitech MX Master 3S',
-        url: 'https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006556.html',
-        description: 'Ergonomic wireless mouse with MagSpeed electromagnetic wheel switching between ratchet and hyper-fast modes.',
-        review: 'The horizontal scroll wheel is surprisingly useful for wide code files and Figma canvases. Silent clicks don\'t disturb deep-focus late nights.',
-      },
-      {
-        name: 'Sony WH-1000XM5',
-        url: 'https://www.sony.com/electronics/headband-headphones/wh-1000xm5',
-        description: 'Flagship active noise-canceling over-ear headphones with a lightweight design for extended wear.',
-        review: 'My isolation dome for deep work. Flip the switch and a coffee shop becomes a private study. Battery lasts a full week of commutes and work.',
-      },
-    ],
-  },
-  {
-    title: 'Editors & IDEs',
-    items: [
-      {
-        name: 'Cursor',
-        url: 'https://cursor.com',
-        description: 'AI-native code editor built on VS Code, featuring Composer and Tab completion.',
-        review: 'My default daily editor. Composer mode saves tons of context switching during multi-file refactors, and Tab completion accuracy keeps improving.',
-      },
-      {
-        name: 'VS Code',
-        url: 'https://code.visualstudio.com',
-        description: 'Microsoft\'s open-source code editor with the richest extension ecosystem.',
-        review: 'My fallback environment when Cursor isn\'t the right fit. Some language servers are more stable here, and it\'s my go-to for remote and container development.',
-      },
-      {
-        name: 'Warp',
-        url: 'https://warp.dev',
-        description: 'A Rust-built modern terminal with AI command suggestions and block-based output editing.',
-        review: 'The block-based design makes copying output and sharing screenshots elegant. AI completion has saved me countless times when I can\'t recall complex flags.',
-      },
-      {
-        name: 'TablePlus',
-        url: 'https://tableplus.com',
-        description: 'Modern database management GUI supporting MySQL, PostgreSQL, SQLite, and more.',
-        review: 'Lighter and more polished than traditional database clients. Great for quickly inspecting schemas and running queries during local development.',
-      },
-    ],
-  },
-  {
-    title: 'AI Toolchain',
-    items: [
-      {
-        name: 'Claude',
-        url: 'https://claude.ai',
-        description: 'Anthropic\'s long-context AI assistant, strong at analysis, writing, and complex reasoning.',
-        review: 'Our squad\'s "CEO" and "CTO" instances run on Claude. When handling long documents or architecture decisions, its context window and reasoning depth are the go-to.',
-      },
-      {
-        name: 'Kimi',
-        url: 'https://kimi.moonshot.cn',
-        description: 'Moonshot AI\'s long-text assistant with standout Chinese comprehension and generation.',
-        review: 'The main workhorse for Chinese content architecture and brand storytelling. Its grasp of Chinese semantics feels more natural than most models for long-form writing.',
-      },
-      {
-        name: 'ChatGPT',
-        url: 'https://chatgpt.com',
-        description: 'OpenAI\'s flagship conversational model with Code Interpreter, web search, and custom GPTs.',
-        review: 'A convenient tool for quick idea validation and prototype code. The o-series models shine on math and logic-heavy tasks.',
-      },
-      {
-        name: 'Midjourney',
-        url: 'https://midjourney.com',
-        description: 'AI image generation tool known for artistic quality and atmosphere.',
-        review: 'Source of website cover images and blog illustrations. With practiced prompt control, you can get stylistically consistent visual assets in minutes.',
-      },
-      {
-        name: 'v0.dev',
-        url: 'https://v0.dev',
-        description: 'Vercel\'s AI UI generation tool that creates copyable React components from natural language descriptions.',
-        review: 'A magic wand for rapid page prototypes and component skeletons. The generated code is solid enough as a starting point, then I manually refine styles and interactions.',
-      },
-    ],
-  },
-  {
-    title: 'Deployment & Ops',
-    items: [
-      {
-        name: 'Astro',
-        url: 'https://astro.build',
-        description: 'Static site generator optimized for content-driven sites with Islands architecture.',
-        review: 'PeterClaw\'s underlying framework. Content sites don\'t need much client-side JS; Astro\'s zero-JS-by-default and native Markdown support are a perfect fit.',
-      },
-      {
-        name: 'Vercel',
-        url: 'https://vercel.com',
-        description: 'Frontend hosting and serverless platform with automatic preview deployments and edge functions.',
-        review: 'Every PR gets an automatic preview link—fantastic review experience. The Astro and GitHub integrations are nearly zero-config.',
-      },
-      {
-        name: 'GitHub',
-        url: 'https://github.com',
-        description: 'Code hosting, collaboration, and CI/CD platform. Issues and Pull Requests are the team workflow core.',
-        review: 'More than code storage—it\'s the AI squad\'s "office." Issues drive development, PRs handle code review, and Actions run automated tests.',
-      },
-      {
-        name: 'Cloudflare',
-        url: 'https://cloudflare.com',
-        description: 'CDN, DNS, and edge-computing services offering global acceleration and security.',
-        review: 'DNS management and free CDN acceleration are standard. For static sites, Cloudflare Pages is also a solid alternative to Vercel.',
-      },
-      {
-        name: 'GitHub Actions',
-        url: 'https://github.com/features/actions',
-        description: 'GitHub-native CI/CD and workflow automation service.',
-        review: 'Lighthouse CI scoring, automated build checks, pre-release quality gates—all written in YAML and version-controlled alongside the code.',
-      },
-      {
-        name: 'n8n',
-        url: 'https://n8n.io',
-        description: 'Open-source workflow automation tool with self-hosting and visual node orchestration.',
-        review: 'More flexible than Zapier, more visual than writing scripts. Great for building pipelines for multi-channel content distribution and data syncing.',
-      },
-    ],
-  },
-  {
-    title: 'Daily SaaS',
-    items: [
-      {
-        name: 'Notion',
-        url: 'https://notion.so',
-        description: 'All-in-one workspace for notes, databases, wikis, and project management.',
-        review: 'The command center for content calendars, idea pipelines, and publishing schedules. Notion AI also does a decent job summarizing meeting notes and drafting first versions.',
-      },
-      {
-        name: 'Obsidian',
-        url: 'https://obsidian.md',
-        description: 'Local Markdown-based knowledge base with bi-directional linking and a rich plugin ecosystem.',
-        review: 'My territory for personal thinking and outline drafts. Bi-directional linking lets fragmented ideas gradually form a network before migrating to Notion or the site itself.',
-      },
-      {
-        name: 'Figma',
-        url: 'https://figma.com',
-        description: 'Browser-based collaborative design tool supporting prototypes, design systems, and developer handoff.',
-        review: 'Even an AI squad needs visual standards. Figma\'s Dev Mode makes design-to-code handoff smoother, and component systems cut down on repetitive work.',
-      },
-      {
-        name: 'Canva',
-        url: 'https://canva.com',
-        description: 'Online graphic design tool with templates, assets, and team collaboration.',
-        review: 'Useful when you don\'t need to design from scratch. Social media covers, newsletter headers, and other quick-turnaround visuals—Canva\'s template library saves a lot of time.',
-      },
-      {
-        name: 'Google Analytics',
-        url: 'https://analytics.google.com',
-        description: 'Website traffic and user behavior analytics platform.',
-        review: 'The feedback loop for SEO efforts. See which content brings organic traffic and where users drop off—data drives the next batch of topic decisions.',
-      },
-      {
-        name: 'Pagefind',
-        url: 'https://pagefind.app',
-        description: 'Open-source search library built for static sites, zero-config and low bandwidth.',
-        review: 'How PeterClaw\'s site search is implemented. Automatically indexes at build time, needs no external service, and is practically zero-cost for static sites.',
+        url: 'https://www.keychron.com',
+        description: 'All-aluminum custom mechanical keyboard with wireless dual-mode and QMK/VIA.',
+        review: 'An extension of my fingers. Great feedback and custom keymaps reduce long-coding fatigue.',
+        rating: '4.8',
       },
     ],
   },
@@ -392,24 +371,24 @@ const categoriesEn: ToolCategory[] = [
 
 export const toolsCopy = {
   zh: {
-    pageTitle: '/uses',
+    pageTitle: '/tools',
     metaDescription:
-      'PeterClaw 的 /uses 页面：一个独立开发者的完整工具链清单——从硬件设备、编辑器、AI 工具到部署运维和日常 SaaS。',
-    heroTitle: '我的工具栈',
+      'PeterClaw 的工具箱：精选 AI 开发工具推荐清单，涵盖 AI 编程助手、写作、网站构建及 SEO 工具。',
+    heroTitle: 'PeterClaw 工具箱',
     heroLede:
-      '这份清单记录了 PeterClaw 团队日常依赖的硬件、软件与服务。没有付费推广，只有真实使用体验。灵感来自 uses.tech 社区。',
+      '工欲善其事，必先利其器。这里记录了 PeterClaw 团队精选的 AI 开发工具与日常装备，助你构建高效的 AI 工作流。',
     categories: categoriesZh,
     disclaimer:
       '部分链接可能包含联盟营销代码。所有评价均基于实际使用体验，不受商业合作影响。',
     lastUpdatedLabel: '本页最后更新于',
   },
   en: {
-    pageTitle: '/uses',
+    pageTitle: '/tools',
     metaDescription:
-      'PeterClaw\'s /uses page: a complete inventory of an indie developer\'s toolchain—from hardware and editors to AI tools, deployment, and daily SaaS.',
-    heroTitle: 'My Stack',
+      'PeterClaw\'s Toolbox: A curated list of AI development tools, including coding assistants, writing, site building, and SEO tools.',
+    heroTitle: 'PeterClaw Toolbox',
     heroLede:
-      'A living list of hardware, software, and services the PeterClaw squad relies on. No paid placements—just honest usage notes. Inspired by the uses.tech community.',
+      'A curated collection of AI development tools and hardware the PeterClaw squad relies on to build efficient workflows.',
     categories: categoriesEn,
     disclaimer:
       'Some links may contain affiliate codes. All reviews are based on hands-on experience and are not influenced by commercial partnerships.',
@@ -417,4 +396,4 @@ export const toolsCopy = {
   },
 } satisfies Record<Locale, ToolsCopy>;
 
-export const toolsLastUpdated = '2026-05-25';
+export const toolsLastUpdated = '2026-05-27';
