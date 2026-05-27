@@ -26,6 +26,10 @@ For a pull request, the workflow posts or updates a `Lighthouse CI performance b
 
 The same table appears in the workflow job summary. A failed Lighthouse assertion blocks the required CI check from passing.
 
+The CI workflow also writes compact failure summaries for build, Lighthouse, and Playwright jobs. Each summary lists the key step outcomes and the local command to run first when that step fails.
+
+Pull requests receive a separate `Vercel deployment status` comment when `VERCEL_TOKEN` and `VERCEL_PROJECT_ID` are configured in GitHub Actions secrets. The comment includes the preview deployment state, URL, Inspector link, and Vercel checks conclusion for the PR head commit.
+
 ## Downloading Reports
 
 Each workflow run uploads a `lighthouse-reports-<run-id>` artifact containing the complete `.lighthouseci/` output. The artifact is kept for 14 days.

@@ -34,8 +34,18 @@ We use **Vercel Speed Insights** to collect anonymous performance data from actu
 
 ### 3. Continuous Audit
 
-- Periodic manual audits using PageSpeed Insights and Chrome DevTools.
-- Reviewing Vercel Speed Insights data weekly to identify regressions in the field.
+Production smoke tests run daily from GitHub Actions against the deployed site:
+
+- Core routes: `/`, `/zh/`, `/en/`, `/zh/blog/`, `/en/blog/`, `/zh/tools/`, `/en/tools/`
+- Sitemap: `/sitemap-index.xml`
+- Script: `npm run health:smoke`
+- Override target: repository variable `PRODUCTION_SMOKE_BASE_URL`
+
+### 4. Weekly Field Data Review
+
+- Review Vercel Speed Insights weekly in the Vercel dashboard for LCP, CLS, INP, FCP, and TTFB regressions.
+- Compare field regressions with Lighthouse CI artifacts for the closest route and commit window.
+- Keep this review dashboard-based until Vercel exposes a stable public read endpoint for Speed Insights metrics.
 
 ## Performance Budgets
 

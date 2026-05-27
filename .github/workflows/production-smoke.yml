@@ -1,0 +1,30 @@
+name: Production Smoke Test
+
+on:
+  schedule:
+    - cron: "35 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Core Routes and Sitemap
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run production smoke test
+        id: smoke
+        run: node scripts/production-smoke-test.mjs --output smoke-summary.md
+        env:
+          SMOKE_BASE_URL: ${{ vars.PRODUCTION_SMOKE_BASE_URL || 'https://peterclaw-website.vercel.app' }}
+      - name: Add smoke result to job summary
+        if: always()
+        run: cat smoke-summary.md >> "$GITHUB_STEP_SUMMARY"

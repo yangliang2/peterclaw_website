@@ -19,13 +19,32 @@ jobs:
           node-version: 22
           cache: "npm"
       - name: Install dependencies
+        id: install
         run: npm ci
       - name: Content quality gate
+        id: content
         run: npm run quality:content
       - name: Build
+        id: build
         run: npm run build
       - name: Validate JSON-LD Schema
+        id: schema
         run: npm run validate-schema
+      - name: Write build job summary
+        if: always()
+        run: |
+          {
+            echo "## Build and Lint summary"
+            echo
+            echo "| Check | Outcome | Next step on failure |"
+            echo "| --- | --- | --- |"
+            echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
+            echo "| Content quality gate | ${{ steps.content.outcome }} | Run \`npm run quality:content\` locally and fix frontmatter review metadata. |"
+            echo "| Astro build + hreflang | ${{ steps.build.outcome }} | Run \`npm run build\` locally and inspect Astro/hreflang output. |"
+            echo "| JSON-LD schema validation | ${{ steps.schema.outcome }} | Run \`npm run validate-schema\` locally and inspect schema paths. |"
+            echo
+            echo "Commit: \`${{ github.sha }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   lighthouse:
     name: Lighthouse Audit
@@ -43,10 +62,13 @@ jobs:
           node-version: 22
           cache: "npm"
       - name: Install dependencies
+        id: install
         run: npm ci
       - name: Build
+        id: build
         run: npm run build
       - name: Run Lighthouse CI
+        id: lhci
         run: npm run test:performance
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -55,7 +77,18 @@ jobs:
         run: node scripts/lighthouse-report.mjs --output lighthouse-comment.md
       - name: Add results to job summary
         if: always()
-        run: cat lighthouse-comment.md >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          {
+            echo "## Lighthouse job summary"
+            echo
+            echo "| Check | Outcome | Next step on failure |"
+            echo "| --- | --- | --- |"
+            echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
+            echo "| Build audited site | ${{ steps.build.outcome }} | Run \`npm run build\` locally. |"
+            echo "| Lighthouse CI budget gate | ${{ steps.lhci.outcome }} | Run \`npm run test:performance\`; download the retained artifact for route-level HTML reports. |"
+            echo
+            cat lighthouse-comment.md
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -112,10 +145,13 @@ jobs:
           node-version: 22
           cache: "npm"
       - name: Install dependencies
+        id: install
         run: npm ci
       - name: Install Playwright browsers
+        id: browsers
         run: npx playwright install --with-deps chromium firefox
       - name: Run end-to-end tests
+        id: e2e
         run: npm run test:e2e
         env:
           BASE_URL: ${{ vars.E2E_BASE_URL }}
@@ -127,3 +163,74 @@ jobs:
           path: playwright-report/
           retention-days: 14
           if-no-files-found: ignore
+      - name: Write Playwright job summary
+        if: always()
+        run: |
+          {
+            echo "## Playwright E2E summary"
+            echo
+            echo "| Check | Outcome | Next step on failure |"
+            echo "| --- | --- | --- |"
+            echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
+            echo "| Install browsers | ${{ steps.browsers.outcome }} | Inspect Playwright browser dependency output. |"
+            echo "| End-to-end tests | ${{ steps.e2e.outcome }} | Download \`playwright-report-${{ github.run_id }}\` and run \`npm run test:e2e\` locally. |"
+            echo
+            echo "BASE_URL: \`${{ vars.E2E_BASE_URL || 'local preview default' }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  vercel-status:
+    name: Vercel Deployment Status
+    if: always() && github.event_name == 'pull_request'
+    needs: [build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Render Vercel deployment summary
+        id: vercel
+        continue-on-error: true
+        run: node scripts/vercel-deployment-summary.mjs --output vercel-deployment-comment.md
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+          VERCEL_TARGET: preview
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+      - name: Add Vercel status to job summary
+        if: always()
+        run: cat vercel-deployment-comment.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Post Vercel status on pull request
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- vercel-deployment-status -->';
+            const summary = fs.readFileSync('vercel-deployment-comment.md', 'utf8');
+            const body = `${marker}\n${summary}`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker)
+            );
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
