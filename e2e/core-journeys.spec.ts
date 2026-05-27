@@ -48,8 +48,9 @@ test('search returns an article and navigates to it', async ({ page }) => {
   await expect(search).toBeVisible();
   await search.fill('collaboration');
 
-  const result = page.getByRole('option').first();
-  await expect(result).toBeVisible();
+  // Pagefind component-ui renders results as .pf-result-link anchors, not role="option"
+  const result = page.locator('.pf-result-link, .pagefind-ui__result-link').first();
+  await expect(result).toBeVisible({ timeout: 8000 });
   await result.click();
 
   await expect(page).toHaveURL(/\/en\/(?:blog|knowledge)\//);
