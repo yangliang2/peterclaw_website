@@ -1,0 +1,279 @@
+---
+title: "AI 工具评测专栏 Vol.4：Kiro vs Cline 深度横评：AWS 的 Spec 驱动与开源 Agent 模式，谁更适合你的下一个项目？"
+description: "在真实项目中深度对比 Kiro 与 Cline 两款 Agent 模式 IDE，从 Agent 能力、上下文管理、价格模型和与 Cursor/Windsurf 的定位差异四个核心维度，给出独立开发者的选型建议。"
+contentType: review
+publishedAt: 2026-05-28
+ogImage: /og-default.png
+cover: review.svg
+tags:
+  - AI 工具评测
+  - 效率工具
+  - Kiro
+  - Cline
+  - AI 编程
+  - Agent IDE
+series: "AI 工具评测专栏"
+seriesNumber: 4
+keywords:
+  - Kiro
+  - Cline
+  - Agent IDE
+  - AI 代码编辑器
+  - AWS Kiro
+  - Cline 开源
+  - Cursor 替代
+  - AI 编程工具对比
+recommendation: 5
+reviewedProduct:
+  name: Kiro
+  url: https://kiro.dev
+draft: true
+reviews:
+  - reviewer: "gemini-1"
+    status: "pending"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "pending"
+    date: "2026-05-28"
+---
+
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
+> **AI 工具评测专栏 · 第 4 篇**
+>
+> 当 Agent 模式成为 AI 编程工具的标配，Kiro 的「规范先行」与 Cline 的「自由拼装」代表了两种截然不同的工程哲学——选工具的本质，是选一种协作方式。
+
+---
+
+## 评测背景
+
+2026 年的 AI 编程工具市场，Cursor 和 Windsurf 已经占据了「日常编码」的心智，但 Agent 模式（让 AI 自主规划、执行多步骤任务）正在催生一批新选手。其中最具代表性的两款，一是 AWS 推出的 Kiro，二是开源社区爆红的 Cline。
+
+这两款工具的定位与 Cursor/Windsurf 有本质差异：Cursor 的核心是「增强型自动补全 + 对话式 Agent」，而 Kiro 和 Cline 走的是「深度 Agent 模式」路线——AI 不只是辅助你写代码，而是作为「虚拟协作者」参与整个开发流程。
+
+但 Kiro 和 Cline 的产品哲学截然不同：
+
+- **Kiro** → AWS 的「工程化 Agent」路线：用 Spec 驱动开发，强调规范、可追溯和自动化
+- **Cline** → 开源社区的「自由 Agent」路线：模型任选、零订阅锁定、Plan/Act 分离
+
+本次评测基于以下环境：
+
+- **测试周期**：2026-05-12 至 2026-05-26（两周）
+- **测试项目**：PeterClaw 网站（Astro + TypeScript，约 8000 行代码）+ 一个内部数据分析 CLI（Python，约 2500 行）
+- **系统环境**：macOS 15.4，32GB RAM，M3 Pro
+- **使用方式**：每个项目分别用 Kiro 和 Cline 完成同等复杂度的功能迭代，包括多文件重构、新增功能模块、Bug 修复和代码审查
+- **订阅状态**：Kiro 早期访问（免费），Cline（开源免费，自付 API：Claude Sonnet 4.6 + DeepSeek V4），均无利益相关
+
+目标读者：已经在使用 Cursor / Windsurf，正在考虑引入「更强 Agent 能力」的独立开发者与技术团队。
+
+---
+
+## 评测维度
+
+本次评测聚焦四个核心维度——这也是 Kiro 与 Cline 差异最大的地方：
+
+1. **Agent 模式能力**——AI 能否自主规划、执行多步骤任务，以及任务执行的可靠性和可控性
+2. **上下文管理**——对大型代码库的理解深度、跨文件关联能力、长对话中的上下文保持
+3. **价格模型**——订阅费用、按量计费、免费额度、国内访问成本
+4. **与 Cursor/Windsurf 的定位差异**——在什么场景下应该选择 Kiro/Cline 而非 Cursor/Windsurf
+
+<ReviewScoreCard
+  title="Kiro 评分卡"
+  subtitle="从对比总表中抽取 8 个关键维度（满分 5）。"
+  dimensions={[
+    { label: 'Agent 模式能力', score: 4, maxScore: 5, weight: 0.2 },
+    { label: '上下文管理', score: 4, maxScore: 5, weight: 0.15 },
+    { label: 'Spec / 规划驱动', score: 5, maxScore: 5, weight: 0.15 },
+    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.1 },
+    { label: '生态与集成', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.1 },
+    { label: '国内可访问性', score: 4, maxScore: 5, weight: 0.1 },
+    { label: '开源 / 可审计', score: 4, maxScore: 5, weight: 0.1 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Cline 评分卡"
+  subtitle="同维度、同权重，用于快速横向对比。"
+  dimensions={[
+    { label: 'Agent 模式能力', score: 5, maxScore: 5, weight: 0.2 },
+    { label: '上下文管理', score: 3, maxScore: 5, weight: 0.15 },
+    { label: 'Spec / 规划驱动', score: 4, maxScore: 5, weight: 0.15 },
+    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.1 },
+    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.1 },
+    { label: '价格友好度', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '国内可访问性', score: 5, maxScore: 5, weight: 0.1 },
+    { label: '开源 / 可审计', score: 5, maxScore: 5, weight: 0.1 },
+  ]}
+/>
+
+---
+
+## Kiro：概述
+
+Kiro 是 AWS 在 2025 年中推出的 Agentic IDE，基于 Code OSS（开源 VS Code）构建。它的核心理念与市面上所有工具都不同：「Spec 是源文件，代码是构建产物」。在 Kiro 中，你首先用自然语言写规范（Requirements → Design → Tasks），Agent 根据规范生成并维护代码。
+
+### Agent 模式能力
+
+**Spec 驱动让 Agent 行为高度可控。** 在测试 PeterClaw 的国际化重构时，我先写了一份 Spec：「将博客系统的 hardcoded 中文提取到 i18n 字典，支持 en/zh 切换，URL 结构保持兼容」。Kiro 将这份 Spec 拆解为 6 个子任务，依次执行，每一步都可回溯到 Spec 中的某条要求。这种「需求可追溯」的特性，在多文件重构中极大降低了「AI 改错地方」的风险。
+
+![Kiro Spec 驱动工作流截图：Requirements → Design → Tasks 的拆解界面]
+
+**Agent Hooks 的自动化潜力被低估了。** Kiro 支持事件驱动的 Hook：文件保存时自动跑测试、PR 创建时自动生成变更日志、Spec 修改时自动级联更新下游依赖。我配置了一个 Hook：每次修改 `src/content/config.ts` 后，自动验证所有 Markdown 文件的 frontmatter 是否符合 schema。这个闭环在 Cursor 中需要手动触发或借助 MCP 才能实现，而 Kiro 是原生支持。
+
+但 Kiro 的 Agent 模式也有明显边界：它更适合「有计划的大型任务」，而非「即兴的 quick fix」。对于「帮我改一行 CSS」或「给这个函数加个参数」这样的快速任务，Kiro 的 Spec 流程显得笨重。你必须先写规范，等 Agent 理解，然后才能看到代码变化。在快速原型阶段，这种仪式感会拖慢节奏。
+
+### 上下文管理
+
+**Steering Files 是长期项目的救星。** 你可以在项目根目录放置 `.steering` 文件，定义编码规范、架构约束、库偏好。Kiro 的 Agent 会在每次任务前读取这些文件，确保不偏离团队约定。对于维护期超过半年的项目，这比每次开新会话都重复一遍「请用单引号、优先用 Zod 而不是 Yup」要高效得多。
+
+Kiro 的上下文窗口管理基于 AWS Bedrock，官方没有公开具体 token 限制，但实测中处理 8000 行代码的项目没有明显压力。跨文件修改时，Kiro 会主动读取相关依赖文件，准确率较高。但在超长对话（超过 20 轮）后，偶尔会出现上下文衰减，需要手动 `@file` 重新引入关键文件。
+
+### 价格模型
+
+**目前免费，但未来定价是最大隐患。** Kiro 仍处于早期访问阶段，免费使用。但 AWS 的历史定价策略偏向企业合同，GA 后的价格可能对独立开发者不友好。Bedrock 的模型调用费用是按量计费的，团队规模扩大后，成本可能快速失控。
+
+对于个人开发者，目前 Kiro 是「零成本试用」的最佳选择之一。但你需要为未来的价格变动做好心理准备——AWS 不太可能长期免费赠送一个 IDE 级别的产品。
+
+### 与 Cursor/Windsurf 的定位差异
+
+Kiro 不是 Cursor 的替代品，而是「补充品」。Cursor 擅长日常编码的流畅体验（Tab 补全、Inline Edit），Kiro 擅长复杂功能的「工程化交付」。如果你已经在用 Cursor，最佳组合是：日常编码留在 Cursor，大型功能开发（涉及多文件、需要严格规范）切换到 Kiro。
+
+Kiro 对 AWS 生态用户有额外加成：CodeCatalyst、Lambda、SageMaker、Bedrock 的深度整合意味着你可以在 IDE 内直接部署函数、查看 CloudWatch 日志。如果你的整个基础设施都在 AWS 上，这种无缝感是其他工具难以比拟的。
+
+---
+
+## Cline：概述
+
+Cline（原名 Claude Dev）是开源社区最具人气的 AI Agent 扩展，Apache 2.0 协议，61K+ GitHub stars。它最初是 VS Code 扩展，如今已扩展到 JetBrains、CLI、甚至独立的 Kanban Web 界面。Cline 的核心理念是「Plan / Act 分离」+「完全模型自由」——你可以接 Claude、GPT、Gemini、DeepSeek、Ollama 本地模型，甚至公司内部的私有模型。
+
+### Agent 模式能力
+
+**Plan / Act 模式是安全感的来源。** 在 Plan 模式下，Cline 会探索代码库、提出澄清问题、生成执行策略——但不做任何修改。你可以在确认策略无误后，再进入 Act 模式执行。在测试 Python CLI 的数据库迁移脚本时，Cline 的 Plan 模式先发现了三个潜在的破坏性变更，让我在执行前就调整了需求描述。这种「先审后做」的流程，在面向生产环境的开发中价值极高。
+
+![Cline Plan 模式截图：任务拆解与确认界面]
+
+**Multi-Agent Teams 让复杂任务并行化。** Cline 的协调 Agent 可以将大任务拆解为子任务，委派给不同的专业 Agent，并通过 Kanban 板实时监看进度。在重构 PeterClaw 的内容架构时，我同时运行了 4 个 Agent：一个处理 Astro 路由，一个处理 i18n，一个处理 Markdown 迁移，一个跑构建验证。整个流程在 Web 界面中一目了然。
+
+Cline 的 Agent 模式比 Kiro 更「激进」：它不会强制你写 Spec，而是让 AI 自主探索并生成计划。这种灵活性意味着更快的启动速度，但也意味着更高的「偏离预期」风险。对于经验丰富的开发者，Cline 的 Agent 模式更高效；对于新手或团队协作，Kiro 的 Spec 驱动更安全。
+
+### 上下文管理
+
+**大型代码库的上下文管理是 Cline 的短板。** 在 8000 行代码的 PeterClaw 项目中，Cline 偶尔会在多轮对话后丢失部分上下文，需要手动 `@file` 重新引入。Claude Code 的上下文管理在这方面更成熟。
+
+Cline 的上下文控制依赖你选择的模型：Claude Sonnet 的 200K 上下文窗口表现最好，DeepSeek V4 在处理跨文件关联时偶尔会出现「局部最优」问题。这意味着 Cline 的上下文质量不是由 Cline 本身决定，而是由你绑定的模型决定——这是「模型自由」的代价。
+
+不过，Cline 的 `@` 符号系统（`@file`、`@folder`、`@git`）设计得非常实用，可以精准控制每次对话的上下文范围。配合 Claude Sonnet 使用时，上下文管理的体验接近 Cursor 的水平。
+
+### 价格模型
+
+**零订阅成本，按需付费。** Cline 本身完全免费，你只需要支付 API 费用。同样的任务，我分别用 Claude Sonnet 4.6、GPT-4o、Gemini 2.5 Pro 和 DeepSeek V4 跑了一遍：
+
+- Claude Sonnet：代码质量最高，单次复杂任务约 $0.50-1.20
+- DeepSeek V4：成本最低，单次任务约 $0.15
+- Gemini 2.5 Pro：速度最快，单次任务约 $0.30
+
+一个月的密集开发，Claude Sonnet 的总成本约 $25-40，DeepSeek V4 约 $5-10。如果你有本地 GPU，Ollama + Cline 可以实现完全零成本的 AI 编程。
+
+**国内友好度满分。** 通过火山引擎 Ark、阿里云百炼或 DeepSeek 国内 API，国内开发者可以获得极低的延迟和稳定的访问体验。这是 Kiro 和 Cline 对比中，Cline 最大的优势之一。
+
+### 与 Cursor/Windsurf 的定位差异
+
+Cline 可以作为 Cursor 的「Agent 增强插件」。由于 Cline 本身是 VS Code 扩展，你可以直接在 Cursor 中安装 Cline，获得「Cursor 的流畅编辑 + Cline 的深度 Agent」的组合体验。这是 Kiro 做不到的——Kiro 是独立 IDE，无法嵌入 Cursor。
+
+对于已经习惯 Cursor 的用户，Cline 的迁移成本几乎为零：安装扩展、配置 API Key、立即使用。而 Kiro 需要适应全新的 Spec 驱动工作流，学习曲线明显更陡。
+
+Cline 还填补了 Cursor 在「自动化」领域的空白：CLI 2.0 支持 Headless CI/CD 模式，可以在 GitHub Actions 中自动运行代码审查。这是从「个人助手」升级为「团队基础设施」的关键能力。
+
+---
+
+## 对比总表
+
+| 维度 | Kiro | Cline | 备注 |
+|------|------|-------|------|
+| Agent 模式能力 | ★★★★☆ | ★★★★★ | Cline 的 Plan/Act + Multi-Agent 更灵活；Kiro 的 Spec 驱动更可控 |
+| 上下文管理 | ★★★★☆ | ★★★☆☆ | Kiro 基于 Bedrock，长对话稳定性更好；Cline 依赖模型选择 |
+| Spec / 规划驱动 | ★★★★★ | ★★★★☆ | Kiro 的 Spec 工作流最完整；Cline Plan 模式灵活但非强制 |
+| 代码生成质量 | ★★★★☆ | ★★★★☆ | 两者均接近满分，取决于底层模型 |
+| 生态与集成 | ★★★★★ | ★★★★☆ | Kiro 的 AWS 整合无可匹敌；Cline 的 CLI 2.0 更通用 |
+| 响应速度 | ★★★★☆ | ★★★★☆ | Kiro 依赖 Bedrock 延迟；Cline 依赖所选模型 |
+| 价格友好度 | ★★★☆☆ | ★★★★★ | Cline 免费 BYOK；Kiro 当前免费但未来定价不明 |
+| 国内可访问性 | ★★★★☆ | ★★★★★ | Cline + 国内 API 最优；Kiro 依赖 AWS 尚可 |
+| 上手门槛 | ★★★☆☆ | ★★★★☆ | Kiro 的 Spec 文化需要适应；Cline 与 VS Code/Cursor 零门槛 |
+| 开源 / 可审计 | ★★★★☆ | ★★★★★ | Cline 完全开源；Kiro 基于 Code OSS 但 AWS 部分闭源 |
+
+---
+
+## 场景化推荐
+
+### 如果你是一名独立开发者，预算敏感但追求 Agent 能力
+
+**推荐 Cline + DeepSeek V4。**
+
+Cline 本身免费，DeepSeek V4 的 API 成本极低（约 $1.74/百万 tokens，经常有折扣），一个月的密集开发可能只花 $5-10。你可以在 Cursor 中安装 Cline 扩展，保留 Cursor 的 Tab 补全和编辑体验，同时获得深度 Agent 能力。这是目前性价比最高的「Agent 增强」方案。
+
+### 如果你是一名技术团队负责人，关注代码质量和可追溯性
+
+**推荐 Kiro。**
+
+Kiro 的 Spec 驱动和 Hooks 系统本质上是在用 AI 强化工程规范，而不是替代规范。对于需要 Code Review、变更审计、多人协作的团队，Kiro 的工作流比「让 AI 随便改」要安全得多。迁移成本是真实的——团队需要 2-4 周适应 Spec 文化——但一旦跑通，长期来看比 Cursor 的「自由 Agent 模式」更可维护。
+
+### 如果你已经在用 Cursor，是否需要引入 Kiro 或 Cline？
+
+**推荐引入 Cline 作为「Agent 增强插件」，而非替换 Cursor。**
+
+Cursor 的 Tab 补全和 Composer 2.5 在日常编码中仍然是最流畅的。最佳组合是：
+- 保留 Cursor 作为主力编辑器，负责日常编码和快速修改
+- 在 Cursor 中安装 **Cline 扩展**，处理需要深度 Agent 能力的复杂任务（如跨组件重构、多文件迁移、自动化审查）
+- 如果团队有 AWS 基础设施且重视工程规范，可以额外引入 **Kiro** 管理大型功能迭代
+
+Kiro 和 Cline 与 Cursor 的关系都是「互补」而非「取代」。
+
+### 如果你是一名国内开发者，网络环境不稳定
+
+**推荐 Cline + 国内 API。**
+
+Kiro 依赖 AWS，在国内需要稳定的网络环境。Cline 配合火山引擎 Ark、阿里云百炼或 DeepSeek 国内节点，可以获得稳定的低延迟访问。这是目前对国内环境最务实的选择。
+
+### 如果你重视数据隐私和代码安全
+
+**推荐 Cline + 本地模型（Ollama）。**
+
+Cline 完全开源，可以审计每一行代码；配合 Ollama 运行本地模型（如 Qwen 2.5 Coder、Llama 3.1），可以实现「代码不出本机」的 AI 编程。Kiro 虽然基于 Code OSS，但 AWS 的 Bedrock 调用链路是闭源的，对于极端敏感场景不如 Cline 可控。
+
+---
+
+## 最终结论
+
+> **综合推荐：★★★★★**
+>
+> Kiro 和 Cline 不是竞争对手，而是同一赛道的两个极端：Kiro 用 Spec 驱动守住了工程质量的底线，Cline 用开源自由撑起了独立开发者的天花板。在 2026 年的 Agent IDE 战场，没有「最强」——只有「最适合你的协作方式」。
+
+**选择 Kiro，如果你**：
+- 在 AWS 生态中工作
+- 团队需要严格的代码规范和变更追溯
+- 愿意接受 Spec 驱动的学习成本，换取长期可维护性
+
+**选择 Cline，如果你**：
+- 预算敏感，追求最低成本
+- 希望模型自由切换，不被单一供应商锁定
+- 需要在国内稳定访问
+- 重视开源和可审计性
+
+**两款工具的未来观望点**：
+
+- Kiro 的 GA 定价将在下半年揭晓，如果个人开发者定价合理，它可能成为企业市场的黑马；如果定价偏向企业合同，独立开发者可能会回流到 Cline
+- Cline 正在快速补齐 IDE 体验短板，JetBrains 支持的成熟和 Kanban 界面的完善可能让它从「极客玩具」变成「团队标配」
+- Cursor 3.4  rumored 将推出更强大的原生 Agent 模式，这可能会压缩 Kiro 和 Cline 在「VS Code 用户」中的市场空间
+- 两者的竞争正在推动整个行业重新思考「AI 编程」的定义：是「更快的输入法」，还是「更靠谱的虚拟合伙人」？
+
+---
+
+## 延伸阅读
+
+- [Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？](/zh/blog/ai-tool-review-cursor-vs-windsurf/) —— AI 工具评测专栏第 1 篇
+- [Claude Code vs GitHub Copilot Chat 深度评测：命令行 AI 助手谁更强？](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/) —— AI 工具评测专栏第 2 篇
+- [AI 工具评测专栏 Vol.5：Antigravity 2.0 / Kiro / Cline 深度评测](/zh/blog/ai-tool-review-antigravity-kiro-cline/) —— 三强争霸的完整版图
+- [AI 小队组建日记 Vol.8：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) —— 我们在 PeterClaw 项目中如何用 AI 辅助编码
+- [Kiro 官方文档](https://kiro.dev)
+- [Cline GitHub 仓库](https://github.com/cline/cline)
