@@ -52,13 +52,13 @@ const schemas = structuredData
 {keywords && keywords.length > 0 && (
   <meta name="keywords" content={keywords.join(', ')} />
 )}
-<link rel="canonical" href={canonicalUrl} />
-{
+{!noindex && <link rel="canonical" href={canonicalUrl} />}
+{!noindex &&
   hreflangAlternates.map(({ locale: altLocale, path }) => (
     <link rel="alternate" hreflang={altLocale} href={absoluteUrl(path)} />
   ))
 }
-<link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+{!noindex && <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />}
 <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
 
 <meta property="og:type" content={ogType} />

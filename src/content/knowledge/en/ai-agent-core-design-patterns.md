@@ -731,4 +731,3 @@ Agent internal flow:
 
 - [AI Agent Workflow Design Patterns](/en/knowledge/ai-agent-workflow-patterns/) — Multi-agent collaboration patterns
 - [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — PeterClaw's content system design
-- [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Natural-language-driven full-stack development

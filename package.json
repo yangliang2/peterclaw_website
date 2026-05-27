@@ -9,6 +9,7 @@
     "quality:hreflang": "node scripts/validate-hreflang.mjs",
     "health:content": "node scripts/content-health-report.mjs",
     "health:smoke": "node scripts/production-smoke-test.mjs",
+    "health:links": "node scripts/check-links.mjs --output link-health-report.md",
     "build:embeddings": "node scripts/generate-embeddings.mjs",
     "build": "npm run build:embeddings && astro check && astro build && npm run quality:hreflang",
     "preview": "astro preview",

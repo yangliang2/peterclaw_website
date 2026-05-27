@@ -113,7 +113,7 @@ reviews:
 - **Windsurf** —— $15/月，Cascade 工作流在多文件编辑场景下体验极佳，适合喜欢「一句话改整个项目」的开发者。详细对比可参考我们之前的深度评测。
 - **Claude Code** —— 终端优先，适合后端开发和脚本编写，目前免费试用中。
 
-> **深度对比**：[Cursor vs Windsurf 2026 深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/) | [Claude Code vs Copilot Chat](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/)
+> **延伸资源**：[PeterClaw 工具箱](/zh/tools/)
 
 ### 版本控制：GitHub（默认推荐）
 
@@ -309,8 +309,7 @@ reviews:
 
 ## 相关阅读
 
-- [Cursor vs Windsurf 2026 深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/) — 开发阶段核心工具的详细对比
-- [Claude Code vs Copilot Chat](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/) — 终端 AI 编程助手选型
+- [PeterClaw 工具箱](/zh/tools/) — 持续维护的开发工具推荐
 - [AI Agent 工作流设计模式](/zh/knowledge/ai-agent-workflow-patterns/) — 如果你打算用 AI Agent 辅助开发，这篇模式库值得收藏
 - [内容架构：博客与知识库双轨](/zh/knowledge/content-architecture/) — PeterClaw 的内容系统如何支撑独立产品运营
 

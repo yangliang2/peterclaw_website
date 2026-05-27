@@ -99,6 +99,8 @@ const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);
 const tocEntries = extractTocFromMarkdown(post.body ?? '');
+const languageSwitchPath =
+  alternateLocales.find(({ locale }) => locale !== lang)?.path ?? `/${lang === 'zh' ? 'en' : 'zh'}/blog/`;
 const structuredData: JsonLdSchema[] = [
   buildArticleSchema({
     title: post.data.title,
@@ -147,6 +149,7 @@ if (
   keywords={post.data.keywords}
   structuredData={structuredData}
   alternateLocales={alternateLocales}
+  languageSwitchPath={languageSwitchPath}
 >
   <ReadingProgress />
   <div class="article-layout">

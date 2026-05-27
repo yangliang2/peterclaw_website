@@ -87,7 +87,7 @@ export const projects: Project[] = [
       zh: 'PeterClaw 个人网站界面抽象预览图',
       en: 'Abstract preview of the PeterClaw personal website interface',
     },
-    url: 'https://peterclaw.com',
+    url: 'https://peterclaw-website.vercel.app/',
     stack: ['Astro', 'TypeScript', 'Content Collections', 'Vercel'],
     github: 'https://github.com/yangliang2/peterclaw_website',
     githubRepo: 'yangliang2/peterclaw_website',

@@ -749,7 +749,6 @@ Agent 内部流程：
 
 - [AI Agent 工作流设计模式：从 PeterClaw Squad 实战中提炼的七条可复用原则](/zh/knowledge/ai-agent-workflow-patterns/) —— 多 Agent 协作层面的设计模式
 - [内容架构：博客与知识库双轨](/zh/knowledge/content-architecture/) —— PeterClaw 网站的内容系统设计说明
-- [AI 日记 Vol.5：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) —— 自然语言驱动全栈开发的技术实践
 - [当七个 AI 组成一家公司——多智能体协作的真实体验](/zh/blog/ai-diary-005-multi-agent-collaboration/) —— 七人小队完整协作实录
 
 ---

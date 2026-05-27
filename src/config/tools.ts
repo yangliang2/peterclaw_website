@@ -36,7 +36,6 @@ const categoriesZh: ToolCategory[] = [
         description: '基于 VS Code 的 AI 原生编辑器，当前代码生成的行业标杆。',
         rating: '5/5',
         review: '日常编码的绝对主力。Composer 模式在多文件重构时大幅减少了上下文切换的时间，Tab 补全的准确度极高。',
-        reviewLink: '/blog/ai-tool-review-cursor-vs-windsurf',
       },
       {
         name: 'Windsurf',
@@ -44,7 +43,6 @@ const categoriesZh: ToolCategory[] = [
         description: 'Codeium 推出的下一代智能 IDE，拥有独创的 Cascade 协作流。',
         rating: '4.5/5',
         review: '在理解长上下文和复杂项目架构时表现优异。作为 Cursor 的有力竞争者，非常适合探索性编程。',
-        reviewLink: '/blog/ai-tool-review-cursor-vs-windsurf',
       },
       {
         name: 'Claude Code',
@@ -52,7 +50,6 @@ const categoriesZh: ToolCategory[] = [
         description: 'Anthropic 官方出品的 CLI 驱动编码助手。',
         rating: '4/5',
         review: '在终端中直接进行深度代码分析与系统级重构的利器。相比于图形界面 IDE，它更贴近底层逻辑与自动化工作流。',
-        reviewLink: '/blog/ai-tool-review-claude-code-vs-copilot-chat',
       },
     ],
   },
@@ -65,7 +62,7 @@ const categoriesZh: ToolCategory[] = [
         description: '无缝集成于 Notion 工作区的 AI 助手。',
         rating: '4.5/5',
         review: '处理会议纪要、头脑风暴和初稿生成的效率神器。它的优势在于能直接读取和调用你现有的 Notion 数据库。',
-        reviewLink: '/blog/ai-diary-008-creative-writing-tools',
+        reviewLink: '/zh/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/',
       },
       {
         name: 'Obsidian Copilot',
@@ -73,7 +70,7 @@ const categoriesZh: ToolCategory[] = [
         description: '为 Obsidian 本地知识库打造的开源 AI 聊天和写作插件。',
         rating: '4/5',
         review: '将大模型的推理能力带入本地私有笔记。双向链接加上 AI 的语义搜索，让网状笔记的价值成倍放大。',
-        reviewLink: '/blog/ai-diary-008-creative-writing-tools',
+        reviewLink: '/zh/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/',
       },
     ],
   },
@@ -172,7 +169,6 @@ const categoriesEn: ToolCategory[] = [
         description: 'An AI-first code editor based on VS Code, the current industry benchmark.',
         rating: '5/5',
         review: 'The absolute daily driver for coding. Composer mode drastically cuts context switching during large refactors, and Tab completion is highly accurate.',
-        reviewLink: '/en/blog/ai-tool-review-cursor-vs-windsurf',
       },
       {
         name: 'Windsurf',
@@ -180,7 +176,6 @@ const categoriesEn: ToolCategory[] = [
         description: 'The next-generation smart IDE from Codeium featuring the unique Cascade workflow.',
         rating: '4.5/5',
         review: 'Excels at understanding long contexts and complex architectures. A strong competitor to Cursor and great for exploratory programming.',
-        reviewLink: '/en/blog/ai-tool-review-cursor-vs-windsurf',
       },
       {
         name: 'Claude Code',
@@ -188,7 +183,6 @@ const categoriesEn: ToolCategory[] = [
         description: 'Anthropic’s official CLI-driven coding assistant.',
         rating: '4/5',
         review: 'A powerful tool for deep code analysis and system-level refactoring directly in the terminal, leaning heavily towards underlying logic and automation.',
-        reviewLink: '/en/blog/ai-tool-review-claude-code-vs-copilot-chat',
       },
     ],
   },
@@ -201,7 +195,7 @@ const categoriesEn: ToolCategory[] = [
         description: 'An AI assistant seamlessly integrated into the Notion workspace.',
         rating: '4.5/5',
         review: 'An efficiency booster for meeting summaries, brainstorming, and initial drafting. Its main advantage is reading directly from your Notion databases.',
-        reviewLink: '/en/blog/ai-diary-008-creative-writing-tools',
+        reviewLink: '/en/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/',
       },
       {
         name: 'Obsidian Copilot',
@@ -209,7 +203,7 @@ const categoriesEn: ToolCategory[] = [
         description: 'An open-source AI chat and writing plugin built for Obsidian local vaults.',
         rating: '4/5',
         review: 'Brings LLM reasoning into local, private notes. Bi-directional linking combined with AI semantic search multiplies the value of your note network.',
-        reviewLink: '/en/blog/ai-diary-008-creative-writing-tools',
+        reviewLink: '/en/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/',
       },
     ],
   },

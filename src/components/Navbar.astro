@@ -3,14 +3,15 @@ import { ui, type Locale, localePath, locales } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
+  languageSwitchPath?: string;
 }
 
-const { locale } = Astro.props;
+const { locale, languageSwitchPath } = Astro.props;
 const copy = ui[locale];
 const prefix = `/${locale}`;
 const currentPath = Astro.url.pathname;
 const otherLocale = locales.find((l) => l !== locale) as Locale;
-const switchPath = localePath(currentPath, otherLocale);
+const switchPath = languageSwitchPath ?? localePath(currentPath, otherLocale);
 const navItems = [
   { name: copy.about, href: `${prefix}/about/` },
   { name: copy.now, href: `${prefix}/now/` },

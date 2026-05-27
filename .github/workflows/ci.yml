@@ -10,6 +10,9 @@ jobs:
   build:
     name: Build and Lint
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +48,50 @@ jobs:
             echo
             echo "Commit: \`${{ github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check rendered site links
+        run: npm run health:links
+      - name: Add link health results to job summary
+        if: always() && hashFiles('link-health-report.md') != ''
+        run: cat link-health-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload link health report
+        if: always() && hashFiles('link-health-report.md') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-health-report-${{ github.run_id }}
+          path: link-health-report.md
+          retention-days: 14
+      - name: Post link health report on pull request
+        if: always() && github.event_name == 'pull_request' && hashFiles('link-health-report.md') != ''
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- rendered-site-link-health -->';
+            const report = fs.readFileSync('link-health-report.md', 'utf8');
+            const body = `${marker}\n${report}`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker)
+            );
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
 
   lighthouse:
     name: Lighthouse Audit

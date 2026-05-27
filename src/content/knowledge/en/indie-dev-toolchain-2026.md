@@ -113,7 +113,7 @@ This guide is based on real project experience from the PeterClaw Squad over the
 - **Windsurf** — $15/month. The Cascade workflow excels at multi-file editing. Ideal if you like describing changes in one sentence and having the entire project updated. See our detailed comparison below.
 - **Claude Code** — Terminal-first, great for backend development and scripting. Currently free during preview.
 
-> **Detailed comparison**: [Cursor vs Windsurf 2026 Deep Dive](/en/blog/ai-tool-review-cursor-vs-windsurf/)
+> **Related resource**: [PeterClaw Toolbox](/en/tools/)
 
 ### Version Control: GitHub (Default)
 
@@ -309,8 +309,7 @@ If you choose the all-free stack (Notion + v0 + GitHub + Vercel + Cloudflare + s
 
 ## Related Reading
 
-- [Cursor vs Windsurf 2026 Deep Dive](/en/blog/ai-tool-review-cursor-vs-windsurf/) — Detailed comparison of core development tools
-- [AI Diary Vol.5: Vibe Coding and Multi-Agent Collaboration](/en/blog/ai-diary-005-vibe-coding/) — Technical practices for AI-assisted development
+- [PeterClaw Toolbox](/en/tools/) — Maintained recommendations for core development tools
 - [AI Agent Workflow Design Patterns](/en/knowledge/ai-agent-workflow-patterns/) — If you plan to use AI agents in development, this pattern library is worth bookmarking
 - [Content Architecture: Blog and Knowledge Base](/en/knowledge/content-architecture/) — How PeterClaw's content system supports indie product operations
 
