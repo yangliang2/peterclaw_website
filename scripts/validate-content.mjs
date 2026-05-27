@@ -95,6 +95,7 @@ function validateEntry({ collection, file }) {
 
   validateSlug(file, collection, relativePath);
   validateOgImage(data.ogImage, isDraft, relativePath);
+  validateCover(data.cover, relativePath);
   validateLinks(body, file, relativePath);
 
   if (!isDraft) {
@@ -145,6 +146,27 @@ function validateSlug(file, collection, relativePath) {
     if (!segmentPattern.test(segment)) {
       errors.push(`${relativePath}: slug segment "${segment}" must use lowercase kebab-case.`);
     }
+  }
+}
+
+function validateCover(cover, relativePath) {
+  if (cover === undefined || cover === null || cover === '') {
+    return;
+  }
+
+  if (typeof cover !== 'string' || cover.trim() === '') {
+    errors.push(`${relativePath}: "cover" must be a non-empty filename when set.`);
+    return;
+  }
+
+  if (cover.includes('/') || cover.includes('..')) {
+    errors.push(`${relativePath}: "cover" must be a filename under src/assets/blog/covers/, not a path.`);
+    return;
+  }
+
+  const coverRoot = path.join(repoRoot, 'src', 'assets', 'blog', 'covers');
+  if (!existsSync(path.join(coverRoot, cover))) {
+    errors.push(`${relativePath}: "cover" points to a missing asset: src/assets/blog/covers/${cover}.`);
   }
 }
 

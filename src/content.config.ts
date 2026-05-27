@@ -12,6 +12,8 @@ const sharedContentSchema = z.object({
   draft: z.boolean().default(false),
   /** Absolute path from site root, e.g. /og-default.png or /images/post-cover.png */
   ogImage: z.string().optional(),
+  /** Filename under src/assets/blog/covers/, e.g. journal.svg */
+  cover: z.string().optional(),
   coreIdea: z.string().optional(),
   difficultyLevel: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
   prerequisites: z.array(z.string()).default([]),

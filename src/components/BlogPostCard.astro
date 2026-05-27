@@ -1,0 +1,186 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { siteConfig } from '@/config/site';
+import type { Locale } from '@/lib/i18n';
+import { resolveCoverAsset, tagCoverGradient } from '@/utils/cover';
+import { estimateReadingMinutes, formatReadingTime } from '@/utils/reading';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  locale: Locale;
+  href: string;
+}
+
+const { post, locale, href } = Astro.props;
+
+const contentTypeCovers: Partial<Record<string, string>> = {
+  journal: 'journal.svg',
+  review: 'review.svg',
+  tutorial: 'tutorial.svg',
+};
+
+const coverAsset =
+  resolveCoverAsset(post.data.cover) ??
+  resolveCoverAsset(post.data.contentType ? contentTypeCovers[post.data.contentType] : undefined);
+
+const placeholderGradient = tagCoverGradient(post.data.tags, post.id);
+const readingMinutes = estimateReadingMinutes(post.body ?? '');
+const readingLabel = formatReadingTime(readingMinutes, locale);
+const visibleTags = post.data.tags.slice(0, 3);
+const published = post.data.publishedAt.toISOString().slice(0, 10);
+const author = siteConfig.author.name;
+const coverAlt = locale === 'zh' ? `${post.data.title} 封面图` : `${post.data.title} — cover image`;
+---
+
+<a class="blog-post-card glass-card" href={href}>
+  <div class="blog-post-card-cover">
+    {
+      coverAsset ? (
+        <Image
+          class="blog-post-card-image"
+          src={coverAsset}
+          alt={coverAlt}
+          width={640}
+          height={360}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="blog-post-card-placeholder" style={`background: ${placeholderGradient}`} aria-hidden="true" />
+      )
+    }
+  </div>
+
+  <div class="blog-post-card-body">
+    <div class="blog-post-card-meta">
+      <time datetime={published}>{published}</time>
+      <span class="blog-post-card-meta-sep" aria-hidden="true">·</span>
+      <span>{author}</span>
+      <span class="blog-post-card-meta-sep" aria-hidden="true">·</span>
+      <span>{readingLabel}</span>
+    </div>
+
+    <h2 class="blog-post-card-title">{post.data.title}</h2>
+    <p class="blog-post-card-description">{post.data.description}</p>
+
+    {
+      visibleTags.length > 0 && (
+        <ul class="blog-post-card-tags" aria-label={locale === 'zh' ? '标签' : 'Tags'}>
+          {visibleTags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</a>
+
+<style>
+  .blog-post-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      background 0.25s ease;
+  }
+
+  .blog-post-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgb(15 24 43 / 18%);
+    background: var(--color-surface-hover, var(--gradient-glass));
+  }
+
+  .blog-post-card-cover {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-soft-bg);
+  }
+
+  .blog-post-card-image,
+  .blog-post-card-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .blog-post-card-placeholder {
+    min-height: 100%;
+  }
+
+  .blog-post-card-body {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+
+  .blog-post-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+  }
+
+  .blog-post-card-meta-sep {
+    opacity: 0.65;
+  }
+
+  .blog-post-card-title {
+    margin: 0;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .blog-post-card-description {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  .blog-post-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0;
+    margin: 0.25rem 0 0;
+    list-style: none;
+  }
+
+  .blog-post-card-tags li {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    color: var(--color-secondary);
+    background: var(--color-primary-soft-bg);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+</style>
