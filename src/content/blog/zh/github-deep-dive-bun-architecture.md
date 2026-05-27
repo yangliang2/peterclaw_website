@@ -41,6 +41,8 @@ reviews:
     date: "2026-05-25"
 ---
 
+> 🌐 [English version available](/en/blog/github-deep-dive-bun-architecture/)
+
 > 89,000 Stars，212 个版本，被 Cursor 和 Midjourney 采用——Bun 从一个「实验性项目」变成了认真挑战 JavaScript 生态标准的选手。
 >
 > 这篇文章不介绍 `bun init` 的用法，而是回答一个更硬核的问题：**一个 90MB 左右的可执行文件，凭什么同时取代 Node.js、npm、Jest 和 Vite？**

@@ -41,6 +41,8 @@ reviews:
     date: "2026-05-25"
 ---
 
+> 🌐 [English version available](/en/blog/github-deep-dive-n8n-workflow-engine/)
+
 > ~80,000 Stars，400+ 应用集成，2700 万+ Docker 下载——n8n 是 2026 年工作流自动化领域最活跃的开源项目。
 >
 > 但它真正引人注目的不是「Zapier 的开源替代品」这个定位，而是 2025-2026 年引入的 **AI Agent 节点**：让 LLM 在工作流中自主决策、调用工具、循环执行，把一个线性的「触发-动作」系统变成了真正的智能代理编排平台。
