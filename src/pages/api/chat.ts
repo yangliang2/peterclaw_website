@@ -26,6 +26,8 @@ function json(payload: object, status: number) {
   });
 }
 
+type MessageItem = { role: string; content: string };
+
 export const POST: APIRoute = async ({ request }) => {
   const apiKey = import.meta.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
@@ -42,18 +44,45 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'rate_limited' }, 429);
   }
 
-  let body: { question?: string; articleContent?: string; locale?: string };
+  let body: { messages?: MessageItem[]; question?: string; articleContent?: string; locale?: string };
   try {
     body = await request.json();
   } catch {
     return json({ error: 'invalid_json' }, 400);
   }
 
-  const question = body.question?.trim();
   const articleContent = (body.articleContent ?? '').trim().slice(0, 6000);
   const locale = body.locale === 'en' ? 'en' : 'zh';
 
-  if (!question || question.length === 0 || question.length > 500) {
+  // Accept multi-turn messages array or legacy single question field
+  const rawMessages: MessageItem[] =
+    Array.isArray(body.messages) && body.messages.length > 0
+      ? body.messages
+      : body.question?.trim()
+        ? [{ role: 'user', content: body.question.trim() }]
+        : [];
+
+  if (rawMessages.length === 0) {
+    return json({ error: 'invalid_request' }, 400);
+  }
+
+  // Sanitize: keep last 10, valid roles only, cap per-message length
+  const chatMessages = rawMessages
+    .filter(
+      (m): m is { role: 'user' | 'assistant'; content: string } =>
+        (m.role === 'user' || m.role === 'assistant') &&
+        typeof m.content === 'string' &&
+        m.content.trim().length > 0,
+    )
+    .slice(-10)
+    .map((m) => ({ role: m.role, content: m.content.trim().slice(0, 1000) }));
+
+  if (chatMessages.length === 0 || chatMessages[chatMessages.length - 1]?.role !== 'user') {
+    return json({ error: 'invalid_request' }, 400);
+  }
+
+  // Validate last user message isn't abusively long
+  if ((chatMessages[chatMessages.length - 1]?.content.length ?? 0) > 500) {
     return json({ error: 'invalid_request' }, 400);
   }
 
@@ -76,10 +105,7 @@ export const POST: APIRoute = async ({ request }) => {
             model: 'deepseek-v4-pro',
             stream: true,
             max_tokens: 1024,
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: question },
-            ],
+            messages: [{ role: 'system', content: systemPrompt }, ...chatMessages],
           }),
         });
 
