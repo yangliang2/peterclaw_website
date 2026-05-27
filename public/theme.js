@@ -55,7 +55,18 @@
 
   function cyclePreference() {
     const current = root.dataset.themePreference;
-    const preference = isPreference(current) ? nextPreference(current) : 'light';
+    const resolved = root.dataset.theme === 'dark' ? 'dark' : 'light';
+
+    // UX: if user is in "system" mode, first click should visibly change theme.
+    // Otherwise, cycling from system -> light can be a no-op on light systems.
+    const preference =
+      current === 'system'
+        ? resolved === 'dark'
+          ? 'light'
+          : 'dark'
+        : isPreference(current)
+          ? nextPreference(current)
+          : 'dark';
     applyPreference(preference, true);
     return preference;
   }
