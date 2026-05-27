@@ -1,16 +1,36 @@
 ---
 import type { Locale } from '@/lib/i18n';
 import type { Project, ProjectsCopy } from '@/config/projects';
+import type { GitHubProjectRepository } from '@/lib/github';
 import { Image } from 'astro:assets';
 
 interface Props {
   project: Project;
   locale: Locale;
   copy: ProjectsCopy;
+  githubStats?: GitHubProjectRepository;
 }
 
-const { project, locale, copy } = Astro.props;
+const { project, locale, copy, githubStats } = Astro.props;
 const projectUrl = typeof project.url === 'string' ? project.url : project.url[locale];
+const languageColors: Record<string, string> = {
+  Astro: '#ff5d01',
+  CSS: '#563d7c',
+  JavaScript: '#f1e05a',
+  TypeScript: '#3178c6',
+  Python: '#3572a5',
+  Go: '#00add8',
+  Rust: '#dea584',
+  Vue: '#41b883',
+};
+const numberFormatter = new Intl.NumberFormat(locale === 'en' ? 'en' : 'zh-CN', {
+  notation: 'compact',
+  maximumFractionDigits: 1,
+});
+const dateFormatter = new Intl.DateTimeFormat(locale === 'en' ? 'en' : 'zh-CN', {
+  dateStyle: 'medium',
+});
+const languageColor = languageColors[githubStats?.language ?? ''] ?? '#8b949e';
 ---
 
 <article class="project-card glass-card" data-tags={project.tags.join(' ')} data-github-repo={project.githubRepo}>
@@ -35,25 +55,28 @@ const projectUrl = typeof project.url === 'string' ? project.url : project.url[l
   </div>
 
   {
-    project.githubRepo && (
-      <div class="github-stats" data-github-stats aria-live="polite">
-        <p class="github-stats-loading">{copy.githubStatsLoading}</p>
-        <dl hidden>
+    githubStats && (
+      <div class="github-stats" aria-live="polite">
+        <dl>
           <div>
             <dt>{copy.stars}</dt>
-            <dd data-stat="stars"></dd>
+            <dd aria-label={`${githubStats.stars} ${copy.stars}`}>
+              &#9733; {numberFormatter.format(githubStats.stars)}
+            </dd>
           </div>
           <div>
             <dt>{copy.forks}</dt>
-            <dd data-stat="forks"></dd>
+            <dd>{numberFormatter.format(githubStats.forks)}</dd>
           </div>
           <div>
             <dt>{copy.language}</dt>
-            <dd class="language" data-stat="language"></dd>
+            <dd class="language" style={`--language-color: ${languageColor}`}>
+              {githubStats.language ?? '-'}
+            </dd>
           </div>
           <div>
             <dt>{copy.updated}</dt>
-            <dd data-stat="updated"></dd>
+            <dd>{dateFormatter.format(new Date(githubStats.updatedAt))}</dd>
           </div>
         </dl>
       </div>
