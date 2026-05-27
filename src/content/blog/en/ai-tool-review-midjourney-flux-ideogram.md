@@ -60,7 +60,7 @@ This review is based on the following sources:
 
 Target readers: designers, content creators, indie developers, and e-commerce operators who need AI-generated images for real work.
 
-> 📎 **Full methodology and source documentation**: See [`content-strategy/ai-tool-reviews/PET-562-material-sources.md`](https://github.com/yangliang2/peterclaw_website/blob/main/content-strategy/ai-tool-reviews/PET-562-material-sources.md)
+> 📎 **Full methodology and source documentation**: See `content-strategy/ai-tool-reviews/PET-562-material-sources.md` in the repository.
 
 ---
 
@@ -458,10 +458,7 @@ Reason: Chinese text rendering is a hard threshold. Midjourney and Flux failure 
 ## Further Reading
 
 - [Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?](/en/blog/ai-tool-review-cursor-vs-windsurf/) — AI Tool Review Series Issue 1
-- [Claude Code vs GitHub Copilot Chat Deep Dive](/en/blog/ai-tool-review-claude-code-vs-copilot-chat/) — AI Tool Review Series Issue 2
 - [Antigravity 2.0 / Kiro / Cline Deep Dive](/en/blog/ai-tool-review-antigravity-kiro-cline/) — AI Tool Review Series Issue 5
-- [AI Diary Vol.8: Polishing One Article with Three AI Writing Tools](/en/blog/ai-diary-008-creative-writing-tools/) — AI tool selection for creative writing
 - [PeterClaw Toolbox](/en/tools/) — Our daily creative and development tools
 - [Midjourney Official Docs](https://docs.midjourney.com)
 - [Black Forest Labs FLUX Models](https://bfl.ai)
-- [Ideogram Official Docs](https://ideogram.ai)
