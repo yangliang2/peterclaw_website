@@ -1,9 +1,10 @@
 ---
-title: "AI Tool Review Series Vol.1: Cursor vs Windsurf 2026 In-Depth Review: Which Is the Best AI Code Editor?"
-description: "After two weeks of real-project testing, we compare Cursor and Windsurf across five dimensions — code completion, Agent capabilities, context understanding, response speed, and pricing — with clear recommendations for every scenario."
+title: "AI Tool Review Vol.1: Cursor vs Windsurf 2026 — Which AI Code Editor Wins?"
+description: "Two weeks of real-project testing across code completion, Agent capabilities, context understanding, response speed, and pricing. A definitive comparison for developers choosing between Cursor and Windsurf."
 contentType: review
 publishedAt: 2026-05-25
 ogImage: /og-default.png
+cover: review.svg
 tags:
   - AI Tool Review
   - Productivity Tools
@@ -26,7 +27,7 @@ recommendation: 5
 reviewedProduct:
   name: Cursor
   url: https://cursor.com
-draft: true
+draft: false
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
@@ -36,6 +37,8 @@ reviews:
     date: "2026-05-26"
 ---
 
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+
 > **AI Tool Review Series · Issue 1**
 >
 > When AI code editors evolve from "toys to try" into "daily production tools," choosing the right one matters more than choosing ten cheap ones.
@@ -44,7 +47,7 @@ reviews:
 
 ## Review Background
 
-In 2026, the AI code editor market has matured. Cursor and Windsurf (formerly Codeium) are the two most discussed tools in Chinese developer communities. Yet most online reviews remain at the "feature overview" level, lacking deep comparisons in real projects.
+In 2026, the AI code editor market has matured. Cursor and Windsurf (formerly Codeium) are two of the most discussed tools in developer communities. Yet most online reviews remain at the "feature overview" level, lacking deep comparisons in real projects.
 
 This review is based on the following environment:
 
@@ -67,6 +70,30 @@ This review focuses on five core dimensions:
 3. **Context Understanding** — How deep is its understanding of large codebases? Can it correlate across files?
 4. **Response Speed** — Latency from input to suggestion, and Agent task execution speed
 5. **Price & Value** — Subscription cost, free-tier limits, team pricing
+
+<ReviewScoreCard
+  title="Cursor Score Card"
+  subtitle="Dimensions and weights match this review (max 5)."
+  dimensions={[
+    { label: 'Code Completion', score: 5, maxScore: 5, weight: 0.25 },
+    { label: 'Agent Tasks', score: 5, maxScore: 5, weight: 0.25 },
+    { label: 'Context Understanding', score: 5, maxScore: 5, weight: 0.2 },
+    { label: 'Response Speed', score: 4, maxScore: 5, weight: 0.15 },
+    { label: 'Price / Value', score: 4, maxScore: 5, weight: 0.15 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Windsurf Score Card"
+  subtitle="Same dimensions and weights for quick side-by-side comparison."
+  dimensions={[
+    { label: 'Code Completion', score: 4, maxScore: 5, weight: 0.25 },
+    { label: 'Agent Tasks', score: 4, maxScore: 5, weight: 0.25 },
+    { label: 'Context Understanding', score: 4, maxScore: 5, weight: 0.2 },
+    { label: 'Response Speed', score: 5, maxScore: 5, weight: 0.15 },
+    { label: 'Price / Value', score: 5, maxScore: 5, weight: 0.15 },
+  ]}
+/>
 
 ---
 
@@ -110,7 +137,7 @@ Windsurf is an AI IDE launched by the Codeium team in late 2024, built on VS Cod
 
 **Agent code modifications are less precise.** Cascade tends to generate large code blocks and replace them wholesale rather than making surgical edits. This occasionally overwrites parts you didn't want changed. I encountered this once: asked to add a prop to a component, it also rewrote the component's internal state management.
 
-**Imperfect Chinese support.** Windsurf's interface and AI replies occasionally show garbled text or truncation in Chinese contexts; Cursor is more stable here.
+**UI polish in non-English contexts.** Windsurf's interface and AI replies occasionally show garbled text or truncation in non-English contexts; Cursor is more stable here.
 
 ---
 
@@ -124,7 +151,7 @@ Windsurf is an AI IDE launched by the Codeium team in late 2024, built on VS Cod
 | Response Speed | ★★★★☆ | ★★★★★ | Windsurf indexes faster with lower daily completion latency |
 | Price | ★★★★☆ | ★★★★★ | Windsurf Pro is $5/month cheaper with a more generous free tier |
 | Learning Curve | ★★★★★ | ★★★★★ | Both are zero-friction for VS Code users |
-| Chinese Support | ★★★★★ | ★★★★☆ | Cursor is more stable in Chinese |
+| Multilingual UI | ★★★★★ | ★★★★☆ | Cursor is more stable outside English |
 
 ---
 
@@ -172,7 +199,6 @@ Cursor's team features (shared context, team knowledge base, centralized billing
 
 ## Further Reading
 
-- [AI Squad Launch Diary Vol.11: When I Started Trusting AI — Boundaries and Authorization in Human-AI Collaboration](/zh/blog/ai-diary-007-boundaries-trust/) — How we allocate AI tool usage permissions in PeterClaw Squad
 - [PeterClaw Toolbox](/en/tools/) — Our daily development tool inventory
 - [Cursor Official Docs](https://cursor.com/docs)
 - [Windsurf Official Docs](https://docs.windsurf.com/)
