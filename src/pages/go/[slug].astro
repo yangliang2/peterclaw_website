@@ -1,0 +1,45 @@
+---
+import BaseAnalytics from '@/components/BaseAnalytics.astro';
+import { affiliateLinks, type AffiliateLink } from '@/config/affiliate-links.config';
+
+export function getStaticPaths() {
+  return affiliateLinks.map((link) => ({
+    params: { slug: link.slug },
+    props: { link },
+  }));
+}
+
+const { link } = Astro.props as { link: AffiliateLink };
+const { slug } = Astro.params as { slug: string };
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0; url=${link.url}`} />
+    <title>{`${link.label} — /go/${slug}`}</title>
+    <BaseAnalytics />
+  </head>
+  <body>
+    <noscript>
+      <p>
+        Redirecting to <a href={link.url} rel="noopener noreferrer">{link.url}</a>
+      </p>
+    </noscript>
+
+    <script is:inline>
+      {`(() => {
+        const slug = ${JSON.stringify(slug)};
+        const destination = ${JSON.stringify(link.url)};
+        try {
+          // Provided by BaseAnalytics in production (Umami/Plausible unified wrapper).
+          window.trackEvent?.('affiliate_click', { slug, destination });
+        } catch {}
+        window.location.replace(destination);
+      })();`}
+    </script>
+  </body>
+</html>
+

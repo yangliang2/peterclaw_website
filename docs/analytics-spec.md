@@ -44,6 +44,11 @@ This document defines the user behavior events tracked on the PeterClaw website 
 - **Trigger**: Click on X or LinkedIn share buttons.
 - **Attributes**: `platform`, `url`
 
+### 7. Affiliate Shortlink Redirect
+- **Event Name**: `affiliate_click`
+- **Trigger**: A visit to any `/go/*` shortlink page.
+- **Attributes**: `slug`, `destination`
+
 ## Verification
 - Use Browser DevTools (Network tab) to verify requests to `https://analytics.eu.umami.is/api/send` or the configured Plausible endpoint.
 - In development, analytics are disabled by default (`import.meta.env.PROD` check).
