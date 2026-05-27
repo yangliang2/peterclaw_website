@@ -80,12 +80,16 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
     });
 
     window
-      .matchMedia('(prefers-color-scheme: light)')
+      .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', () => {
-        if (!document.documentElement.getAttribute('data-theme')) {
+        if (document.documentElement.dataset.themePreference === 'system') {
           syncGiscusTheme();
         }
       });
+
+    document.documentElement.addEventListener('peterclaw-theme-change', () => {
+      syncGiscusTheme();
+    });
 
     window.addEventListener('message', (event) => {
       if (event.origin !== GISCUS_ORIGIN || event.data?.giscus?.discussion) return;
