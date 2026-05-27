@@ -6,6 +6,9 @@ import {
   fetchFeaturedRepositories,
   fetchProjectRepositories,
   fetchRecentCommits,
+  type GitHubCommit,
+  type GitHubProjectRepository,
+  type GitHubRepository,
   githubCommitSchema,
   githubProjectRepositorySchema,
   githubRepositorySchema,
@@ -44,6 +47,9 @@ const cacheSchema = z.object({
 
 interface GitHubContentLoaderOptions {
   projectRepositories: readonly string[];
+  fallbackFeaturedRepositories?: readonly GitHubRepository[];
+  fallbackRecentCommits?: readonly GitHubCommit[];
+  fallbackProjectRepositories?: readonly GitHubProjectRepository[];
   cacheFile?: string;
   ttlMs?: number;
 }
@@ -106,6 +112,9 @@ function buildEntries(data: {
 
 export function githubContentLoader({
   projectRepositories,
+  fallbackFeaturedRepositories = [],
+  fallbackRecentCommits = [],
+  fallbackProjectRepositories = [],
   cacheFile = CACHE_FILE,
   ttlMs = CACHE_TTL_MS,
 }: GitHubContentLoaderOptions): Loader {
@@ -121,10 +130,38 @@ export function githubContentLoader({
         try {
           const token = process.env.GITHUB_TOKEN;
           const fetchedAt = new Date().toISOString();
+          const [featuredRepositories, recentCommits, projectRepositoryResults] =
+            await Promise.all([
+              fetchFeaturedRepositories({ token }).catch((error) => {
+                if (fallbackFeaturedRepositories.length === 0) {
+                  throw error;
+                }
+
+                logger.warn(`Using static featured repository fallback: ${String(error)}`);
+                return githubRepositorySchema.array().parse(fallbackFeaturedRepositories);
+              }),
+              fetchRecentCommits({ token }).catch((error) => {
+                if (fallbackRecentCommits.length === 0) {
+                  throw error;
+                }
+
+                logger.warn(`Using static recent commit fallback: ${String(error)}`);
+                return githubCommitSchema.array().parse(fallbackRecentCommits);
+              }),
+              fetchProjectRepositories(projectRepositories, { token }).catch((error) => {
+                if (fallbackProjectRepositories.length === 0) {
+                  throw error;
+                }
+
+                logger.warn(`Using static project repository fallback: ${String(error)}`);
+                return githubProjectRepositorySchema.array().parse(fallbackProjectRepositories);
+              }),
+            ]);
+
           entries = buildEntries({
-            featuredRepositories: await fetchFeaturedRepositories({ token }),
-            recentCommits: await fetchRecentCommits({ token }),
-            projectRepositories: await fetchProjectRepositories(projectRepositories, { token }),
+            featuredRepositories,
+            recentCommits,
+            projectRepositories: projectRepositoryResults,
             fetchedAt,
             fromCache: false,
           });

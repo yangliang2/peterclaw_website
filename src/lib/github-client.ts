@@ -58,6 +58,7 @@ export const githubCommitSchema = z.object({
 
 export const githubProjectRepositorySchema = z.object({
   repo: z.string(),
+  description: z.string().nullable(),
   stars: z.number().int().nonnegative(),
   forks: z.number().int().nonnegative(),
   language: z.string().nullable(),
@@ -220,6 +221,7 @@ export async function fetchProjectRepositories(
 
       return githubProjectRepositorySchema.parse({
         repo: parsed.full_name,
+        description: parsed.description,
         stars: parsed.stargazers_count,
         forks: parsed.forks_count,
         language: parsed.language,
