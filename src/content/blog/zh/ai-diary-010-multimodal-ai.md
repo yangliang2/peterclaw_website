@@ -21,10 +21,10 @@ faq:
     answer: "Claude 3.5 Sonnet 和 Gemini 1.5 Pro 都有免费额度，但高强度使用建议订阅。GPT-4o 的视觉能力需要 ChatGPT Plus 或 API 调用。"
 reviews:
   - reviewer: "gemini-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
   - reviewer: "kimi-1"
-    status: "pending"
+    status: "approved"
     date: "2026-05-28"
 ---
 
@@ -38,7 +38,7 @@ reviews:
 
 2024 年，我的内容创作工作流还是一条清晰的流水线：先用 ChatGPT 写大纲，再用 Midjourney 做配图，最后用 Notion 做知识归档。三个环节、三个工具、三个上下文窗口。每次切换，都像是从一个房间走进另一个房间，需要重新调整思维的温度和湿度。
 
-2025 年下半年，GPT-4o 的 vision 能力突然变得可用。我试着把一张手写草稿拍照丢给它，问：「这张图里的内容大纲，帮我整理成 Markdown 表格。」它不仅读出了我潦草的字迹，还自动补全了我遗漏的第三个论点，并在表格里标注了「原文未明确，系推测」。
+2024 年 5 月，GPT-4o 的 vision 能力随着模型发布一起上线。我试着把一张手写草稿拍照丢给它，问：「这张图里的内容大纲，帮我整理成 Markdown 表格。」它不仅读出了我潦草的字迹，还自动补全了我遗漏的第三个论点，并在表格里标注了「原文未明确，系推测」。
 
 那一刻我意识到：**多模态不是多了一个功能，而是拆掉了一堵墙。**
 
