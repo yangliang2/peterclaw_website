@@ -3,7 +3,6 @@ title: "Indie Developer Toolchain 2026: A Full-Stack Guide From Idea to Launch"
 description: "A practical, battle-tested toolchain for indie developers in 2026: prototyping, development, deployment, operations, and monetization. Every tool includes free-tier details, recommended scenarios, and alternatives."
 contentType: tutorial
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - indie developer
   - toolchain

@@ -18,6 +18,14 @@ export type ArticleSchemaInput = {
   articleType?: 'BlogPosting' | 'Article';
 };
 
+export type DynamicOgImageInput = {
+  title: string;
+  description?: string;
+  section: 'blog' | 'knowledge' | 'review' | 'product';
+  locale: Locale;
+  category?: string;
+};
+
 export type ProductSchemaInput = {
   title: string;
   description: string;
@@ -59,6 +67,24 @@ export type ItemListSchemaInput = {
 export function absoluteUrl(path = '/'): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return new URL(normalized, getSiteUrl()).href;
+}
+
+export function buildDynamicOgImagePath(input: DynamicOgImageInput): string {
+  const params = new URLSearchParams({
+    title: input.title,
+    section: input.section,
+    locale: input.locale,
+  });
+
+  if (input.description) {
+    params.set('description', input.description);
+  }
+
+  if (input.category) {
+    params.set('category', input.category);
+  }
+
+  return `/api/og?${params.toString()}`;
 }
 
 export function buildWebSiteSchema(locale: Locale, description: string) {

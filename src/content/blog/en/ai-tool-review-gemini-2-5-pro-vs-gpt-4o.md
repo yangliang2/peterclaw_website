@@ -3,7 +3,6 @@ title: "AI Tool Review Vol.7: Gemini 2.5 Pro vs GPT-4o Deep Comparison: Which Fl
 description: "A real-project, benchmark-grounded comparison of Google's and OpenAI's flagship models across code generation, long-document understanding, multimodality, reasoning, Chinese performance, API pricing, and user experience."
 contentType: review
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 tags:
   - AI Tool Review
   - Productivity Tools

@@ -4,7 +4,6 @@ description: "From a 400+ integration node graph to the AI Agent node's autonomo
 contentType: review
 publishedAt: 2026-05-26
 lang: en
-ogImage: /og-default.png
 tags:
   - GitHub Hot Projects
   - Workflow Automation

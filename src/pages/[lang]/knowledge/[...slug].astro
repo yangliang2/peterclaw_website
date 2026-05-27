@@ -13,7 +13,11 @@ import {
   stripLocaleFromId,
   ui,
 } from '@/lib/i18n';
-import { buildArticleSchema, buildBreadcrumbSchema } from '@/utils/seo';
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+  buildDynamicOgImagePath,
+} from '@/utils/seo';
 import {
   estimateReadingMinutes,
   extractTocFromMarkdown,
@@ -22,6 +26,7 @@ import {
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 import PagefindMeta from '@/components/PagefindMeta.astro';
+import { siteConfig } from '@/config/site';
 
 export async function getStaticPaths() {
   const articles = await getCollection('knowledge', ({ data }) => !data.draft);
@@ -68,7 +73,19 @@ const { Content } = await render(article);
 const canonicalPath = collectionPath(lang, 'knowledge', article.id);
 const publishedTime = article.data.publishedAt.toISOString();
 const modifiedTime = (article.data.updatedAt ?? article.data.publishedAt).toISOString();
-const ogImage = article.data.ogImage;
+const customOgImage =
+  article.data.ogImage && article.data.ogImage !== siteConfig.defaultOgImage
+    ? article.data.ogImage
+    : undefined;
+const ogImage =
+  customOgImage ??
+  buildDynamicOgImagePath({
+    title: article.data.title,
+    description: article.data.description,
+    section: 'knowledge',
+    locale: lang,
+    category: article.data.area,
+  });
 const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(article.body ?? '');
 const readingTimeLabel = formatReadingTime(readingMinutes, lang);

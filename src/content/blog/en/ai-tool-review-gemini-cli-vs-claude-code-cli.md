@@ -3,7 +3,6 @@ title: "AI Tool Review Series Vol.9: Gemini CLI vs Claude Code CLI — The Ultim
 description: "The definitive 2026 comparison of Google Gemini CLI and Anthropic Claude Code CLI. We test installation, code generation, Agent capabilities, context management, speed, and pricing across real projects to help you choose the right terminal AI companion."
 contentType: review
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 tags:
   - AI Tool Review
   - Productivity Tools

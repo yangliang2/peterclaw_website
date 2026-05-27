@@ -4,7 +4,6 @@ description: "From the Zig + JavaScriptCore bottom-layer choice to the four-in-o
 contentType: review
 publishedAt: 2026-05-26
 lang: en
-ogImage: /og-default.png
 tags:
   - GitHub Hot Projects
   - JavaScript Runtime

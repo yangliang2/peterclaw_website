@@ -3,7 +3,6 @@ title: "AI Tool Review Series Vol.6: Kiro vs Cline Deep Review: AWS Spec-Driven 
 description: "A head-to-head comparison of Kiro and Cline across Agent capabilities, context management, pricing models, and positioning differences from Cursor/Windsurf, based on two weeks of real-project testing."
 contentType: review
 publishedAt: 2026-05-28
-ogImage: /og-default.png
 cover: review.svg
 tags:
   - AI Tool Review

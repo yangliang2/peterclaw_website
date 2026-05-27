@@ -20,6 +20,7 @@ import {
 import {
   buildArticleSchema,
   buildBreadcrumbSchema,
+  buildDynamicOgImagePath,
   buildFaqSchema,
   buildReviewSchema,
   type JsonLdSchema,
@@ -32,7 +33,7 @@ import {
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 import PagefindMeta from '@/components/PagefindMeta.astro';
-import { blogOgImagePath } from '@/utils/og';
+import { siteConfig } from '@/config/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -79,7 +80,20 @@ const { Content } = await render(post);
 const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
-const ogImage = blogOgImagePath(post.id);
+const ogSection = post.data.contentType === 'review' ? 'review' : 'blog';
+const customOgImage =
+  post.data.ogImage && post.data.ogImage !== siteConfig.defaultOgImage
+    ? post.data.ogImage
+    : undefined;
+const ogImage =
+  customOgImage ??
+  buildDynamicOgImagePath({
+    title: post.data.title,
+    description: post.data.description,
+    section: ogSection,
+    locale: lang,
+    category: post.data.tags[0] ?? post.data.contentType,
+  });
 const faq = post.data.faq ?? [];
 const copy = ui[lang];
 const readingMinutes = estimateReadingMinutes(post.body ?? '');

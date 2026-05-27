@@ -3,7 +3,6 @@ title: "AI 小队组建日记 Vol.1：从个人网站到公开协作现场"
 description: 记录 PeterClaw 网站如何把 AI 团队的协作过程变成产品、内容和品牌资产。
 contentType: journal
 publishedAt: 2026-05-23
-ogImage: /og-default.png
 cover: journal.svg
 tags:
   - AI 小队

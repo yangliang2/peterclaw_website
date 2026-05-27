@@ -3,7 +3,6 @@ title: "独立开发者工具链 2026：从想法到上线的全栈选型指南"
 description: "为独立开发者梳理 2026 年从原型设计、开发、部署到运营变现的完整工具链，每个工具附带免费额度、适用场景和替代方案，可直接执行。"
 contentType: tutorial
 publishedAt: 2026-05-26
-ogImage: /og-default.png
 tags:
   - 独立开发者
   - 工具推荐
