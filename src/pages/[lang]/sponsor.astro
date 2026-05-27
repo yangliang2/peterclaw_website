@@ -1,0 +1,308 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ReaderFeedback from '@/components/ReaderFeedback.astro';
+import { sponsorCopy } from '@/config/sponsor';
+import { buildHreflangAlternates, isLocale, ui } from '@/lib/i18n';
+import { buildBreadcrumbSchema } from '@/utils/seo';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/sponsor/');
+}
+
+const copy = sponsorCopy[lang];
+const siteCopy = ui[lang];
+const prefix = `/${lang}`;
+
+// Helper to render markdown-like bold text in audience profile
+const renderProfile = (text: string) => {
+  return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+};
+---
+
+<BaseLayout
+  locale={lang}
+  title={copy.pageTitle}
+  description={copy.metaDescription}
+  canonicalPath={`${prefix}/sponsor/`}
+  alternateLocales={buildHreflangAlternates('/sponsor/')}
+  structuredData={[
+    buildBreadcrumbSchema([
+      { name: siteCopy.siteTitle, path: `${prefix}/` },
+      { name: copy.pageTitle, path: `${prefix}/sponsor/` },
+    ]),
+  ]}
+>
+  <section class="hero sponsor-hero">
+    <h1 class="gradient-text">{copy.heroTitle}</h1>
+    <p class="lede">{copy.heroLede}</p>
+  </section>
+
+  <section class="sponsor-section audience">
+    <div class="section-grid">
+      <div class="section-info">
+        <h2>{copy.audienceHeading}</h2>
+        <p>{copy.audienceLede}</p>
+        <div class="profile-list">
+          {copy.audienceProfile.map((profile) => (
+            <div class="profile-item" set:html={renderProfile(profile)} />
+          ))}
+        </div>
+      </div>
+      <div class="stats-card glass-card">
+        {copy.audienceStats.map((stat) => (
+          <div class="stat-item">
+            <span class="stat-value">{stat.value}</span>
+            <span class="stat-label">{stat.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="sponsor-section traffic">
+    <h2>{copy.trafficHeading}</h2>
+    <p class="section-lede">{copy.trafficLede}</p>
+    <div class="traffic-grid">
+      {copy.trafficStats.map((stat) => (
+        <div class="traffic-card glass-card">
+          <span class="stat-value">{stat.value}</span>
+          <span class="stat-label">{stat.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="sponsor-section cooperation">
+    <div class="section-heading">
+      <h2>{copy.cooperationHeading}</h2>
+      <p>{copy.cooperationLede}</p>
+    </div>
+    <div class="plans-grid">
+      {copy.plans.map((plan) => (
+        <div class="plan-card glass-card">
+          <div class="plan-header">
+            <h3>{plan.title}</h3>
+            <span class="plan-price">{plan.price}</span>
+          </div>
+          <p class="plan-desc">{plan.description}</p>
+          <ul class="plan-features">
+            {plan.features.map((feature) => (
+              <li>{feature}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="sponsor-section contact-section glass-card">
+    <div class="contact-content">
+      <h2>{copy.contactHeading}</h2>
+      <p>{copy.contactLede}</p>
+      <div class="email-box">
+        <a href={`mailto:${copy.contactEmail}`} class="btn btn-primary">{copy.contactEmail}</a>
+      </div>
+      <p class="contact-promise">{copy.contactPromise}</p>
+    </div>
+  </section>
+
+  <ReaderFeedback locale={lang} source={`${prefix}/sponsor/`} />
+</BaseLayout>
+
+<style>
+  .sponsor-hero {
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+    text-align: center;
+  }
+
+  .sponsor-hero h1 {
+    margin-inline: auto;
+  }
+
+  .sponsor-hero .lede {
+    margin-inline: auto;
+    max-width: 720px;
+  }
+
+  .sponsor-section {
+    margin-top: clamp(3.5rem, 8vw, 5.5rem);
+  }
+
+  .sponsor-section h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .section-lede {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    margin-bottom: var(--space-lg);
+    max-width: 720px;
+  }
+
+  .section-grid {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .section-grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+  }
+
+  .section-info p {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+  }
+
+  .profile-list {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .profile-item {
+    font-size: 1rem;
+    color: var(--color-text);
+  }
+
+  .stats-card {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .stats-card {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-value {
+    display: block;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .traffic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .traffic-card {
+    padding: var(--space-lg);
+    text-align: center;
+  }
+
+  .section-heading {
+    margin-bottom: var(--space-lg);
+    max-width: 720px;
+  }
+
+  .section-heading p {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+  }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .plan-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg);
+  }
+
+  .plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  .plan-header h3 {
+    margin-bottom: 0;
+    font-size: 1.35rem;
+  }
+
+  .plan-price {
+    font-weight: 700;
+    color: var(--color-secondary);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+  .plan-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    flex-grow: 1;
+  }
+
+  .plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-md);
+  }
+
+  .plan-features li {
+    font-size: 0.9rem;
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .plan-features li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+  }
+
+  .contact-section {
+    padding: clamp(2rem, 6vw, 4rem);
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  .contact-content {
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  .email-box {
+    margin: var(--space-lg) 0;
+  }
+
+  .contact-promise {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>

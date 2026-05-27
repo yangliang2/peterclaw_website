@@ -170,6 +170,7 @@ export const aboutCopy = {
     contactLinks: [
       { label: 'GitHub', href: 'https://github.com/yangliang2' },
       { label: 'X / Twitter', href: 'https://twitter.com/peterclaw' },
+      { label: '赞助合作', href: '/zh/sponsor/' },
       { label: 'RSS', href: '/rss.xml' },
     ],
     members: squadZh,
@@ -225,6 +226,7 @@ export const aboutCopy = {
     contactLinks: [
       { label: 'GitHub', href: 'https://github.com/yangliang2' },
       { label: 'X / Twitter', href: 'https://twitter.com/peterclaw' },
+      { label: 'Sponsorship', href: '/en/sponsor/' },
       { label: 'RSS', href: '/rss.xml' },
     ],
     members: squadEn,
