@@ -6,10 +6,27 @@
   const bar = document.querySelector<HTMLElement>('[data-reading-progress-bar]');
 
   if (bar) {
+    const trackedMilestones = new Set<number>();
+    const milestones = [25, 50, 75, 100];
+
     const update = () => {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0;
       bar.style.width = `${progress}%`;
+
+      // Event tracking for milestones
+      for (const m of milestones) {
+        if (progress >= m && !trackedMilestones.has(m)) {
+          trackedMilestones.add(m);
+          if (window.trackEvent) {
+            window.trackEvent('reading_milestone', {
+              percentage: m,
+              url: window.location.pathname,
+              title: document.title
+            });
+          }
+        }
+      }
     };
 
     update();

@@ -10,7 +10,7 @@ export const giscusConfig = {
   mapping: 'pathname',
   strict: '0',
   reactionsEnabled: '1',
-  emitMetadata: '0',
+  emitMetadata: '1',
   inputPosition: 'bottom',
 } as const;
 

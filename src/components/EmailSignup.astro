@@ -49,6 +49,14 @@ const statusId = `${signupId}-status`;
   const emailInput = form?.querySelector('input[name="email"]');
 
   if (form instanceof HTMLFormElement && status instanceof HTMLParagraphElement && submitButton instanceof HTMLButtonElement && emailInput instanceof HTMLInputElement) {
+    let inputTracked = false;
+    emailInput.addEventListener('input', () => {
+      if (!inputTracked && window.trackEvent) {
+        window.trackEvent('newsletter_input_start', { location: 'article_bottom' });
+        inputTracked = true;
+      }
+    });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
@@ -67,6 +75,10 @@ const statusId = `${signupId}-status`;
       submitButton.disabled = true;
       submitButton.textContent = messages.submitting;
 
+      if (window.trackEvent) {
+        window.trackEvent('newsletter_submit_attempt', { location: 'article_bottom' });
+      }
+
       try {
         const response = await fetch('/api/subscribe', {
           method: 'POST',
@@ -80,22 +92,47 @@ const statusId = `${signupId}-status`;
           status.textContent = messages.success;
           status.classList.add('is-success');
           form.reset();
+          if (window.trackEvent) {
+            window.trackEvent('newsletter_subscribe', { location: 'article_bottom' });
+          }
         } else if (response.status === 400 && payload.error === 'invalid_email') {
           status.textContent = messages.invalid;
           status.classList.add('is-error');
         } else {
           status.textContent = messages.generic;
           status.classList.add('is-error');
+          if (window.trackEvent) {
+            window.trackEvent('newsletter_error', { location: 'article_bottom', error: payload.error || 'unknown' });
+          }
         }
       } catch {
         status.textContent = messages.generic;
         status.classList.add('is-error');
+        if (window.trackEvent) {
+          window.trackEvent('newsletter_error', { location: 'article_bottom', error: 'network_error' });
+        }
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = messages.defaultLabel;
         status.hidden = false;
       }
     });
+
+    // Track visibility
+    if ('IntersectionObserver' in window && window.trackEvent) {
+      const el = document.querySelector('.email-signup');
+      if (el) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              window.trackEvent('newsletter_view', { location: 'article_bottom' });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.5 });
+        observer.observe(el);
+      }
+    }
   }
 </script>
 

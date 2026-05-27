@@ -70,6 +70,10 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
 
     host.dataset.giscusLoaded = 'true';
     host.append(script);
+
+    if (window.trackEvent) {
+      window.trackEvent('giscus_load', { url: window.location.pathname });
+    }
   }
 
   function watchThemeChanges() {
@@ -92,7 +96,29 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
     });
 
     window.addEventListener('message', (event) => {
-      if (event.origin !== GISCUS_ORIGIN || event.data?.giscus?.discussion) return;
+      if (event.origin !== GISCUS_ORIGIN) return;
+      
+      const data = event.data?.giscus;
+      if (!data) return;
+
+      if (data.discussion) {
+        // This is sent when the discussion is loaded or updated
+      }
+
+      if (data.error) {
+        if (window.trackEvent) {
+          window.trackEvent('giscus_error', { error: data.error, url: window.location.pathname });
+        }
+      }
+
+      // Track general interactions if any metadata is emitted
+      // Note: Giscus doesn't explicitly name "comment" or "reaction" in the message type,
+      // but we can track that *something* happened.
+      if (window.trackEvent && !data.setConfig) {
+        window.trackEvent('giscus_interaction', { url: window.location.pathname });
+      }
+
+      if (data.discussion) return; // Don't sync theme just because discussion loaded
       syncGiscusTheme();
     });
   }

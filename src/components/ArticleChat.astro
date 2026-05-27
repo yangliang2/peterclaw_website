@@ -60,11 +60,31 @@ const content = articleContent.slice(0, 6000);
 
     if (!(submitBtn instanceof HTMLButtonElement) || !(resetBtn instanceof HTMLButtonElement)) return;
 
+    // Track when user opens the chat
+    const details = body?.closest('details');
+    if (details) {
+      details.addEventListener('toggle', () => {
+        if (details.open && window.trackEvent) {
+          window.trackEvent('article_chat_open', {
+            url: window.location.pathname,
+            title: document.title
+          });
+        }
+      }, { once: true }); // Only track once per page load
+    }
+
     function setStatus(text, isError) {
       if (!(statusEl instanceof HTMLElement)) return;
       statusEl.textContent = text;
       statusEl.className = 'article-chat-status' + (isError ? ' is-error' : '');
       statusEl.hidden = !text;
+      
+      if (isError && window.trackEvent) {
+        window.trackEvent('article_chat_error', {
+          error: text,
+          url: window.location.pathname
+        });
+      }
     }
 
     resetBtn.addEventListener('click', () => {
@@ -80,9 +100,18 @@ const content = articleContent.slice(0, 6000);
       setStatus('', false);
 
       const textarea = form.querySelector('textarea[name="question"]');
-      if (!(textarea instanceof HTMLTextAreaElement) || !textarea.value.trim()) {
+      const question = textarea instanceof HTMLTextAreaElement ? textarea.value.trim() : '';
+      if (!question) {
         setStatus(messages.invalid, true);
         return;
+      }
+
+      if (window.trackEvent) {
+        window.trackEvent('article_chat_submit', {
+          question: question.substring(0, 100), // Avoid sending huge strings
+          url: window.location.pathname,
+          title: document.title
+        });
       }
 
       submitBtn.disabled = true;
@@ -96,7 +125,7 @@ const content = articleContent.slice(0, 6000);
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            question: textarea.value.trim(),
+            question,
             articleContent,
             locale,
           }),
@@ -109,6 +138,13 @@ const content = articleContent.slice(0, 6000);
         if (!response.ok || !response.body) {
           setStatus(messages.generic, true);
           return;
+        }
+
+        if (window.trackEvent) {
+          window.trackEvent('article_chat_success', {
+            url: window.location.pathname,
+            title: document.title
+          });
         }
 
         if (answerEl instanceof HTMLElement) answerEl.hidden = false;
