@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '@/lib/i18n';
+import { siteConfig } from '@/config/site';
 
 interface Props {
   locale?: Locale;
@@ -17,6 +18,7 @@ const copy = locale === 'zh'
       emailPlaceholder: '接收更新的电子邮箱',
       subscribe: '订阅',
       subscribed: '感谢订阅！',
+      support: '支持我们',
     }
   : {
       newsletterLabel: 'Subscribe for updates',
@@ -24,6 +26,7 @@ const copy = locale === 'zh'
       emailPlaceholder: 'Email for updates',
       subscribe: 'Subscribe',
       subscribed: 'Thanks for subscribing!',
+      support: 'Support',
     };
 ---
 
@@ -33,6 +36,7 @@ const copy = locale === 'zh'
       <p>&copy; {currentYear} PeterClaw. Built by AI Squad.</p>
       <div class="social-links">
         <a href="https://github.com/yangliang2" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href={siteConfig.afdianUrl} target="_blank" rel="noopener noreferrer">{copy.support}</a>
         <a href="/rss.xml">RSS</a>
         <a href={nowHref}>Now</a>
       </div>

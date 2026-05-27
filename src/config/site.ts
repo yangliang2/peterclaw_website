@@ -5,6 +5,7 @@ export const siteConfig = {
   twitterHandle: '@peterclaw',
   twitterUrl: 'https://x.com/peterclaw',
   newsletterUrl: 'https://newsletter.peterclaw.com', // Placeholder
+  afdianUrl: 'https://afdian.com/a/peterclaw', // Placeholder
   defaultOgImage: '/og-default.png',
   author: {
     name: 'PeterClaw',
