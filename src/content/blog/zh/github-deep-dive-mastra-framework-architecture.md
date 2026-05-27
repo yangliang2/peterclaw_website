@@ -26,7 +26,8 @@ useCases:
   - 设计生产级 AI Agent 系统架构
   - 构建多步骤确定性工作流
   - 理解 Agent 记忆系统的工程化方案
-draft: true
+recommendation: 5
+draft: false
 faq:
   - question: "Mastra 和 Vercel AI SDK 是什么关系？"
     answer: "Mastra 构建在 Vercel AI SDK 之上，后者负责底层的模型路由、流式传输和结构化输出。Mastra 在其上提供了 Agent、Workflow、Memory、RAG 等更高层的生产级抽象。"
@@ -36,7 +37,13 @@ faq:
     answer: "任何 Node.js 运行时（包括 Bun 和 Deno），可以嵌入 Next.js/React 应用，也可以打包为独立服务（Hono/Express）。同时支持 Vercel、Cloudflare Workers、Netlify 等无服务器平台。"
   - question: "Observational Memory 会替代 RAG 吗？"
     answer: "不会完全替代。OM 解决的是『Agent 自身经历的记忆』问题，RAG 解决的是『外部知识检索』问题。两者互补：OM 用于会话上下文管理，RAG 用于 grounding 外部文档。"
-reviews: []
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > 24,000+ Stars，Apache 2.0，v1.0 发布于 2026 年 1 月，300K+ 周下载量——Mastra 是 TypeScript 生态中增长最快的 Agent 框架。
@@ -754,5 +761,5 @@ Mastra 不是又一个 Agent 框架。它是 TypeScript 生态中第一个从底
 > **延伸阅读**
 > - [Mastra 官方文档](https://mastra.ai/docs)
 > - [Mastra GitHub](https://github.com/mastra-ai/mastra)
-> - [本系列 Vol.3：Mastra Observational Memory 深度解析](/blog/github-deep-dive-mastra-agent-memory/)
+> - [本系列 Vol.3：Mastra Observational Memory 深度解析](/zh/blog/github-deep-dive-mastra-agent-memory/)
 > - [Vercel AI SDK 文档](https://sdk.vercel.ai/docs)

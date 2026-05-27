@@ -27,7 +27,8 @@ useCases:
   - Designing production-grade AI Agent system architecture
   - Building multi-step deterministic workflows
   - Understanding engineering approaches to Agent memory systems
-draft: true
+recommendation: 5
+draft: false
 faq:
   - question: "What is the relationship between Mastra and Vercel AI SDK?"
     answer: "Mastra is built on top of Vercel AI SDK, which handles low-level model routing, streaming, and structured output. Mastra provides higher-level production abstractions: Agent, Workflow, Memory, RAG, and Evals."
@@ -37,7 +38,13 @@ faq:
     answer: "Any Node.js runtime (including Bun and Deno), can be embedded into Next.js/React apps, or packaged as standalone services (Hono/Express). Also supports serverless platforms like Vercel, Cloudflare Workers, and Netlify."
   - question: "Will Observational Memory replace RAG?"
     answer: "No. OM solves the 'Agent's own experience memory' problem; RAG solves 'external knowledge retrieval.' They are complementary: OM for session context management, RAG for grounding external documents."
-reviews: []
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > 24,000+ Stars, Apache 2.0, v1.0 released January 2026, 300K+ weekly downloads—Mastra is the fastest-growing Agent framework in the TypeScript ecosystem.
