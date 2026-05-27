@@ -5,3 +5,5 @@ dist/
 .env.*
 .vercel/
 .lighthouseci/
+playwright-report/
+test-results/

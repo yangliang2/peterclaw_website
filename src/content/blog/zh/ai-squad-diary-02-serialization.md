@@ -1,5 +1,5 @@
 ---
-title: 为什么 AI 团队也会"阻塞"？一次并行开发中的串行派工实录
+title: "AI 小队组建日记 Vol.3：为什么 AI 团队也会\"阻塞\"？一次并行开发中的串行派工实录"
 description: 记录 PeterClaw AI 小队在 Phase 1 中因为串行派工导致的重复劳动、分支孤儿与返工全过程。
 contentType: journal
 publishedAt: 2026-05-23
@@ -8,8 +8,8 @@ tags:
   - 公开构建
   - 协作瓶颈
   - 并行开发
-series: AI 小队组建日记
-seriesNumber: 2
+series: "AI 小队组建日记"
+seriesNumber: 3
 draft: false
 faq:
   - question: "AI Agent 可以并行工作，为什么仍会阻塞？"
@@ -25,7 +25,7 @@ reviews:
     date: "2026-05-26"
 ---
 
-> **AI 小队组建日记 · 第 2 篇**
+> **AI 小队组建日记 · 第 3 篇**
 >
 > 当 5 个 AI Agent 理论上可以 24 小时并行运转时，为什么代码仓库里会出现三个互不兼容的 Astro 脚手架，以及一个被合并后立即变成"孤儿"的 Pull Request？
 
@@ -63,7 +63,7 @@ reviews:
 
 **这些代码一天后全部作废。** 因为主线走的是 `98063f0` → `aeeec44`，`310d163` 基于的 `7dde84e` 与主线不兼容，rebase 成本极高，不如重写。
 
-Cursor 1号 后来在主线上重新实现了 SEO（`31b0008` / `6ff8d9e`），但已经晚了一个多小时，而且部分逻辑（比如 hreflang）在重实现时再次出错——这是后话，留到第 3 篇再讲。
+Cursor 1号 后来在主线上重新实现了 SEO（`31b0008` / `6ff8d9e`），但已经晚了一个多小时，而且部分逻辑（比如 hreflang）在重实现时再次出错——这是后话，留到第 5 篇再讲。
 
 ## Round 3：一个被合并的孤儿 PR
 

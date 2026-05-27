@@ -1,8 +1,8 @@
-# Agent Workflow — peterclaw_website
+# Claude Agent Rules — peterclaw_website
 
 ## Startup Protocol (MANDATORY — Do This Before Any Task)
 
-Every agent MUST complete the following before starting any task:
+Every Claude agent MUST complete the following before starting any task:
 
 ```bash
 multica repo checkout https://github.com/yangliang2/peterclaw-squad-private
@@ -31,7 +31,7 @@ Look up UUIDs in `peterclaw-squad-private/team/MENTION_MAP.md`. Never guess a UU
 
 ## Git Identity
 
-All commits must use the owner's GitHub identity. Never commit as an agent:
+All commits must use the owner's GitHub identity:
 
 ```bash
 git config user.name "yangliang2"
@@ -41,19 +41,17 @@ git config user.email "littlekyang@gmail.com"
 ## Branch Rule
 
 - **Only `main`**. Do not create feature branches or PRs from agent branches.
-- The `main` branch is checked out in a dedicated worktree. Run `git worktree list` to locate it.
-- Work in the `main` worktree and push directly to `origin/main`.
+- Run `git worktree list` to locate the main worktree. Work there.
+- Push directly to `origin/main`.
 
 ## Conflict Safety
-
-If another agent pushed to `main` while you were working:
 
 ```bash
 git pull origin main --rebase
 git push origin main
 ```
 
-Never force-push. If a conflict cannot be auto-resolved, report it in the issue and coordinate with the other agent.
+Never force-push. Report unresolvable conflicts in the issue.
 
 ## What Not to Commit
 

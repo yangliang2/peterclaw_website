@@ -1,5 +1,5 @@
 ---
-title: "Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？"
+title: "AI 工具评测专栏 Vol.1：Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？"
 description: "历时两周真实项目测试，从代码补全、Agent 能力、上下文理解、响应速度和定价五个维度，深度对比 Cursor 与 Windsurf，给出不同场景下的明确选择建议。"
 contentType: review
 publishedAt: 2026-05-25
@@ -26,7 +26,7 @@ recommendation: 5
 reviewedProduct:
   name: Cursor
   url: https://cursor.com
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
@@ -35,6 +35,8 @@ reviews:
     status: "approved"
     date: "2026-05-26"
 ---
+
+import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
 
 > **AI 工具评测专栏 · 第 1 篇**
 >
@@ -67,6 +69,30 @@ reviews:
 3. **上下文理解**——对大型代码库的理解深度，能否跨文件关联
 4. **响应速度**——从输入到获得建议的延迟，以及 Agent 任务的执行速度
 5. **价格与性价比**——订阅费用、免费额度、团队版定价
+
+<ReviewScoreCard
+  title="Cursor 评分卡"
+  subtitle="评分维度与权重与本文一致（满分 5）。"
+  dimensions={[
+    { label: '代码补全', score: 5, maxScore: 5, weight: 0.25 },
+    { label: 'Agent 任务', score: 5, maxScore: 5, weight: 0.25 },
+    { label: '上下文理解', score: 5, maxScore: 5, weight: 0.2 },
+    { label: '响应速度', score: 4, maxScore: 5, weight: 0.15 },
+    { label: '价格/性价比', score: 4, maxScore: 5, weight: 0.15 },
+  ]}
+/>
+
+<ReviewScoreCard
+  title="Windsurf 评分卡"
+  subtitle="同维度、同权重，用于快速横向对比。"
+  dimensions={[
+    { label: '代码补全', score: 4, maxScore: 5, weight: 0.25 },
+    { label: 'Agent 任务', score: 4, maxScore: 5, weight: 0.25 },
+    { label: '上下文理解', score: 4, maxScore: 5, weight: 0.2 },
+    { label: '响应速度', score: 5, maxScore: 5, weight: 0.15 },
+    { label: '价格/性价比', score: 5, maxScore: 5, weight: 0.15 },
+  ]}
+/>
 
 ---
 
@@ -172,8 +198,8 @@ Cursor 的团队功能（共享上下文、团队知识库、集中计费）比 
 
 ## 延伸阅读
 
-- [AI 日记 Vol.7：当我开始信任 AI——人机协作中的边界与授权](/zh/blog/ai-diary-007-boundaries-trust/) —— 我们如何在 PeterClaw Squad 中分配 AI 工具的使用权限
-- [AI 日记 Vol.8：我用三款 AI 写作工具打磨同一篇文章](/zh/blog/ai-diary-008-creative-writing-tools/) —— Claude、GPT-4、Notion AI 在创意写作中的对比
+- [AI 小队组建日记 Vol.11：当我开始信任 AI——人机协作中的边界与授权](/zh/blog/ai-diary-007-boundaries-trust/) —— 我们如何在 PeterClaw Squad 中分配 AI 工具的使用权限
+- [AI 工具评测专栏 Vol.3：我用三款 AI 写作工具打磨同一篇文章——谁更懂创作者](/zh/blog/ai-diary-008-creative-writing-tools/) —— Claude、GPT-4、Notion AI 在创意写作中的对比
 - [PeterClaw 工具箱](/zh/tools/) —— 我们日常使用的开发工具清单
 - [内容架构：博客与知识库双轨](/zh/knowledge/content-architecture/) —— 评测内容如何融入网站内容体系
 - [Cursor 官方文档](https://cursor.com/docs)

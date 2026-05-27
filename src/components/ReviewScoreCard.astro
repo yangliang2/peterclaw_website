@@ -1,0 +1,369 @@
+---
+type ScoreDimension = {
+  label: string;
+  score: number;
+  maxScore?: number;
+  weight: number;
+};
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  dimensions: ScoreDimension[];
+  /** Defaults to true. */
+  showRadar?: boolean;
+}
+
+const { title = '评分卡', subtitle, dimensions, showRadar = true } = Astro.props;
+
+const safeDimensions = Array.isArray(dimensions) ? dimensions.slice(0, 8) : [];
+if (safeDimensions.length < 2) {
+  throw new Error('<ReviewScoreCard /> requires 2-8 dimensions.');
+}
+
+const parsed = safeDimensions.map((d) => {
+  const maxScore = Number.isFinite(d.maxScore) && (d.maxScore ?? 0) > 0 ? (d.maxScore as number) : 5;
+  const score = Number.isFinite(d.score) ? (d.score as number) : 0;
+  const weight = Number.isFinite(d.weight) ? (d.weight as number) : 0;
+  return {
+    label: String(d.label ?? ''),
+    score,
+    maxScore,
+    weight
+  };
+});
+
+const totalWeight = parsed.reduce((sum, d) => sum + Math.max(0, d.weight), 0);
+const normalized = parsed.map((d) => {
+  const weightNormalized = totalWeight > 0 ? Math.max(0, d.weight) / totalWeight : 0;
+  const ratio = d.maxScore > 0 ? Math.max(0, Math.min(1, d.score / d.maxScore)) : 0;
+  return { ...d, ratio, weightNormalized };
+});
+
+const totalScore100 =
+  normalized.reduce((sum, d) => sum + d.ratio * d.weightNormalized, 0) * 100;
+
+function formatPercent(x: number) {
+  return `${Math.round(x * 100)}%`;
+}
+
+function formatScore(x: number) {
+  const v = Math.round(x * 10) / 10;
+  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+}
+
+function radarGeometry(items: Array<{ ratio: number; label: string }>) {
+  const n = items.length;
+  const cx = 110;
+  const cy = 110;
+  const r = 78;
+  const labelR = 94;
+  const start = -Math.PI / 2;
+  const step = (Math.PI * 2) / n;
+
+  const axis = items.map((item, i) => {
+    const a = start + i * step;
+    const x = cx + Math.cos(a) * r;
+    const y = cy + Math.sin(a) * r;
+    const lx = cx + Math.cos(a) * labelR;
+    const ly = cy + Math.sin(a) * labelR;
+    const anchor = Math.cos(a) > 0.25 ? 'start' : Math.cos(a) < -0.25 ? 'end' : 'middle';
+    const baseline = Math.sin(a) > 0.25 ? 'hanging' : Math.sin(a) < -0.25 ? 'alphabetic' : 'middle';
+    return { x, y, lx, ly, anchor, baseline, label: item.label };
+  });
+
+  const polygon = items
+    .map((item, i) => {
+      const a = start + i * step;
+      const rr = r * Math.max(0, Math.min(1, item.ratio));
+      const x = cx + Math.cos(a) * rr;
+      const y = cy + Math.sin(a) * rr;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+
+  const rings = [0.25, 0.5, 0.75, 1].map((t) =>
+    items
+      .map((_, i) => {
+        const a = start + i * step;
+        const x = cx + Math.cos(a) * (r * t);
+        const y = cy + Math.sin(a) * (r * t);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(' ')
+  );
+
+  return { cx, cy, r, axis, polygon, rings };
+}
+
+const radar = showRadar ? radarGeometry(normalized) : null;
+---
+
+<section class="review-score-card glass-card" aria-label="AI 工具评测评分卡">
+  <header class="header">
+    <div class="titles">
+      <h3 class="title">{title}</h3>
+      {subtitle && <p class="subtitle">{subtitle}</p>}
+    </div>
+    <div class="total" aria-label="加权总分">
+      <div class="total-label">加权总分</div>
+      <div class="total-value">
+        <span class="number">{formatScore(totalScore100)}</span>
+        <span class="unit">/ 100</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="content" data-radar={String(!!radar)}>
+    <div class="table-wrap">
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th class="num">得分</th>
+            <th class="num">满分</th>
+            <th class="num">权重</th>
+            <th class="num">贡献</th>
+          </tr>
+        </thead>
+        <tbody>
+          {normalized.map((d) => (
+            <tr>
+              <td class="label">{d.label}</td>
+              <td class="num">{formatScore(d.score)}</td>
+              <td class="num">{formatScore(d.maxScore)}</td>
+              <td class="num">{formatPercent(d.weightNormalized)}</td>
+              <td class="num">{formatScore(d.ratio * d.weightNormalized * 100)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="hint">贡献 = (得分 ÷ 满分) × 权重 × 100</p>
+    </div>
+
+    {radar && (
+      <figure class="radar" aria-label="评分雷达图">
+        <svg viewBox="0 0 220 220" role="img" aria-label="评分雷达图">
+          <title>评分雷达图</title>
+          {radar.rings.map((points) => (
+            <polygon class="ring" points={points} />
+          ))}
+          {radar.axis.map((a) => (
+            <line class="axis" x1={radar.cx} y1={radar.cy} x2={a.x} y2={a.y} />
+          ))}
+          <polygon class="shape" points={radar.polygon} />
+          {radar.axis.map((a) => (
+            <text
+              class="label"
+              x={a.lx}
+              y={a.ly}
+              text-anchor={a.anchor as any}
+              dominant-baseline={a.baseline as any}
+            >
+              {a.label}
+            </text>
+          ))}
+          <circle class="center" cx={radar.cx} cy={radar.cy} r="2.6" />
+        </svg>
+      </figure>
+    )}
+  </div>
+</section>
+
+<style>
+  .review-score-card {
+    padding: var(--space-lg);
+    margin: 2.5rem 0;
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .total {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background: var(--color-soft-bg);
+    min-width: 12.5rem;
+  }
+
+  .total-label {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .total-value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+  }
+
+  .total-value .number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: var(--gradient-ai);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .total-value .unit {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .content {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .content[data-radar='true'] {
+    grid-template-columns: 1fr;
+  }
+
+  .table-wrap {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .score-table thead th {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: var(--color-soft-bg);
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.7rem 0.8rem;
+  }
+
+  .score-table td {
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-text);
+  }
+
+  .score-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .score-table .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .score-table .label {
+    font-weight: 650;
+  }
+
+  .hint {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .radar {
+    margin: 0;
+    padding: 0.9rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-soft-bg);
+    justify-self: center;
+    width: min(360px, 100%);
+  }
+
+  .radar svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ring {
+    fill: none;
+    stroke: var(--color-line);
+    stroke-width: 1;
+    opacity: 0.9;
+  }
+
+  .axis {
+    stroke: var(--color-line);
+    stroke-width: 1;
+    opacity: 0.8;
+  }
+
+  .shape {
+    fill: rgba(37, 99, 235, 0.18);
+    stroke: var(--color-primary);
+    stroke-width: 2;
+  }
+
+  [data-theme='dark'] .shape {
+    fill: rgba(59, 130, 246, 0.22);
+  }
+
+  .center {
+    fill: var(--color-primary);
+  }
+
+  .radar .label {
+    fill: var(--color-text);
+    font-size: 10px;
+    font-weight: 650;
+  }
+
+  @media (min-width: 860px) {
+    .content[data-radar='true'] {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+    .radar {
+      justify-self: end;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .review-score-card {
+      padding: var(--space-md);
+    }
+    .total {
+      min-width: 100%;
+    }
+  }
+</style>
