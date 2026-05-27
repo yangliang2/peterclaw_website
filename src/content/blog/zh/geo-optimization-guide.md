@@ -1,7 +1,7 @@
 ---
 title: "GEO 实操指南：让你的中文技术博客被 ChatGPT / Perplexity 引用"
 description: "从 llms.txt 到 FAQ Schema，从 AI 爬虫配置到内容格式优化，一套完整可落地的 GEO（生成式引擎优化） checklist，让你的技术博客在 AI 时代获得新的流量入口。"
-contentType: guide
+contentType: tutorial
 publishedAt: 2026-05-28
 ogImage: /og-default.png
 tags:
