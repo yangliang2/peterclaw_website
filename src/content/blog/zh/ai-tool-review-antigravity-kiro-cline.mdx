@@ -17,14 +17,14 @@ recommendation: 5
 reviewedProduct:
   name: Antigravity 2.0
   url: https://antigravity.google
-draft: false
+draft: true
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
-    date: "2026-05-28"
+    date: "2026-05-25"
   - reviewer: "kimi-1"
     status: "approved"
-    date: "2026-05-28"
+    date: "2026-05-25"
 ---
 
 import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
@@ -43,7 +43,7 @@ import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
 - **Kiro** → 云厂商的「Spec 驱动」工程化路线，规范先于代码
 - **Cline** → 开源社区的「自由拼装」方案，模型任选 + 零订阅锁定
 
-中文开发者社区对这三款工具的讨论热度很高，但大多停留在「功能介绍」层面，缺少在真实项目中的深度对比。本次评测正是为了填补这个空白，通过 14 天的真实项目压力测试，为你揭示这些「编程 Agent」的真正底力。我们将探讨在多文件重构、自动化部署和复杂逻辑推演中，这三位「数字员工」表现出的差异化优势。
+中文开发者社区对这三款工具的讨论热度很高，但大多停留在「功能介绍」或「发布会复读」层面，缺少在真实项目中的横向对比。本次评测正是为了填补这个空白。
 
 本次评测基于以下环境：
 
@@ -68,48 +68,44 @@ import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
 5. **生态与集成**——与云服务商、CI/CD、第三方工具的整合深度
 6. **价格与可访问性**——订阅费用、国内网络环境、免费额度
 
+为便于整个「AI 工具评测」系列横向比较，下面的评分卡统一折算为 6 个标准维度：上手难度、功能完整性、性价比、Agent 能力、中文支持、稳定性。
+
 <ReviewScoreCard
   title="Antigravity 2.0 评分卡"
-  subtitle="从对比总表中抽取 8 个关键维度（满分 5）。"
+  subtitle="标准化 6 维评分，单项 1-10 分。"
   dimensions={[
-    { label: '多 Agent 并行', score: 5, maxScore: 5, weight: 0.125 },
-    { label: 'Spec 驱动', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '模型自由度', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '代码生成质量', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '响应速度', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '国内可访问性', score: 3, maxScore: 5, weight: 0.125 },
+    { label: '上手难度', score: 7, note: '独立应用迁移成本高于 VS Code 系工具。' },
+    { label: '功能完整性', score: 9, note: '多 Agent、浏览器子代理、后台任务覆盖面强。' },
+    { label: '性价比', score: 7, note: '入门价可接受，重度额度成本不够透明。' },
+    { label: 'Agent 能力', score: 10, note: '并行调度与视觉验证能力最突出。' },
+    { label: '中文支持', score: 7, note: '中文语音和提示可用，服务访问依赖网络环境。' },
+    { label: '稳定性', score: 8, note: '能力强但产品新，长任务仍需观察。' },
   ]}
 />
 
 <ReviewScoreCard
   title="Kiro 评分卡"
-  subtitle="同维度、同权重，用于快速横向对比。"
+  subtitle="同一评分标准，便于与 Antigravity / Cline 横向对比。"
   dimensions={[
-    { label: '多 Agent 并行', score: 3, maxScore: 5, weight: 0.125 },
-    { label: 'Spec 驱动', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '模型自由度', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '生态与集成', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '响应速度', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '价格友好度', score: 3, maxScore: 5, weight: 0.125 },
-    { label: '国内可访问性', score: 4, maxScore: 5, weight: 0.125 },
+    { label: '上手难度', score: 6, note: 'Spec 工作流需要团队先适应。' },
+    { label: '功能完整性', score: 8, note: '规范、Hooks、Steering Files 架构完整。' },
+    { label: '性价比', score: 7, note: '早期免费有吸引力，GA 定价仍不确定。' },
+    { label: 'Agent 能力', score: 8, note: '规范追踪强，多 Agent 并行不如 Antigravity。' },
+    { label: '中文支持', score: 7, note: '中文规范可用，但术语与流程偏英文生态。' },
+    { label: '稳定性', score: 8, note: '工程化约束强，编辑器生态仍在补齐。' },
   ]}
 />
 
 <ReviewScoreCard
   title="Cline 评分卡"
-  subtitle="同维度、同权重，用于快速横向对比。"
+  subtitle="同一评分标准，便于与 Antigravity / Kiro 横向对比。"
   dimensions={[
-    { label: '多 Agent 并行', score: 4, maxScore: 5, weight: 0.125 },
-    { label: 'Spec 驱动', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '模型自由度', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '代码生成质量', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '生态与集成', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '响应速度', score: 4, maxScore: 5, weight: 0.125 },
-    { label: '价格友好度', score: 5, maxScore: 5, weight: 0.125 },
-    { label: '国内可访问性', score: 5, maxScore: 5, weight: 0.125 },
+    { label: '上手难度', score: 7, note: '需要配置模型与权限，熟悉后很灵活。' },
+    { label: '功能完整性', score: 8, note: 'Plan / Act、CLI、团队能力覆盖主流工作流。' },
+    { label: '性价比', score: 9, note: '开源免费，自选模型带来成本弹性。' },
+    { label: 'Agent 能力', score: 9, note: '模型自由度叠加 Plan / Act，生产安全感强。' },
+    { label: '中文支持', score: 8, note: '可接国内模型，中文场景最容易优化。' },
+    { label: '稳定性', score: 8, note: '插件成熟度高，但最终质量依赖所选模型。' },
   ]}
 />
 
@@ -209,22 +205,6 @@ Cline（原名 Claude Dev）是开源社区最具人气的 AI Agent 扩展，Apa
 | 国内可访问性 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline + 国内 API 最优；Kiro 依赖 AWS 尚可；Antigravity 一般 |
 | 上手门槛 | ★★★★☆ | ★★★☆☆ | ★★★★☆ | Kiro 的 Spec 文化需要团队适应 |
 | 开源 / 可审计 | ★★★☆☆ | ★★★★☆ | ★★★★★ | Cline 完全开源；Kiro 基于 Code OSS；Antigravity 闭源 |
-
----
-
-## FAQ：关于新一代 Agent IDE 的常见疑问
-
-**Q：Antigravity 2.0 的 Browser Subagent 真的能完全替代人工测试吗？**
-A：不能。它更像是一个「视觉辅助验证器」。它能发现明显的布局错位、hydration 冲突或明显的 JavaScript 报错，但对于复杂的业务逻辑边界测试（如支付流程、权限校验），仍然需要人工编写测试用例或手动验证。它的价值在于减少了 80% 的「刷新浏览器查看样式」的重复劳动。
-
-**Q：Kiro 的 Spec 驱动工作流会不会让开发变慢？**
-A：短期看会慢一些，因为你需要花时间写文档。但长期看，它减少了 Agent 因为理解偏差导致的「无效代码生成」和「反复修改」。对于多人协作的复杂项目，写 Spec 的时间往往在后续的 Debug 和重构中被加倍赚回来。
-
-**Q：Cline 支持国内模型（如 DeepSeek）的稳定性如何？**
-A：非常稳定。通过 API 聚合平台或直接对接国内厂商，延迟通常在 200ms-500ms 之间，这比跨洋访问 Claude/OpenAI 的 API 体验要好得多。Cline 的优势在于你可以随时因为某个模型挂了而一键切换到另一个备选模型。
-
-**Q：我已经习惯了 Cursor 的 Tab 补全，换到 Cline 会不适应吗？**
-A：很有可能。Cline 不是一个输入法，它是一个任务执行器。建议将 Cline 作为 Cursor 的补充，用 Cursor 写代码，用 Cline 处理涉及多文件重构、环境搭建、自动化测试等「重活儿」。
 
 ---
 

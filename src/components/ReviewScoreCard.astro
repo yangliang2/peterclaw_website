@@ -3,7 +3,9 @@ type ScoreDimension = {
   label: string;
   score: number;
   maxScore?: number;
-  weight: number;
+  note?: string;
+  /** @deprecated Legacy weight property for backward compatibility. */
+  weight?: number;
 };
 
 interface Props {
@@ -21,27 +23,42 @@ if (safeDimensions.length < 2) {
   throw new Error('<ReviewScoreCard /> requires 2-8 dimensions.');
 }
 
+// Detect legacy mode (uses weight instead of note)
+const isLegacy = safeDimensions.some((d) => 'weight' in d && !(d as any).note);
+
 const parsed = safeDimensions.map((d) => {
-  const maxScore = Number.isFinite(d.maxScore) && (d.maxScore ?? 0) > 0 ? (d.maxScore as number) : 5;
-  const score = Number.isFinite(d.score) ? (d.score as number) : 0;
-  const weight = Number.isFinite(d.weight) ? (d.weight as number) : 0;
+  const maxScore = Number.isFinite(d.maxScore) && (d.maxScore ?? 0) > 0 ? (d.maxScore as number) : (isLegacy ? 5 : 10);
+  const rawScore = Number.isFinite(d.score) ? (d.score as number) : 0;
+  const score = Math.max(0, Math.min(maxScore, rawScore));
+  const weight = Number.isFinite((d as any).weight) ? ((d as any).weight as number) : 0;
   return {
     label: String(d.label ?? ''),
     score,
     maxScore,
-    weight
+    note: d.note ? String(d.note) : '',
+    weight: Math.max(0, weight),
   };
 });
 
-const totalWeight = parsed.reduce((sum, d) => sum + Math.max(0, d.weight), 0);
+const totalWeight = parsed.reduce((sum, d) => sum + d.weight, 0);
+
 const normalized = parsed.map((d) => {
-  const weightNormalized = totalWeight > 0 ? Math.max(0, d.weight) / totalWeight : 0;
   const ratio = d.maxScore > 0 ? Math.max(0, Math.min(1, d.score / d.maxScore)) : 0;
+  const weightNormalized = totalWeight > 0 ? d.weight / totalWeight : 0;
   return { ...d, ratio, weightNormalized };
 });
 
-const totalScore100 =
-  normalized.reduce((sum, d) => sum + d.ratio * d.weightNormalized, 0) * 100;
+let totalLabel = '平均分';
+let totalUnit = '/ 10';
+let totalValue = 0;
+
+if (isLegacy) {
+  totalLabel = '加权总分';
+  totalUnit = '/ 100';
+  totalValue = normalized.reduce((sum, d) => sum + d.ratio * d.weightNormalized, 0) * 100;
+} else {
+  totalValue = parsed.length > 0 ? parsed.reduce((sum, d) => sum + d.score, 0) / parsed.length : 0;
+}
 
 function formatPercent(x: number) {
   return `${Math.round(x * 100)}%`;
@@ -105,11 +122,11 @@ const radar = showRadar ? radarGeometry(normalized) : null;
       <h3 class="title">{title}</h3>
       {subtitle && <p class="subtitle">{subtitle}</p>}
     </div>
-    <div class="total" aria-label="加权总分">
-      <div class="total-label">加权总分</div>
+    <div class="total" aria-label={totalLabel}>
+      <div class="total-label">{totalLabel}</div>
       <div class="total-value">
-        <span class="number">{formatScore(totalScore100)}</span>
-        <span class="unit">/ 100</span>
+        <span class="number">{formatScore(totalValue)}</span>
+        <span class="unit">{totalUnit}</span>
       </div>
     </div>
   </header>
@@ -121,24 +138,53 @@ const radar = showRadar ? radarGeometry(normalized) : null;
           <tr>
             <th>维度</th>
             <th class="num">得分</th>
-            <th class="num">满分</th>
-            <th class="num">权重</th>
-            <th class="num">贡献</th>
+            {isLegacy ? (
+              <>
+                <th class="num">满分</th>
+                <th class="num">权重</th>
+                <th class="num">贡献</th>
+              </>
+            ) : (
+              <>
+                <th>评分条</th>
+                <th>说明</th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
           {normalized.map((d) => (
             <tr>
               <td class="label">{d.label}</td>
-              <td class="num">{formatScore(d.score)}</td>
-              <td class="num">{formatScore(d.maxScore)}</td>
-              <td class="num">{formatPercent(d.weightNormalized)}</td>
-              <td class="num">{formatScore(d.ratio * d.weightNormalized * 100)}</td>
+              <td class="num">{formatScore(d.score)} / {formatScore(d.maxScore)}</td>
+              {isLegacy ? (
+                <>
+                  <td class="num">{formatScore(d.maxScore)}</td>
+                  <td class="num">{formatPercent(d.weightNormalized)}</td>
+                  <td class="num">{formatScore(d.ratio * d.weightNormalized * 100)}</td>
+                </>
+              ) : (
+                <>
+                  <td>
+                    <div
+                      class="score-bar"
+                      aria-label={`${d.label} 得分 ${formatScore(d.score)} / ${formatScore(d.maxScore)}`}
+                    >
+                      <span style={`width: ${formatPercent(d.ratio)}`}></span>
+                    </div>
+                  </td>
+                  <td class="note">{d.note}</td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>
       </table>
-      <p class="hint">贡献 = (得分 ÷ 满分) × 权重 × 100</p>
+      <p class="hint">
+        {isLegacy
+          ? '贡献 = (得分 ÷ 满分) × 权重 × 100'
+          : '标准维度：上手难度、功能完整性、性价比、Agent 能力、中文支持、稳定性，单项 1-10 分。'}
+      </p>
     </div>
 
     {radar && (
@@ -189,7 +235,7 @@ const radar = showRadar ? radarGeometry(normalized) : null;
   .title {
     margin: 0;
     font-size: 1.3rem;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 
   .subtitle {
@@ -213,7 +259,7 @@ const radar = showRadar ? radarGeometry(normalized) : null;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     text-transform: uppercase;
   }
 
@@ -266,7 +312,7 @@ const radar = showRadar ? radarGeometry(normalized) : null;
   .score-table thead th {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-text-muted);
     background: var(--color-soft-bg);
@@ -292,6 +338,29 @@ const radar = showRadar ? radarGeometry(normalized) : null;
 
   .score-table .label {
     font-weight: 650;
+  }
+
+  .score-bar {
+    width: 100%;
+    min-width: 7.5rem;
+    height: 0.55rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--color-soft-bg);
+    border: 1px solid var(--color-line);
+  }
+
+  .score-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--gradient-ai);
+  }
+
+  .note {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
   }
 
   .hint {
