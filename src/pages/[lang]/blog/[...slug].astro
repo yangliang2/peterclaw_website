@@ -6,6 +6,7 @@ import SeriesNav from '@/components/SeriesNav.astro';
 import SocialShare from '@/components/SocialShare.astro';
 import RelatedPosts from '@/components/RelatedPosts.astro';
 import ArticleFooter from '@/components/ArticleFooter.astro';
+import AffiliateCTA from '@/components/AffiliateCTA.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import EmailSignup from '@/components/EmailSignup.astro';
 import ReaderFeedback from '@/components/ReaderFeedback.astro';
@@ -213,6 +214,15 @@ if (
             ))}
           </dl>
         </section>
+      )
+    }
+    {
+      post.data.contentType === 'review' && post.data.reviewedProduct && (
+        <AffiliateCTA
+          locale={lang}
+          productName={post.data.reviewedProduct.name}
+          productSlug={post.data.reviewedProduct.productSlug}
+        />
       )
     }
     <RelatedPosts locale={lang} posts={relatedPosts} />

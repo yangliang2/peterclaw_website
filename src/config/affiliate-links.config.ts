@@ -52,6 +52,11 @@ export const affiliateLinks: AffiliateLink[] = [
     label: 'Buttondown',
     url: 'https://buttondown.email?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
   },
+  {
+    slug: 'amazon-ai-books',
+    label: 'Amazon AI Books',
+    url: 'https://www.amazon.com/s?k=AI+books&tag=peterclaw-20',
+  },
 ];
 
 export function getAffiliateLink(slug: string) {

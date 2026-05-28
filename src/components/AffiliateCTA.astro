@@ -1,0 +1,101 @@
+---
+import { getAffiliateLink } from '@/config/affiliate-links.config';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  productName?: string;
+  productSlug?: string;
+}
+
+const { locale, productName, productSlug } = Astro.props;
+
+const affiliateLink = productSlug ? getAffiliateLink(productSlug) : null;
+const url = affiliateLink ? `/go/${affiliateLink.slug}/` : null;
+
+const copy = {
+  zh: {
+    title: '开始使用',
+    description: `如果你觉得 ${productName || '这个工具'} 对你有帮助，可以通过下面的链接开始使用：`,
+    cta: `获取 ${productName || '工具'}`,
+    disclaimer: '本文包含联盟链接。如果你通过这些链接购买，我可能会获得佣金，这不会增加你的额外费用。感谢支持 PeterClaw 的持续创作！',
+  },
+  en: {
+    title: 'Get Started',
+    description: `If you find ${productName || 'this tool'} helpful, you can get started using the link below:`,
+    cta: `Get ${productName || 'Tool'}`,
+    disclaimer: 'This post contains affiliate links. If you purchase through them, I may earn a commission at no extra cost to you. Thank you for supporting PeterClaw!',
+  },
+}[locale];
+---
+
+{url && (
+  <section class="affiliate-cta" aria-labelledby="affiliate-cta-title">
+    <div class="affiliate-cta-content">
+      <h2 id="affiliate-cta-title">{copy.title}</h2>
+      <p>{copy.description}</p>
+      <a href={url} class="cta-button" target="_blank" rel="noopener noreferrer">
+        {copy.cta}
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </a>
+      <p class="disclaimer">{copy.disclaimer}</p>
+    </div>
+  </section>
+)}
+
+<style>
+  .affiliate-cta {
+    margin: 4rem 0;
+    padding: 2.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--gradient-glass);
+    text-align: center;
+  }
+
+  .affiliate-cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.75rem;
+    color: var(--color-heading);
+  }
+
+  p {
+    margin-bottom: 2rem;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 2rem;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    background: var(--color-primary-dark, #1d4ed8);
+  }
+
+  .disclaimer {
+    margin-top: 2rem;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.6;
+  }
+</style>

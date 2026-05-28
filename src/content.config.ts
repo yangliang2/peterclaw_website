@@ -27,6 +27,7 @@ const sharedContentSchema = z.object({
     .object({
       name: z.string().min(1),
       url: z.string().url(),
+      productSlug: z.string().optional(),
     })
     .optional(),
   useCases: z.array(z.string()).default([]),
