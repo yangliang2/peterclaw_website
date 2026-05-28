@@ -246,7 +246,7 @@ Zapier 的 7,000+ 应用目录覆盖了大量长尾 SaaS。如果你用的工具
 
 ## 延伸阅读
 
-- [Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？](/zh/blog/ai-tool-review-cursor-vs-windsurf/) —— AI 工具评测专栏第 1 篇
+- [Cursor vs Windsurf 2026 深度评测：谁是当前最强 AI 代码编辑器？](/en/blog/ai-tool-review-cursor-vs-windsurf/) —— AI 工具评测专栏第 1 篇
 - [Notion AI vs Obsidian Copilot vs Capacities 深度评测](/zh/blog/ai-tool-review-notion-ai-vs-obsidian-copilot-vs-capacities/) —— AI 工具评测专栏第 3 篇
 - [AI 日记 Vol.4：当我把工作流交给 AI——自动化时代的生存指南](/zh/blog/ai-diary-004-automation/) —— 我们如何在 PeterClaw Squad 中构建 AI 工作流
 - [GitHub 深潜：n8n 工作流引擎架构解析](/zh/blog/github-deep-dive-n8n-workflow-engine/) —— n8n 开源代码的技术解读

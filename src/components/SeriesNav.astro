@@ -17,7 +17,7 @@ if (!series) {
   return null;
 }
 
-const allPosts = await getCollection('blog');
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const ordered = postsInSeries(allPosts, series, locale);
 const { previous, next } = findAdjacentInSeries(ordered, post.id);
 const archiveHref = seriesArchivePath(locale, series.slug);
