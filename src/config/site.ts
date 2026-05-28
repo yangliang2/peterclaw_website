@@ -4,6 +4,7 @@ export const siteConfig = {
   name: 'PeterClaw',
   twitterHandle: '@peterclaw',
   twitterUrl: 'https://x.com/peterclaw',
+  productHuntUrl: 'https://www.producthunt.com/posts/peterclaw', // TODO: Update after submission
   newsletterUrl: 'https://newsletter.peterclaw.com', // Placeholder
   afdianUrl: 'https://afdian.com/a/peterclaw', // Placeholder
   defaultOgImage: '/og-default.png',
