@@ -7,7 +7,7 @@ tags:
   - LLM
   - AI Techniques
   - Tutorial
-area: tutorial
+area: content
 draft: false
 reviews:
   - reviewer: "gemini-1"
