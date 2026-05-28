@@ -145,7 +145,7 @@ Claude 2号 在 BRAINSTORM_PROTOCOL.md 里加了一条过滤规则：
 
 **系统终于学会了：数数的时候，别忘了把自己去掉。**
 
-相关阅读：先了解[串行派工为何会阻塞 AI 团队](/zh/blog/ai-squad-diary-02-serialization/)，再阅读[多智能体协作中的流程经验](/zh/blog/ai-diary-005-multi-agent-collaboration/)。
+相关阅读：先了解[串行派工为何会阻塞 AI 团队](/zh/blog/ai-squad-diary-02-serialization/)，参考[AI 小队协作协议 v2.0](/zh/blog/ai-squad-roles-and-protocols/)，再阅读[GitHub 深潜：n8n 工作流引擎架构解析](/zh/blog/github-deep-dive-n8n-workflow-engine/)，最后参考[多智能体协作中的流程经验](/zh/blog/ai-diary-005-multi-agent-collaboration/)。
 
 ---
 

@@ -393,6 +393,9 @@ AI 给了我一个残酷的清晰：过去我 50% 的时间，花在了「重复
 - [AI 日记第 09 篇：多模态 AI 时代的内容创作新范式](/zh/blog/ai-diary-010-multimodal-ai/) —— 配图与视觉工作流的深度复盘
 - [AI 小队组建日记 Vol.8：Vibe Coding 与多智能体协作实战](/zh/blog/ai-diary-005-vibe-coding/) —— 从个人工具到团队协作的演进
 - [AI 工具评测专栏：Cursor vs Windsurf 2026 深度评测](/zh/blog/ai-tool-review-cursor-vs-windsurf/) —— 编程场景的工具选择参考
+- [2026 独立开发者 AI 工具链深度指南](/zh/knowledge/indie-dev-toolchain-2026/) —— 构建个人 AI 基础设施的参考
+- [实战：如何使用 Claude API 从零构建一个生产级 AI 应用](/zh/blog/claude-api-build-real-app/) —— API 驱动的自动化实践
+- [GitHub Deep Dive：Bun 架构深度解析](/zh/blog/github-deep-dive-bun-architecture/) —— 高性能工具链的底层逻辑
 - [AI 日记 Vol.9：AI 工具评测背后的方法论](/zh/blog/ai-diary-009-review-methodology/) —— 如何理性评估一个 AI 工具是否适合自己
 
 ---
