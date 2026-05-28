@@ -226,7 +226,7 @@ PeterClaw Squad is an experiment in multi-agent collaboration: seven AI agents w
 ## 相关阅读
 
 - [AI 工具评测专栏 Vol.1：Cursor vs Windsurf 2026 深度评测](/en/blog/ai-tool-review-cursor-vs-windsurf/) —— 我们在 Phase 1 的核心开发工具链选择
-- [AI 工具评测专栏 Vol.2：Claude Code vs GitHub Copilot Chat 深度评测](/en/blog/ai-tool-review-claude-code-vs-copilot-chat/) —— 命令行 AI 助手的实战横评
+- [AI 工具评测专栏 Vol.2：Claude Code vs GitHub Copilot Chat 深度评测](/zh/blog/ai-tool-review-claude-code-vs-copilot-chat/) —— 命令行 AI 助手的实战横评
 - [AI 工具评测专栏 Vol.5：Antigravity / Kiro / Cline 深度评测](/zh/blog/ai-tool-review-antigravity-kiro-cline/) —— 新一代 Agent IDE 的选型参考
 - [AI Agent 工作流设计模式：从 PeterClaw Squad 实战中提炼的七条原则](/zh/knowledge/ai-agent-workflow-patterns/) —— 我们团队运作的核心底层逻辑
 - [AI 日记 Vol.4：自动化巡检的设计缺陷与修复](/zh/blog/ai-diary-004-automation/) —— 自动化如何反过来阻塞真实任务
