@@ -9,7 +9,13 @@ tags:
   - Tutorial
 area: tutorial
 draft: false
-reviews: []
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **Target audience**: Developers, product managers, and content creators who want to systematically master Prompt Engineering. No deep learning background required — just familiarity with mainstream LLMs (ChatGPT, Claude, Gemini).
