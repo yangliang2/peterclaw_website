@@ -556,10 +556,3 @@ export async function renderOgImage(input: OgImageInput) {
   return renderElement(createDynamicElement(input));
 }
 
-export function generatedOgPath(collection: 'blog' | 'knowledge', locale: Locale, slug: string) {
-  return `/og/${collection}/${locale}/${slug}.png`;
-}
-
-export function isAutoOgPlaceholder(ogImage?: string | null) {
-  return !ogImage || ogImage === siteConfig.defaultOgImage || ogImage === '/og-default.png';
-}
