@@ -10,7 +10,13 @@ tags:
   - 大模型
 area: tutorial
 draft: false
-reviews: []
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **目标读者**：希望系统掌握 Prompt Engineering 的开发者、产品经理、内容创作者。无需深度学习背景，只需熟悉主流大模型（ChatGPT、Claude、Gemini）的基本使用。
