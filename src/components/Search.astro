@@ -287,7 +287,7 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
         const query = input.value.trim();
         syncUrlParams(root);
         if (query.length > 2) {
-          window.trackEvent('search', { query, type: getActiveFilterType(root) });
+          window.trackEvent?.('search', { query, type: getActiveFilterType(root) });
         }
       }, 1000);
     });
@@ -299,7 +299,7 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
       if (!resultLink) return;
 
       const queryInput = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
-      window.trackEvent('search_result_click', {
+      window.trackEvent?.('search_result_click', {
         query: queryInput?.value || '',
         title: resultLink.innerText,
         url: resultLink.getAttribute('href'),

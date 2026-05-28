@@ -72,11 +72,7 @@ const platforms = [
       link.addEventListener('click', () => {
         const platform = link.getAttribute('data-platform');
         const url = window.location.href;
-        // @ts-ignore
-        if (window.trackEvent) {
-          // @ts-ignore
-          window.trackEvent('social_share', { platform, url });
-        }
+        window.trackEvent?.('social_share', { platform, url });
       });
     });
 
