@@ -1,30 +1,15 @@
 import type { APIRoute } from 'astro';
+import {
+  checkAiRateLimit,
+  classifyProviderStatus,
+  fetchWithTimeout,
+  getClientIp,
+  jsonError,
+  ProviderError,
+  userFacingStreamError,
+} from '@/lib/ai-guardrails';
 
 export const prerender = false;
-
-// In-memory rate limiter — resets on cold start, acceptable for basic protection
-const ipBucket = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 10;
-const WINDOW_MS = 60_000;
-
-function allowRequest(ip: string): boolean {
-  const now = Date.now();
-  const entry = ipBucket.get(ip);
-  if (!entry || now >= entry.resetAt) {
-    ipBucket.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RATE_LIMIT) return false;
-  entry.count++;
-  return true;
-}
-
-function json(payload: object, status: number) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
 
 type MessageItem = { role: string; content: string };
 
@@ -32,23 +17,25 @@ export const POST: APIRoute = async ({ request }) => {
   const apiKey = import.meta.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
     console.error('DEEPSEEK_API_KEY is not configured');
-    return json({ error: 'server_config' }, 503);
+    return jsonError({ error: 'server_config' }, 503);
   }
 
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    'unknown';
+  const ip = getClientIp(request);
+  const rate = checkAiRateLimit(ip);
 
-  if (!allowRequest(ip)) {
-    return json({ error: 'rate_limited' }, 429);
+  if (!rate.allowed) {
+    return jsonError(
+      { error: 'rate_limited', scope: rate.scope },
+      429,
+      { 'Retry-After': String(Math.max(1, Math.ceil((rate.resetAt - Date.now()) / 1000))) },
+    );
   }
 
   let body: { messages?: MessageItem[]; question?: string; articleContent?: string; locale?: string };
   try {
     body = await request.json();
   } catch {
-    return json({ error: 'invalid_json' }, 400);
+    return jsonError({ error: 'invalid_json' }, 400);
   }
 
   const articleContent = (body.articleContent ?? '').trim().slice(0, 6000);
@@ -63,7 +50,7 @@ export const POST: APIRoute = async ({ request }) => {
         : [];
 
   if (rawMessages.length === 0) {
-    return json({ error: 'invalid_request' }, 400);
+    return jsonError({ error: 'invalid_request' }, 400);
   }
 
   // Sanitize: keep last 10, valid roles only, cap per-message length
@@ -78,12 +65,12 @@ export const POST: APIRoute = async ({ request }) => {
     .map((m) => ({ role: m.role, content: m.content.trim().slice(0, 1000) }));
 
   if (chatMessages.length === 0 || chatMessages[chatMessages.length - 1]?.role !== 'user') {
-    return json({ error: 'invalid_request' }, 400);
+    return jsonError({ error: 'invalid_request' }, 400);
   }
 
   // Validate last user message isn't abusively long
   if ((chatMessages[chatMessages.length - 1]?.content.length ?? 0) > 500) {
-    return json({ error: 'invalid_request' }, 400);
+    return jsonError({ error: 'invalid_request' }, 400);
   }
 
   const systemPrompt =
@@ -95,7 +82,7 @@ export const POST: APIRoute = async ({ request }) => {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const response = await fetch('https://api.deepseek.com/chat/completions', {
+        const response = await fetchWithTimeout('https://api.deepseek.com/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -110,10 +97,7 @@ export const POST: APIRoute = async ({ request }) => {
         });
 
         if (!response.ok || !response.body) {
-          console.error('DeepSeek API error:', response.status);
-          controller.enqueue(encoder.encode('\n[Error generating response]'));
-          controller.close();
-          return;
+          throw classifyProviderStatus(response.status);
         }
 
         const reader = response.body.getReader();
@@ -140,9 +124,10 @@ export const POST: APIRoute = async ({ request }) => {
             }
           }
         }
-      } catch (err) {
-        console.error('Chat stream error:', err);
-        controller.enqueue(encoder.encode('\n[Error generating response]'));
+      } catch (error) {
+        const kind = error instanceof ProviderError ? error.kind : 'generic';
+        console.error('Article chat stream error:', error);
+        controller.enqueue(encoder.encode(userFacingStreamError(locale, kind)));
       } finally {
         controller.close();
       }

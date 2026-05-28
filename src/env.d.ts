@@ -23,6 +23,8 @@ interface DocumentEventMap {
 }
 
 interface ImportMetaEnv {
+  readonly OPENAI_API_KEY?: string;
+  readonly DEEPSEEK_API_KEY?: string;
   readonly PLAUSIBLE_DOMAIN?: string;
   readonly PLAUSIBLE_SCRIPT_URL?: string;
   readonly PLAUSIBLE_SITE_ID?: string;
