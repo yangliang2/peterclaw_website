@@ -9,6 +9,15 @@ import type { OgContentType } from '@/utils/og';
 const WIDTH = 1200;
 const HEIGHT = 630;
 const FONT_FAMILY = 'Noto Sans SC';
+const AUTO_OG_PLACEHOLDERS = new Set(['/og-default.png', '/og-default.svg']);
+
+export function isAutoOgPlaceholder(path: string | undefined): boolean {
+  return !path || AUTO_OG_PLACEHOLDERS.has(path);
+}
+
+export function generatedOgPath(type: Extract<OgContentType, 'blog' | 'knowledge'>, locale: Locale, slug: string): string {
+  return `/og/${type}/${locale}/${slug}.png`;
+}
 
 type BlogOgImageInput = {
   title: string;
