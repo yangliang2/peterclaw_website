@@ -52,7 +52,7 @@ export default defineConfig({
       i18n: {
         defaultLocale: 'zh',
         locales: {
-          zh: 'zh',
+          zh: 'zh-CN',
           en: 'en',
         },
       },

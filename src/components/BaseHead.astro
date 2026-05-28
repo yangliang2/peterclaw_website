@@ -1,7 +1,13 @@
 ---
 import { siteConfig } from '@/config/site';
 import { absoluteUrl, type JsonLdSchema } from '@/utils/seo';
-import { buildHreflangAlternates, defaultLocale, localePath, type Locale } from '@/lib/i18n';
+import {
+  buildHreflangAlternates,
+  defaultLocale,
+  localePath,
+  localeToHreflang,
+  type Locale,
+} from '@/lib/i18n';
 import SpeedInsights from '@vercel/speed-insights/astro';
 
 interface Props {
@@ -62,7 +68,7 @@ const schemas = structuredData
 {!noindex && <link rel="canonical" href={canonicalUrl} />}
 {!noindex &&
   hreflangAlternates.map(({ locale: altLocale, path }) => (
-    <link rel="alternate" hreflang={altLocale} href={absoluteUrl(path)} />
+    <link rel="alternate" hreflang={localeToHreflang(altLocale)} href={absoluteUrl(path)} />
   ))
 }
 {!noindex && <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />}

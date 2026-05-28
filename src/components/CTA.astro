@@ -31,7 +31,7 @@ const copy = ui[locale];
       <a href="/downloads/ai-tool-selection-whitepaper-2026.pdf" class="btn btn-secondary" download>
         {locale === 'zh' ? '下载白皮书' : 'Download Whitepaper'}
       </a>
-      <a href="/rss.xml" class="btn btn-secondary">
+      <a href={`/${locale}/rss.xml`} class="btn btn-secondary">
         {copy.ctaRSS}
       </a>
       <a href={siteConfig.twitterUrl} class="btn btn-secondary" target="_blank" rel="noopener noreferrer">

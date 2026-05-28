@@ -122,9 +122,10 @@ for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf8');
   const locale = localeFromPath(file);
   const rel = file.replace(distRoot, '');
+  const expectedHreflang = locale === 'zh' ? 'zh-CN' : locale;
 
-  if (!html.includes(`hreflang="${locale}"`)) {
-    htmlErrors.push(`${rel}: missing hreflang="${locale}"`);
+  if (!html.includes(`hreflang="${expectedHreflang}"`)) {
+    htmlErrors.push(`${rel}: missing hreflang="${expectedHreflang}"`);
   }
   if (!html.includes('hreflang="x-default"')) {
     htmlErrors.push(`${rel}: missing hreflang="x-default"`);

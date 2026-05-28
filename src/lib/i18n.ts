@@ -37,6 +37,14 @@ export function localePath(path: string, locale: Locale): string {
   return `/${locale}${suffix}`;
 }
 
+export function localeToHreflang(locale: Locale): string {
+  const map: Record<Locale, string> = {
+    zh: 'zh-CN',
+    en: 'en',
+  };
+  return map[locale];
+}
+
 /** Hreflang alternates for every locale that shares this URL shape. */
 export function buildHreflangAlternates(canonicalPath: string): { locale: Locale; path: string }[] {
   return locales.map((locale) => ({
