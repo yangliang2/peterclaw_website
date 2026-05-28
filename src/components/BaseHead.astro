@@ -68,6 +68,17 @@ const schemas = structuredData
 {!noindex && <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />}
 <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
 
+{/* SEO Verifications */}
+{siteConfig.verification.google && (
+  <meta name="google-site-verification" content={siteConfig.verification.google} />
+)}
+{siteConfig.verification.baidu && (
+  <meta name="baidu-site-verification" content={siteConfig.verification.baidu} />
+)}
+{siteConfig.verification.bing && (
+  <meta name="msvalidate.01" content={siteConfig.verification.bing} />
+)}
+
 <meta property="og:type" content={ogType} />
 <meta property="og:site_name" content={siteConfig.name} />
 <meta property="og:title" content={title} />
