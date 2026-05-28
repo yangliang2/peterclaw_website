@@ -10,6 +10,21 @@ const { locale, articleContent } = Astro.props;
 const copy = ui[locale];
 // Truncate at build time so the payload embedded in HTML stays bounded
 const content = articleContent.slice(0, 6000);
+const chatConfig = JSON.stringify({
+  locale,
+  messages: {
+    submitting: copy.chatSubmitting,
+    submitLabel: copy.chatSubmit,
+    invalid: copy.chatErrorInvalid,
+    rateLimit: copy.chatErrorRateLimit,
+    quota: copy.chatErrorQuota,
+    timeout: copy.chatErrorTimeout,
+    generic: copy.chatErrorGeneric,
+    you: copy.chatYou,
+    ai: copy.chatAI,
+  },
+});
+const chatPayload = JSON.stringify(content);
 ---
 
 <details class="article-chat glass-card" aria-label={copy.chatPrompt}>
@@ -42,200 +57,35 @@ const content = articleContent.slice(0, 6000);
       </div>
     </form>
   </div>
+  <script type="application/json" data-article-chat-payload set:html={chatPayload}></script>
+  <script type="application/json" data-article-chat-config set:html={chatConfig}></script>
 </details>
 
-<script is:inline define:vars={{ articleContent: content, locale, messages: {
-  submitting: copy.chatSubmitting,
-  submitLabel: copy.chatSubmit,
-  invalid: copy.chatErrorInvalid,
-  rateLimit: copy.chatErrorRateLimit,
-  quota: copy.chatErrorQuota,
-  timeout: copy.chatErrorTimeout,
-  generic: copy.chatErrorGeneric,
-  you: copy.chatYou,
-  ai: copy.chatAI,
-} }}>
-  document.querySelectorAll('[data-chat-form]').forEach((element) => {
-    if (!(element instanceof HTMLFormElement) || element.dataset.ready === 'true') return;
-    element.dataset.ready = 'true';
+<script is:inline>
+  (function () {
+    function loadArticleChat() {
+      if (document.querySelector('script[data-article-chat-loader]')) return;
+      const script = document.createElement('script');
+      script.src = '/article-chat.js';
+      script.async = true;
+      script.dataset.articleChatLoader = 'true';
+      document.body.appendChild(script);
+    }
 
-    const form = element;
-    const chatBody = form.closest('.article-chat-body');
-    const submitBtn = form.querySelector('[data-chat-submit]');
-    const clearBtn = form.querySelector('[data-chat-clear]');
-    const historyEl = chatBody && chatBody.querySelector('[data-chat-history]');
-    const statusEl = chatBody && chatBody.querySelector('[data-chat-status]');
-    const presetsEl = chatBody && chatBody.querySelector('[data-chat-presets]');
-
-    if (!(submitBtn instanceof HTMLButtonElement) || !(clearBtn instanceof HTMLButtonElement)) return;
-
-    // Per-session conversation history: [{role, content}]
-    let history = [];
-
-    // Preset chips fill the textarea
-    if (presetsEl) {
-      presetsEl.querySelectorAll('.chat-preset-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const textarea = form.querySelector('textarea[name="question"]');
-          if (textarea instanceof HTMLTextAreaElement) {
-            textarea.value = (btn.textContent || '').trim();
-            textarea.focus();
-          }
-        });
+    document.querySelectorAll('.article-chat').forEach((details) => {
+      if (!(details instanceof HTMLDetailsElement)) return;
+      details.addEventListener('toggle', () => {
+        if (details.open) loadArticleChat();
       });
-    }
-
-    function setStatus(text, isError) {
-      if (!(statusEl instanceof HTMLElement)) return;
-      statusEl.textContent = text;
-      statusEl.className = 'article-chat-status' + (isError ? ' is-error' : '');
-      statusEl.hidden = !text;
-    }
-
-    function trackAiChat(status, props) {
-      if (typeof window.trackEvent === 'function') {
-        window.trackEvent('ai_chat_usage', {
-          surface: 'article_chat',
-          locale,
-          status,
-          ...props,
-        });
-      }
-    }
-
-    async function readErrorCode(response) {
-      try {
-        const payload = await response.clone().json();
-        return typeof payload.error === 'string' ? payload.error : '';
-      } catch {
-        return '';
-      }
-    }
-
-    function messageForError(code, fallback) {
-      if (code === 'quota_exhausted') return messages.quota;
-      if (code === 'timeout') return messages.timeout;
-      return fallback;
-    }
-
-    function createMessageEl(role, text) {
-      const div = document.createElement('div');
-      div.className = 'chat-message chat-message--' + role;
-      const label = document.createElement('span');
-      label.className = 'chat-message-label';
-      label.textContent = role === 'user' ? messages.you : messages.ai;
-      const contentDiv = document.createElement('div');
-      contentDiv.className = 'chat-message-content';
-      if (text) contentDiv.textContent = text;
-      div.appendChild(label);
-      div.appendChild(contentDiv);
-      return div;
-    }
-
-    clearBtn.addEventListener('click', () => {
-      history = [];
-      if (historyEl instanceof HTMLElement) {
-        historyEl.innerHTML = '';
-        historyEl.hidden = true;
-      }
-      clearBtn.hidden = true;
-      setStatus('', false);
-      form.reset();
+      details.addEventListener(
+        'focusin',
+        () => {
+          if (details.open) loadArticleChat();
+        },
+        { once: true },
+      );
     });
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      setStatus('', false);
-
-      const textarea = form.querySelector('textarea[name="question"]');
-      if (!(textarea instanceof HTMLTextAreaElement) || !textarea.value.trim()) {
-        setStatus(messages.invalid, true);
-        return;
-      }
-
-      const question = textarea.value.trim();
-      trackAiChat('submit', { question_length: question.length });
-
-      // Build API messages — cap at last 6 for cost control
-      const apiMessages = [...history, { role: 'user', content: question }].slice(-6);
-
-      // Create conversation pair in history immediately
-      const pairEl = document.createElement('div');
-      pairEl.className = 'chat-pair';
-      const userMsgEl = createMessageEl('user', question);
-      const aiMsgEl = createMessageEl('ai', '');
-      aiMsgEl.classList.add('is-streaming');
-      const aiContentEl = aiMsgEl.querySelector('.chat-message-content');
-      pairEl.appendChild(userMsgEl);
-      pairEl.appendChild(aiMsgEl);
-
-      if (historyEl instanceof HTMLElement) {
-        historyEl.appendChild(pairEl);
-        historyEl.hidden = false;
-        setTimeout(() => pairEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
-      }
-
-      form.reset();
-      submitBtn.disabled = true;
-      submitBtn.textContent = messages.submitting;
-
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: apiMessages, articleContent, locale }),
-        });
-
-        if (response.status === 429) {
-          setStatus(messages.rateLimit, true);
-          trackAiChat('rate_limited', { http_status: response.status });
-          pairEl.remove();
-          if (historyEl instanceof HTMLElement && historyEl.children.length === 0) historyEl.hidden = true;
-          return;
-        }
-        if (!response.ok || !response.body) {
-          const code = await readErrorCode(response);
-          setStatus(messageForError(code, messages.generic), true);
-          trackAiChat('error', { http_status: response.status, error: code || 'upstream' });
-          pairEl.remove();
-          if (historyEl instanceof HTMLElement && historyEl.children.length === 0) historyEl.hidden = true;
-          return;
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let fullAnswer = '';
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          fullAnswer += chunk;
-          if (aiContentEl instanceof HTMLElement) aiContentEl.textContent = fullAnswer;
-        }
-        const remainder = decoder.decode();
-        if (remainder) {
-          fullAnswer += remainder;
-          if (aiContentEl instanceof HTMLElement) aiContentEl.textContent = fullAnswer;
-        }
-
-        aiMsgEl.classList.remove('is-streaming');
-
-        history.push({ role: 'user', content: question });
-        history.push({ role: 'assistant', content: fullAnswer });
-
-        clearBtn.hidden = false;
-        trackAiChat('success', { answer_length: fullAnswer.length });
-      } catch {
-        setStatus(messages.generic, true);
-        trackAiChat('error', { error: 'network' });
-        pairEl.remove();
-        if (historyEl instanceof HTMLElement && historyEl.children.length === 0) historyEl.hidden = true;
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = messages.submitLabel;
-      }
-    });
-  });
+  })();
 </script>
 
 <style>
