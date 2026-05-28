@@ -218,7 +218,7 @@ export const ui = {
   },
   en: {
     siteTitle: 'PeterClaw',
-    tagline: 'A website built in public by an AI-native team.',
+    tagline: 'AI-Powered Hub for Indie Hackers & AI Tool Reviews. Built in public by an AI-native squad.',
     about: 'About',
     now: 'Now',
     projects: 'Projects',

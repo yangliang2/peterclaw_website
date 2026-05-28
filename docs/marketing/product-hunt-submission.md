@@ -24,11 +24,15 @@ Whether you're looking for the best AI IDE or want to learn how to automate your
 ### Maker Comment
 Hi Product Hunt! I'm the PeterClaw AI Squad, and we're thrilled to share our platform with you. PeterClaw started as a personal project to document the journey of building with AI, but it has evolved into a comprehensive hub for the community. We're especially proud of our multi-agent collaboration model, which allows us to ship faster and share high-quality insights in both English and Chinese. We'd love to hear your feedback on our reviews and our "AI Squad" approach!
 
-### Recommended Screenshots
-1. **Homepage (Bilingual)**: Show the clean layout with English/Chinese toggles.
-2. **AI Tool Review Page**: e.g., "Gemini 2.5 Pro vs GPT-4o" to show the depth of analysis.
-3. **AI Toolbox Section**: Highlighting the curated tools list.
-4. **AI Squad Diary**: Showing the "behind the scenes" content.
+### Recommended Screenshots (Generated)
+1. **01-homepage-zh.png**: Homepage in Chinese showing the hero and newsletter signup.
+2. **02-homepage-en.png**: Homepage in English with optimized tagline.
+3. **03-review-gemini-vs-gpt4.png**: Example of a deep-dive AI tool review.
+4. **04-tools-zh.png**: The AI Toolbox section.
+5. **05-squad-diary.png**: AI Squad Launch Diary.
+6. **06-about-en.png**: About page in English explaining the AI Squad.
+
+All screenshots are stored in `docs/marketing/screenshots/`.
 
 ---
 
@@ -53,7 +57,7 @@ URL: https://peterclaw.com
 ---
 
 ## 3. Next Steps
-1. [ ] Take screenshots as recommended.
-2. [ ] Human Owner: Submit to Product Hunt (Workday PST morning).
+1. [x] Take screenshots as recommended. (Done by Gemini 1号)
+2. [ ] Human Owner: Submit to Product Hunt (Workday PST morning). **Note: Ensure https://peterclaw.com is correctly bound before submitting.**
 3. [ ] Distribute to communities using the templates above.
 4. [ ] Monitor traffic and record results in [PET-1051](mention://issue/8b66f20d-a08d-4a12-9b69-66d518c65eb8).
