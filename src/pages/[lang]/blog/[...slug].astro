@@ -35,7 +35,6 @@ import ReadingProgress from '@/components/ReadingProgress.astro';
 import ArticleToc from '@/components/ArticleToc.astro';
 import PagefindMeta from '@/components/PagefindMeta.astro';
 import { siteConfig } from '@/config/site';
-import { blogOgImagePath } from '@/utils/og';
 import { formatPageviews, getPlausiblePageviews } from '@/lib/plausible';
 
 export async function getStaticPaths() {
@@ -64,7 +63,7 @@ export async function getStaticPaths() {
       .sort(({ candidate: left, score: leftScore }, { candidate: right, score: rightScore }) =>
         rightScore - leftScore || right.data.publishedAt.valueOf() - left.data.publishedAt.valueOf()
       )
-      .slice(0, 3)
+      .slice(0, 5)
       .map(({ candidate }) => candidate);
 
     return {
@@ -89,7 +88,6 @@ if (!isLocale(lang)) {
 }
 
 const { Content } = await render(post);
-const allPosts = await getCollection('blog');
 const canonicalPath = collectionPath(lang, 'blog', post.id);
 const publishedTime = post.data.publishedAt.toISOString();
 const modifiedTime = (post.data.updatedAt ?? post.data.publishedAt).toISOString();

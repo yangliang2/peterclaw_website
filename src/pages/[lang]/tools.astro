@@ -66,49 +66,57 @@ const structuredData: JsonLdSchema[] = [
       <section class="tools-category">
         <h2>{category.title}</h2>
         <div class="tools-grid">
-          {category.items.map((tool) => (
-            <article class="tool-card glass-card">
-              <div class="tool-header">
-                <h3>
-                  <a href={tool.url} target="_blank" rel="noopener noreferrer">
-                    {tool.name}
-                  </a>
-                </h3>
-                <div class="tool-rating" title={`${copy.ratingLabel}: ${tool.rating}`}>
-                  <span class="rating-value">{ratingValue(tool.rating).toFixed(1)}</span>
-                  <span class="rating-stars">{"★".repeat(Math.floor(ratingValue(tool.rating))) + (ratingValue(tool.rating) % 1 >= 0.5 ? "½" : "")}</span>
+          {category.items.map((tool) => {
+            const ratingRaw = Number(tool.rating);
+            const rating = Number.isFinite(ratingRaw) ? ratingRaw : 0;
+            const starCount = Math.max(0, Math.min(5, Math.floor(rating)));
+            const hasHalf = rating % 1 >= 0.5;
+            const stars = "★".repeat(starCount) + (hasHalf ? "½" : "");
+
+            return (
+              <article class="tool-card glass-card">
+                <div class="tool-header">
+                  <h3>
+                    <a href={tool.url} target="_blank" rel="noopener noreferrer">
+                      {tool.name}
+                    </a>
+                  </h3>
+                  <div class="tool-rating" title={`${copy.ratingLabel}: ${rating}/5.0`}>
+                    <span class="rating-value">{rating.toFixed(1)}</span>
+                    <span class="rating-stars">{stars}</span>
+                  </div>
                 </div>
-              </div>
-              <p class="tool-rating">
-                <span class="tool-rating-label">{copy.ratingLabel}</span>
-                <span class="tool-rating-value" aria-label={`${copy.ratingLabel}: ${tool.rating}`}>
-                  {tool.rating}
-                </span>
-              </p>
-              <p class="tool-description">{tool.description}</p>
-              <p class="tool-review">{tool.review}</p>
-              {tool.reviewLink && (
-                <a class="tool-review-link" href={tool.reviewLink}>
-                  {copy.reviewLinkLabel}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </a>
-              )}
-            </article>
-          ))}
+                <p class="tool-rating">
+                  <span class="tool-rating-label">{copy.ratingLabel}</span>
+                  <span class="tool-rating-value" aria-label={`${copy.ratingLabel}: ${rating}`}>
+                    {rating}
+                  </span>
+                </p>
+                <p class="tool-description">{tool.description}</p>
+                <p class="tool-review">{tool.review}</p>
+                {tool.reviewLink && (
+                  <a class="tool-review-link" href={tool.reviewLink}>
+                    {copy.reviewLinkLabel}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </a>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
     ))

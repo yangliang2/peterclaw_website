@@ -34,22 +34,23 @@ import { siteConfig } from '@/config/site';
 export async function getStaticPaths() {
   const articles = await getCollection('knowledge', ({ data }) => !data.draft);
   const articleIds = articles.map((entry) => entry.id);
-  const blogPosts = await getCollection('blog', ({ data }) => !data.draft);
 
   return articles.map((article) => {
     const lang = localeFromId(article.id);
 
-    const relatedPosts = blogPosts
-      .filter((candidate) => localeFromId(candidate.id) === lang)
+    const relatedPosts = articles
+      .filter((candidate) => candidate.id !== article.id && localeFromId(candidate.id) === lang)
       .map((candidate) => ({
         candidate,
-        score: candidate.data.tags.filter((tag) => article.data.tags.includes(tag)).length,
+        score:
+          (candidate.data.area === article.data.area ? 5 : 0) +
+          candidate.data.tags.filter((tag) => article.data.tags.includes(tag)).length,
       }))
       .filter(({ score }) => score > 0)
       .sort(({ candidate: left, score: leftScore }, { candidate: right, score: rightScore }) =>
         rightScore - leftScore || right.data.publishedAt.valueOf() - left.data.publishedAt.valueOf()
       )
-      .slice(0, 3)
+      .slice(0, 5)
       .map(({ candidate }) => candidate);
 
     return {
@@ -152,7 +153,7 @@ const structuredData = [
         )
       }
       <Content />
-      <RelatedPosts locale={lang} posts={relatedPosts} />
+      <RelatedPosts locale={lang} posts={relatedPosts} collection="knowledge" />
       <SocialShare title={article.data.title} url={Astro.url.href} />
       <ArticleFooter locale={lang} />
     </article>
