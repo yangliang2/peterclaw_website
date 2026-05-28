@@ -182,6 +182,11 @@ export const ui = {
     tagPageDescription: '按主题浏览内容',
     tagCount: '篇文章',
     tagNoPosts: '暂无文章',
+    seriesNav: '系列导航',
+    seriesPrev: '上一篇',
+    seriesNext: '下一篇',
+    seriesIndex: '系列目录',
+    backToBlog: '返回博客',
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -301,5 +306,10 @@ export const ui = {
     tagPageDescription: 'Browse content by topic',
     tagCount: 'posts',
     tagNoPosts: 'No posts yet',
+    seriesNav: 'Series navigation',
+    seriesPrev: 'Previous',
+    seriesNext: 'Next',
+    seriesIndex: 'Series index',
+    backToBlog: 'Back to blog',
   }
 } satisfies Record<Locale, Record<string, string>>;

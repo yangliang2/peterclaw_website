@@ -1,0 +1,128 @@
+---
+import { blogSeriesBySlug, seriesPath } from '@/config/blog-series';
+import { getSeriesNeighbors, postHref } from '@/lib/blog-series';
+import { ui, type Locale } from '@/lib/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  locale: Locale;
+  post: CollectionEntry<'blog'>;
+  allPosts: CollectionEntry<'blog'>[];
+}
+
+const { locale, post, allPosts } = Astro.props;
+const copy = ui[locale];
+const { seriesSlug, previous, next } = getSeriesNeighbors(post, allPosts);
+
+if (!seriesSlug || (!previous && !next)) {
+  return null;
+}
+
+const seriesConfig = blogSeriesBySlug[seriesSlug];
+---
+
+<nav class="series-nav" aria-label={copy.seriesNav}>
+  <a class="series-nav-index" href={seriesPath(locale, seriesSlug)}>
+    {seriesConfig.title[locale]}
+  </a>
+  <div class="series-nav-links">
+    {
+      previous ? (
+        <a class="series-nav-link series-nav-prev" href={postHref(locale, previous)}>
+          <span class="series-nav-label">{copy.seriesPrev}</span>
+          <span class="series-nav-title">{previous.data.title}</span>
+        </a>
+      ) : (
+        <span class="series-nav-link series-nav-placeholder" />
+      )
+    }
+    {
+      next ? (
+        <a class="series-nav-link series-nav-next" href={postHref(locale, next)}>
+          <span class="series-nav-label">{copy.seriesNext}</span>
+          <span class="series-nav-title">{next.data.title}</span>
+        </a>
+      ) : (
+        <span class="series-nav-link series-nav-placeholder" />
+      )
+    }
+  </div>
+</nav>
+
+<style>
+  .series-nav {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-line);
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .series-nav-index {
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+
+  .series-nav-index:hover {
+    text-decoration: underline;
+  }
+
+  .series-nav-links {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .series-nav-links {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  .series-nav-link {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem 1.25rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .series-nav-link:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+
+  .series-nav-next {
+    text-align: right;
+  }
+
+  .series-nav-placeholder {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .series-nav-placeholder {
+      display: block;
+    }
+  }
+
+  .series-nav-label {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .series-nav-title {
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+</style>

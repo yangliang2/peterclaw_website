@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { blogSeriesBySlug, seriesPath, type BlogSeriesSlug } from '@/config/blog-series';
+import { getSeriesPosts, postHref } from '@/lib/blog-series';
+import { isLocale, ui, type Locale } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return (Object.keys(blogSeriesBySlug) as BlogSeriesSlug[]).flatMap((seriesSlug) =>
+    ['zh', 'en'].map((lang) => ({
+      params: { lang, seriesSlug }
+    }))
+  );
+}
+
+const { lang, seriesSlug } = Astro.params;
+if (!isLocale(lang) || !(seriesSlug && seriesSlug in blogSeriesBySlug)) {
+  return Astro.redirect('/zh/blog/');
+}
+
+const locale = lang as Locale;
+const slug = seriesSlug as BlogSeriesSlug;
+const config = blogSeriesBySlug[slug];
+const copy = ui[locale];
+const posts = getSeriesPosts(await getCollection('blog'), locale, slug);
+const canonicalPath = seriesPath(locale, slug);
+---
+
+<BaseLayout
+  locale={locale}
+  title={config.title[locale]}
+  description={config.description[locale]}
+  canonicalPath={canonicalPath}
+>
+  <p class="meta">
+    <a href={`/${locale}/blog/`}>{copy.backToBlog}</a>
+  </p>
+  <h1>{config.title[locale]}</h1>
+  <p class="lede">{config.description[locale]}</p>
+  {
+    posts.length === 0 ? (
+      <p>{locale === 'zh' ? '该系列暂无已发布文章。' : 'No published posts in this series yet.'}</p>
+    ) : (
+      <div class="content-list">
+        {posts.map((post, index) => (
+          <a class="content-item" href={postHref(locale, post)}>
+            <span class="meta">
+              {locale === 'zh' ? `第 ${index + 1} 篇` : `Part ${index + 1}`} ·{' '}
+              {post.data.publishedAt.toISOString().slice(0, 10)}
+            </span>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+          </a>
+        ))}
+      </div>
+    )
+  }
+</BaseLayout>
