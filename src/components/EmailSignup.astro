@@ -81,6 +81,10 @@ const statusId = `${signupId}-status`;
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
+      if (window.trackEvent) {
+        window.trackEvent('newsletter_submit_click', { location: variant });
+      }
+
       const email = emailInput.value.trim();
       status.hidden = true;
       status.className = 'email-signup-status';

@@ -13,7 +13,12 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
 
 <section class="giscus-section" aria-label={copy.comments}>
   <h2 class="giscus-heading">{copy.comments}</h2>
-  <div class="giscus-host"></div>
+  <div class="giscus-placeholder" data-giscus-placeholder>
+    <button class="btn btn-secondary btn-load-comments" data-load-comments>
+      {locale === 'zh' ? '加载评论' : 'Load Comments'}
+    </button>
+  </div>
+  <div class="giscus-host" hidden></div>
 </section>
 
 <script
@@ -52,7 +57,12 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
 
   function loadGiscus() {
     const host = document.querySelector('.giscus-host');
+    const placeholder = document.querySelector('.giscus-placeholder');
     if (!host || host.dataset.giscusLoaded === 'true') return;
+
+    if (window.trackEvent) {
+      window.trackEvent('comments_show');
+    }
 
     const script = document.createElement('script');
     script.src = `${GISCUS_ORIGIN}/client.js`;
@@ -71,6 +81,8 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
     script.setAttribute('data-lang', giscusLang);
 
     host.dataset.giscusLoaded = 'true';
+    host.hidden = false;
+    if (placeholder) placeholder.hidden = true;
     host.replaceChildren(script);
   }
 
@@ -103,8 +115,13 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
   }
 
   function initGiscus() {
-    loadGiscus();
-    watchThemeChanges();
+    const loadButton = document.querySelector('[data-load-comments]');
+    if (loadButton) {
+      loadButton.addEventListener('click', () => {
+        loadGiscus();
+        watchThemeChanges();
+      }, { once: true });
+    }
   }
 
   initGiscus();
@@ -122,6 +139,19 @@ const giscusLang = locale === 'zh' ? 'zh-CN' : 'en';
   .giscus-heading {
     margin: 0 0 1.5rem;
     font-size: 1.5rem;
+  }
+
+  .giscus-placeholder {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 0;
+    background: var(--gradient-glass);
+    border-radius: var(--radius-md);
+    border: var(--border-glass);
+  }
+
+  .btn-load-comments {
+    min-width: 200px;
   }
 
   .giscus-host :global(.giscus) {

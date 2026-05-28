@@ -23,10 +23,19 @@
     const bar = document.querySelector<HTMLElement>('[data-reading-progress-bar]');
     if (!bar) return;
 
+    let tracked = false;
+
     const update = () => {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0;
       bar.style.width = `${progress}%`;
+
+      if (!tracked && progress >= 90) {
+        tracked = true;
+        if (window.trackEvent) {
+          window.trackEvent('read_complete', { url: window.location.pathname });
+        }
+      }
     };
 
     scrollHandler = update;

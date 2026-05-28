@@ -98,6 +98,14 @@ const Container = compact ? 'details' : 'section';
 
         const payload = await response.json().catch(() => ({}));
         if (response.ok && payload.ok) {
+          if (window.trackEvent) {
+            const formData = new FormData(form);
+            window.trackEvent('feedback_submit', {
+              type: formData.get('type'),
+              source: formData.get('source'),
+            });
+          }
+
           status.textContent = messages.success;
           status.classList.add('is-success');
           form.reset();
