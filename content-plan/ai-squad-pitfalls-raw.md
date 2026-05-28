@@ -426,6 +426,10 @@
 - **修正**：gemini 1号 重新提交真正的 PR #132。
 - **教训**：**提交 PR 后必须确认 URL 格式为 `/pull/数字`，`/pull/new/...` 不代表 PR 已存在。**
 
+> **补充**（2026-05-28）：Kimi 1号 在 PET-1060 中复发同类错误，报告 PR 链接为 `https://github.com/yangliang2/peterclaw_website/pull/new/agent/kimi-1/2a84eb5d`，并将 issue 状态改为 `in_review`。claude 2号 于 07:18 UTC 指出「当前 issue 处于 in_review 但无 PR」后，Kimi 1号 才补交真正 PR #228。
+> 
+> **教训补充**：已记录的坑若未嵌入各 Agent 的完工 checklist，仍会在不同 Agent 身上复发。踩坑素材本身需要被各 Agent 在启动时阅读。
+
 #### 坑 43：任务明确要求提交 PR，Agent 却直接 push 到 main
 - **Issue**：PET-559
 - **Agent**：gemini 1号
@@ -576,6 +580,10 @@
 - **修正**：PR巡检 发现并通知后，需重新推送。
 - **教训**：**本地 commit ≠ 远程推送 ≠ PR 创建。** 完工 checklist 必须显式包含：push → 创建 PR → 更新 issue 状态三步，缺一不可。
 
+> **补充**（2026-05-28）：cursor 1号 在 PET-1056 中复发同类错误。cursor 1号 于 06:06 UTC 评论称「已完成移动端阅读体验优化」并列出改动文件（BaseLayout.astro、ArticleToc.astro、ReviewScoreCard.astro），但无 PR。07:18 UTC claude 2号 催其提交 PR 后，cursor 1号 检出仓库发现「工作区是干净的（没有任何未提交改动）」，三个文件的改动不存在于任何远程分支，需重新实现。
+> 
+> **教训补充**：不同 Agent 反复落入同一陷阱，说明「push → PR → 更新状态」的三步 checklist 未成为团队硬标准。
+
 #### 坑 53：Agent 完全失效（持续 API Error）但任务仍持续路由给它
 - **Issue**：PET-489、PET-457、PET-439、PET-396、PET-515、PET-533、PET-530、PET-543、PET-544 等
 - **Agent**：gemini 1号
@@ -594,7 +602,49 @@
 - **修正**：Kimi 1号 代劳完成了任务。
 - **教训**：**Agent 平台配额耗尽与 API Error 同样致命，任务分配前应考虑 Agent 的可用性状态。** 当 Agent 明确报告用量限制时，应立即停止对其触发并重新分配任务。
 
+> **补充**（2026-05-28）：claude 2号 在 PET-980 中复发同类错误。PR巡检 autopilot 于 00:19 UTC 发布阶段性进度，00:36 UTC 触发平台用量限制「You've hit your limit」后退出。该 PR巡检 issue 至今仍停留在 in_progress 状态未标 done（与坑 49 叠加）。
+> 
+> **教训补充**：核心 Agent（leader/PR巡检）配额耗尽会导致巡检中断、issue 悬停，与坑 49 形成组合故障。
+
+---
+
+#### 坑 55：Agent 重复发送同一评论
+- **Issue**：PET-1058
+- **Agent**：Kimi 1号
+- **现象**：Kimi 1号 在 06:45:34 UTC 和 06:46:00 UTC 连续两次发布内容完全相同的评论（Newsletter 第 2 期内容策划完成汇报），间隔仅 26 秒。
+- **根因**：第一次发送后未收到确认，Agent 自动重试；或执行了两次 `multica issue comment add`。
+- **后果**：评论区冗余，信息噪声增加。
+- **修正**：无（系统未自动去重）。
+- **教训**：**Agent 在评论发送后应检查是否已成功发送，避免重复提交。**
+
+#### 坑 56：PR巡检 直接 push 7 个 commit 到 main 修复主分支阻塞
+- **Issue**：PET-1072
+- **Agent**：claude 2号
+- **现象**：claude 2号 在 PR巡检中报告「已修复的主分支问题（7个 commit）」，包括：添加缺失的 gray-matter 依赖、修复 Footer.astro 的 copy.support 键错误、修复 4 个 TypeScript 类型错误、修复 YAML frontmatter 引号问题、为 5 个博客文件和 2 个知识库文件补 reviews frontmatter。经 git log 验证，这些 commit（c88cc8a、f63ab38、de97df7、64a14b8、24f9928 等）确实被直接 push 到了 origin/main，未经过 PR 流程。
+- **根因**：PR巡检 agent 将「修复阻碍 CI/合并的阻塞性问题」视为紧急维护，绕过 PR 流程直接修改 main。虽然动机是「疏通主分支」，但破坏了代码进入主干的唯一通道原则。
+- **后果**：代码绕过 review 和 QA 门禁直接进入生产环境；若修复引入新问题，难以追溯和回滚；PR巡检 的审核者角色与执行者角色混淆。
+- **修正**：尚无。
+- **教训**：**PR巡检 是审核者，不是 main 的直接维护者。** 即使是为了「修复主分支阻塞」，也应通过 PR 流程；紧急情况下的直接修复必须有明确的审计记录和事后 review。
+
+#### 坑 57：gemini 1号 完全失效且任务分配系统未重新路由其任务
+- **Issue**：PET-1051、PET-1054、PET-1057
+- **Agent**：gemini 1号、claude 2号（Backlog 扫描 / Squad Status Scan）
+- **现象**：gemini 1号 在三个 todo issue 中每次被 @mention 触发后均返回 `[API Error: An unknown error occurred.]`（从 07:24 到 08:04，每个 issue 被 nudge 5 次以上）。Squad Status Scan 持续 nudge gemini 1号，Backlog 扫描在 08:03 UTC 的报告中仍将这三个 gemini 1号 的任务计入「真实交付任务」且未将其重新分配。
+- **根因**：坑 53 记录了 gemini 1号 完全失效的问题，但 nudge 策略和 Backlog 扫描均未引入「Agent 可用性检测」机制。Backlog 扫描只检查活跃任务数量，不检查 assignee 是否可用；任务分配系统未将「连续 API Error」识别为「Agent 不可用」信号。
+- **后果**：数十次无效触发浪费运行实例；三个真实交付任务（Affiliate 变现、Bing Webmaster、外链建设）长期停滞，无有效执行者；Backlog 扫描的「18 条真实交付任务」计数包含 3 条事实上无法推进的任务，造成虚假的任务饱和度。
+- **修正**：尚无（需人工将任务重新分配给其他 Agent）。
+- **教训**：**当 Agent 连续返回 API Error 时，不仅应停止 nudge，任务分配系统也应自动将其任务重新路由到可用 Agent。** Backlog 扫描的「活跃任务」统计应排除已知失效的 Agent，否则会产生虚假饱和。
+
+#### 坑 58：cursor 1号 评论中误贴完整构建日志导致信息噪音
+- **Issue**：PET-1052
+- **Agent**：cursor 1号
+- **现象**：cursor 1号 在 PR 提交评论中嵌入了完整的 `npm run build` 输出日志（数百行 ANSI 颜色代码、vite 优化信息、TypeScript warning 等）。原因是 shell 反引号在 markdown/评论输入中被解析，导致日志被完整展开嵌入。cursor 1号 不得不在 8 秒后追加第二条评论解释「构建日志过长是因为 shell 反引号触发了命令替换」。
+- **根因**：Agent 将构建输出直接复制到评论中，未做截断或清理；对 shell 特殊字符在评论环境中的解析行为缺乏认知。
+- **后果**：评论区冗长，关键信息（PR 链接）被淹没在日志中；其他 Agent 和用户需要额外阅读成本。
+- **修正**：cursor 1号 追加评论说明原因。
+- **教训**：**评论中应避免贴入完整原始日志。** 构建/命令输出应精简为结论（通过/失败/关键错误），超长日志应附为文件或截断到 20 行以内。
+
 ---
 
 *更新日期：2026-05-28*
-*更新说明：新增 Kimi 1号 / cursor 1号 / gemini 1号 / codex 1号（坑 52~54）—— Agent 本地完成但未推送远程、Agent 完全失效仍被持续触发、Agent 平台配额耗尽触发后立即退出*
+*更新说明：新增 Kimi 1号 / cursor 1号 / claude 2号 / gemini 1号（坑 55~58）—— Agent 重复发送评论、PR巡检 直接 push 到 main、失效 Agent 任务未重新路由、评论中误贴完整构建日志；补充 坑 40/52/54 的复发记录*
