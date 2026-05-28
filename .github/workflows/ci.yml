@@ -42,7 +42,7 @@ jobs:
             echo "| Check | Outcome | Next step on failure |"
             echo "| --- | --- | --- |"
             echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
-            echo "| Content quality gate | ${{ steps.content.outcome }} | Run \`npm run quality:content\` locally and fix frontmatter review metadata. |"
+            echo "| Content quality gate | ${{ steps.content.outcome }} | Run \`npm run quality:content\` locally and fix SEO metadata, image alt/assets, internal links, body length, H1, and review metadata failures. |"
             echo "| Astro build + hreflang | ${{ steps.build.outcome }} | Run \`npm run build\` locally and inspect Astro/hreflang output. |"
             echo "| JSON-LD schema validation | ${{ steps.schema.outcome }} | Run \`npm run validate-schema\` locally and inspect schema paths. |"
             echo
