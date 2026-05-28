@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .astro/
+public/og/
+public/og-default.png
 .env
 .env.*
 .vercel/

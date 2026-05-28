@@ -29,6 +29,8 @@ const staticRoutes = new Set([
   '/zh/newsletter', '/zh/newsletter/',
   '/en/newsletter', '/en/newsletter/',
 ]);
+/** Build-time OG placeholders; /og-default.png is generated from public/og-default.svg */
+const AUTO_OG_PLACEHOLDERS = new Set(['/og-default.png', '/og-default.svg']);
 const errors = [];
 const warnings = [];
 const externalChecks = [];
@@ -179,6 +181,13 @@ function validateOgImage(ogImage, isDraft, relativePath) {
       return;
     }
 
+    if (AUTO_OG_PLACEHOLDERS.has(ogImage)) {
+      if (!existsSync(path.join(publicRoot, 'og-default.svg'))) {
+        errors.push(`${relativePath}: auto OG placeholder requires public/og-default.svg as the build source.`);
+      }
+      return;
+    }
+
     if (!existsSync(path.join(publicRoot, stripLeadingSlash(ogImage)))) {
       errors.push(`${relativePath}: "ogImage" points to a missing public asset: ${ogImage}.`);
     }
@@ -186,8 +195,8 @@ function validateOgImage(ogImage, isDraft, relativePath) {
     return;
   }
 
-  if (!isDraft && !existsSync(path.join(publicRoot, 'og-default.png'))) {
-    errors.push(`${relativePath}: published content needs either an "ogImage" or the default /og-default.png asset.`);
+  if (!isDraft && !existsSync(path.join(publicRoot, 'og-default.svg'))) {
+    errors.push(`${relativePath}: published content needs either an "ogImage" or public/og-default.svg for build-time OG generation.`);
   }
 }
 
