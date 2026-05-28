@@ -34,7 +34,7 @@ function addImagePerformanceAttributes() {
 }
 
 export default defineConfig({
-  site: 'https://peterclaw-website.vercel.app',
+  site: 'https://peterclaw.com',
   output: 'static',
   markdown: {
     rehypePlugins: [addImagePerformanceAttributes],

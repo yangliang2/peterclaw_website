@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
 
 // --- Configuration ---
-const SITE_URL = 'https://peterclaw-website.vercel.app';
+const SITE_URL = 'https://peterclaw.com';
 const BAIDU_TOKEN = process.env.BAIDU_PUSH_TOKEN;
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'peterclaw1234567890'; // Placeholder key
 const INDEXNOW_KEY_FILE = `${INDEXNOW_KEY}.txt`;
