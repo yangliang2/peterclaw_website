@@ -33,6 +33,16 @@ const sharedContentSchema = z.object({
   projectBackground: z.string().optional(),
   techStack: z.array(z.string()).default([]),
   outcomeMetrics: z.array(z.string()).default([]),
+  faq: z.array(z.object({
+    question: z.string(),
+    answer: z.string(),
+  })).optional(),
+  howTo: z.array(z.object({
+    name: z.string(),
+    text: z.string(),
+    image: z.string().optional(),
+    url: z.string().optional(),
+  })).optional(),
 });
 
 const blog = defineCollection({
