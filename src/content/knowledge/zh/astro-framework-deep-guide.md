@@ -11,6 +11,13 @@ tags:
   - 部署配置
 area: architecture
 difficultyLevel: intermediate
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 prerequisites:
   - "熟悉 HTML/CSS/JavaScript"
   - "了解 Node.js 和 npm 基础"
