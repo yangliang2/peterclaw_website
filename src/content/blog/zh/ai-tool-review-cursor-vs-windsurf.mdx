@@ -27,7 +27,7 @@ reviewedProduct:
   name: Cursor
   url: https://cursor.com
   productSlug: cursor
-draft: true
+draft: false
 reviews:
   - reviewer: "gemini-1"
     status: "approved"
@@ -38,6 +38,7 @@ reviews:
 ---
 
 import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+import AffiliateCTA from '@/components/AffiliateCTA.astro';
 
 > **AI 工具评测专栏 · 第 1 篇**
 >
@@ -112,6 +113,12 @@ Cursor 是基于 VS Code 分支的 AI 代码编辑器，由 Anysphere 开发，2
 **Agent 模式（Composer）非常强大。** Composer Agent 可以执行多步骤任务，比如「给博客系统添加 RSS 支持」——它会自动创建 `src/pages/rss.xml.ts`，检查 `astro.config.mjs` 的配置，甚至提醒你安装 `@astrojs/rss`。在 PeterClaw 项目中，我让它重构了博客列表页面的排序逻辑，它正确识别了 `getCollection('blog')` 的用法，并在 3 个文件中做了联动修改。
 
 **上下文窗口管理优秀。** Cursor 的 @ 符号系统（@file、@folder、@git、@web）让上下文控制非常精细。我可以只把 `src/content.config.ts` 和 `src/lib/i18n.ts` 丢给 AI，而不必把整个项目塞进去。对于 8000 行代码的项目，这种精细控制意味着更少的幻觉和更快的响应。
+
+<AffiliateCTA
+  locale="zh"
+  productName="Cursor"
+  productSlug="cursor"
+/>
 
 ### 缺点
 

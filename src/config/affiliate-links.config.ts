@@ -57,6 +57,41 @@ export const affiliateLinks: AffiliateLink[] = [
     label: 'Amazon AI Books',
     url: 'https://www.amazon.com/s?k=AI+books&tag=peterclaw-20',
   },
+  {
+    slug: 'gemini-cli',
+    label: 'Gemini CLI',
+    url: 'https://github.com/google-gemini/gemini-cli?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
+  {
+    slug: 'kiro',
+    label: 'Kiro',
+    url: 'https://kiro.dev?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
+  {
+    slug: 'midjourney',
+    label: 'Midjourney',
+    url: 'https://www.midjourney.com?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
+  {
+    slug: 'n8n',
+    label: 'n8n',
+    url: 'https://n8n.io?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
+  {
+    slug: 'perplexity',
+    label: 'Perplexity',
+    url: 'https://perplexity.ai?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
+  {
+    slug: 'kimi',
+    label: 'Kimi',
+    url: 'https://kimi.moonshot.cn?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
+  {
+    slug: 'chatgpt',
+    label: 'ChatGPT',
+    url: 'https://chatgpt.com?utm_source=peterclaw&utm_medium=tools&utm_campaign=affiliate_toolbox',
+  },
 ];
 
 export function getAffiliateLink(slug: string) {

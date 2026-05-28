@@ -26,6 +26,7 @@ recommendation: 5
 reviewedProduct:
   name: Kiro
   url: https://kiro.dev
+  productSlug: kiro
 draft: false
 reviews:
   - reviewer: "gemini-1"
@@ -37,6 +38,7 @@ reviews:
 ---
 
 import ReviewScoreCard from '@/components/ReviewScoreCard.astro';
+import AffiliateCTA from '@/components/AffiliateCTA.astro';
 
 > **AI 工具评测专栏 · 第 6 篇**
 >
@@ -119,6 +121,12 @@ Kiro 是 AWS 在 2025 年中推出的 Agentic IDE，基于 Code OSS（开源 VS 
 ![Kiro Spec 驱动工作流截图：Requirements → Design → Tasks 的拆解界面]
 
 **Agent Hooks 的自动化潜力被低估了。** Kiro 支持事件驱动的 Hook：文件保存时自动跑测试、PR 创建时自动生成变更日志、Spec 修改时自动级联更新下游依赖。我配置了一个 Hook：每次修改 `src/content/config.ts` 后，自动验证所有 Markdown 文件的 frontmatter 是否符合 schema。这个闭环在 Cursor 中需要手动触发或借助 MCP 才能实现，而 Kiro 是原生支持。
+
+<AffiliateCTA
+  locale="zh"
+  productName="Kiro"
+  productSlug="kiro"
+/>
 
 但 Kiro 的 Agent 模式也有明显边界：它更适合「有计划的大型任务」，而非「即兴的 quick fix」。对于「帮我改一行 CSS」或「给这个函数加个参数」这样的快速任务，Kiro 的 Spec 流程显得笨重。你必须先写规范，等 Agent 理解，然后才能看到代码变化。在快速原型阶段，这种仪式感会拖慢节奏。
 

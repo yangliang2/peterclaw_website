@@ -16,6 +16,7 @@ recommendation: 5
 reviewedProduct:
   name: Claude
   url: https://claude.ai
+  productSlug: claude
 draft: false
 reviews:
   - reviewer: "gemini-1"
@@ -25,6 +26,8 @@ reviews:
     status: "approved"
     date: "2026-05-28"
 ---
+
+import AffiliateCTA from '@/components/AffiliateCTA.astro';
 
 > **AI 工具评测专栏 · 第 5 篇**
 >
@@ -116,6 +119,12 @@ Claude 是 Anthropic 推出的大语言模型系列，2026 年的主力版本是
 **技术文档写作的准确性极高。** Claude 在生成代码示例、API 参数说明、版本兼容性表格时，错误率明显低于 ChatGPT 和 Notion AI。在 API 文档测试中，Claude 生成的 20 个代码示例全部可直接运行（仅需微调变量名），而 ChatGPT 有 2 个示例存在语法错误，Notion AI 有 3 个。Claude 对技术细节的「谨慎态度」——不确定时会明确标注「此处可能需要根据你的实际环境调整」——让它成为技术写作者最可信赖的搭档。
 
 **中英文双语质量均衡。** Claude 的中文输出没有明显的「翻译腔」，技术术语的中英文对照准确。在测试中，我先用中文写大纲，让 Claude 生成中文正文，然后再要求翻译成英文。英文版的流畅度接近母语水平，且保持了中文原意。特别值得一提的是，Claude 在翻译时会主动询问「『敏捷开发』在这里是指 Scrum 还是广义上的敏捷方法论？」——这种「澄清式翻译」显著提升了最终质量。
+
+<AffiliateCTA
+  locale="zh"
+  productName="Claude"
+  productSlug="claude"
+/>
 
 ### 缺点
 

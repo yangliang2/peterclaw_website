@@ -28,6 +28,7 @@ recommendation: 5
 reviewedProduct:
   name: n8n
   url: https://n8n.io
+  productSlug: n8n
 draft: false
 reviews:
   - reviewer: "gemini-1"

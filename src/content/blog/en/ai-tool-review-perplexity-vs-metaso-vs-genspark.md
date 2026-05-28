@@ -29,6 +29,7 @@ recommendation: 5
 reviewedProduct:
   name: Perplexity
   url: https://perplexity.ai
+  productSlug: perplexity
 draft: false
 reviews:
   - reviewer: "gemini-1"

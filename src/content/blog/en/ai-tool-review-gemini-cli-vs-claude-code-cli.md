@@ -27,6 +27,7 @@ recommendation: 5
 reviewedProduct:
   name: Gemini CLI
   url: https://github.com/google-gemini/gemini-cli
+  productSlug: gemini-cli
 draft: false
 reviews:
   - reviewer: "gemini-1"

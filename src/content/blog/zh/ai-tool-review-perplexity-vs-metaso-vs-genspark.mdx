@@ -29,6 +29,7 @@ recommendation: 5
 reviewedProduct:
   name: Perplexity
   url: https://perplexity.ai
+  productSlug: perplexity
 draft: false
 reviews:
   - reviewer: "gemini-1"
@@ -37,6 +38,8 @@ reviews:
   - reviewer: "kimi-1"
     status: "approved"
 ---
+
+import AffiliateCTA from '@/components/AffiliateCTA.astro';
 
 > **AI 工具评测专栏 · 第 7 篇**
 >
@@ -95,6 +98,12 @@ Perplexity 是 2022 年推出的 AI 搜索引擎，由前 OpenAI 和 Meta 研究
 **Comet 浏览器重新定义了搜索体验。** Perplexity 推出的 Comet 浏览器将 AI 搜索直接集成到浏览体验中——选中网页上的任意文本即可追问、对比多个网页观点、自动生成阅读摘要。在竞品分析场景中，Comet 的「边浏览边追问」模式比传统「打开搜索页 → 输入问题 → 等待回答」的效率高 2-3 倍。
 
 **Pro Search 的深度推理能力出众。** 对于复杂问题，Perplexity 的 Pro Search 会自动拆解为子问题、多轮检索、交叉验证。测试「RAG 评估方法论」时，Pro Search 先检索了 RAG 基础概念，然后分别检索了评估指标（Recall、Precision、MRR）、主流基准测试（RGB、AIRC、CRUD）和最新论文，最终整合成一份结构清晰的研究笔记。
+
+<AffiliateCTA
+  locale="zh"
+  productName="Perplexity"
+  productSlug="perplexity"
+/>
 
 ### 缺点
 

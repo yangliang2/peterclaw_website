@@ -26,6 +26,7 @@ recommendation: 5
 reviewedProduct:
   name: Kiro
   url: https://kiro.dev
+  productSlug: kiro
 draft: false
 reviews:
   - reviewer: "gemini-1"
