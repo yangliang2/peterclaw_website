@@ -6,49 +6,115 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22
+
 jobs:
-  build:
-    name: Build and Lint
+  content-quality:
+    name: Content Quality
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
       - name: Install dependencies
         id: install
         run: npm ci
       - name: Content quality gate
         id: content
         run: npm run quality:content
-      - name: Build
-        id: build
-        run: npm run build
-      - name: Validate JSON-LD Schema
-        id: schema
-        run: npm run validate-schema
-      - name: Write build job summary
+      - name: Write content quality summary
         if: always()
         run: |
           {
-            echo "## Build and Lint summary"
+            echo "## Content quality summary"
             echo
             echo "| Check | Outcome | Next step on failure |"
             echo "| --- | --- | --- |"
             echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
             echo "| Content quality gate | ${{ steps.content.outcome }} | Run \`npm run quality:content\` locally and fix frontmatter review metadata. |"
-            echo "| Astro build + hreflang | ${{ steps.build.outcome }} | Run \`npm run build\` locally and inspect Astro/hreflang output. |"
-            echo "| JSON-LD schema validation | ${{ steps.schema.outcome }} | Run \`npm run validate-schema\` locally and inspect schema paths. |"
-            echo
-            echo "Commit: \`${{ github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  typecheck:
+    name: Strict TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Restore Astro cache
+        uses: actions/cache@v4
+        with:
+          path: .astro
+          key: ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-
+      - name: Install dependencies
+        id: install
+        run: npm ci
+      - name: Reject TypeScript bypass comments
+        id: bypass
+        run: |
+          if grep -RInE '@ts-(ignore|nocheck)' --include='*.ts' --include='*.tsx' --include='*.astro' --include='*.mjs' --include='*.cjs' src scripts astro.config.mjs; then
+            echo "::error::Remove @ts-ignore/@ts-nocheck and fix the underlying type errors."
+            exit 1
+          fi
+      - name: Run strict TypeScript checks
+        id: typecheck
+        run: npm run typecheck
+      - name: Write typecheck summary
+        if: always()
+        run: |
+          {
+            echo "## Strict TypeScript summary"
+            echo
+            echo "| Check | Outcome | Next step on failure |"
+            echo "| --- | --- | --- |"
+            echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
+            echo "| TypeScript bypass scan | ${{ steps.bypass.outcome }} | Replace @ts-ignore/@ts-nocheck with typed code or a narrower @ts-expect-error. |"
+            echo "| tsc --noEmit + astro check | ${{ steps.typecheck.outcome }} | Run \`npm run typecheck\` locally and fix strict errors. |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: Build, Schema, Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Restore Astro cache
+        uses: actions/cache@v4
+        with:
+          path: .astro
+          key: ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-
+      - name: Install dependencies
+        id: install
+        run: npm ci
+      - name: Build
+        id: build
+        run: npm run build:ci
+      - name: Validate JSON-LD Schema
+        id: schema
+        run: npm run validate-schema
       - name: Check rendered site links
+        id: links
         run: npm run health:links
       - name: Add link health results to job summary
         if: always() && hashFiles('link-health-report.md') != ''
@@ -92,10 +158,24 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
+      - name: Write build summary
+        if: always()
+        run: |
+          {
+            echo "## Build summary"
+            echo
+            echo "| Check | Outcome | Next step on failure |"
+            echo "| --- | --- | --- |"
+            echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
+            echo "| Astro build + hreflang | ${{ steps.build.outcome }} | Run \`npm run build:ci\` locally and inspect Astro/hreflang output. |"
+            echo "| JSON-LD schema validation | ${{ steps.schema.outcome }} | Run \`npm run validate-schema\` locally and inspect schema paths. |"
+            echo "| Rendered link health | ${{ steps.links.outcome }} | Run \`npm run health:links\` locally and inspect link-health-report.md. |"
+            echo
+            echo "Commit: \`${{ github.sha }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   lighthouse:
     name: Lighthouse Audit
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -106,14 +186,21 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Restore Astro cache
+        uses: actions/cache@v4
+        with:
+          path: .astro
+          key: ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-
       - name: Install dependencies
         id: install
         run: npm ci
-      - name: Build
+      - name: Build audited site
         id: build
-        run: npm run build
+        run: npm run build:ci
       - name: Run Lighthouse CI
         id: lhci
         run: npm run test:performance
@@ -131,7 +218,7 @@ jobs:
             echo "| Check | Outcome | Next step on failure |"
             echo "| --- | --- | --- |"
             echo "| Install dependencies | ${{ steps.install.outcome }} | Check npm registry access and package-lock drift. |"
-            echo "| Build audited site | ${{ steps.build.outcome }} | Run \`npm run build\` locally. |"
+            echo "| Build audited site | ${{ steps.build.outcome }} | Run \`npm run build:ci\` locally. |"
             echo "| Lighthouse CI budget gate | ${{ steps.lhci.outcome }} | Run \`npm run test:performance\`; download the retained artifact for route-level HTML reports. |"
             echo
             cat lighthouse-comment.md
@@ -180,7 +267,6 @@ jobs:
 
   e2e:
     name: Playwright E2E
-    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -189,8 +275,15 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Restore Astro cache
+        uses: actions/cache@v4
+        with:
+          path: .astro
+          key: ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-astro-${{ hashFiles('package-lock.json') }}-
       - name: Install dependencies
         id: install
         run: npm ci
@@ -280,4 +373,86 @@ jobs:
               });
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+  ci-failure-comment:
+    name: PR Failure Comment
+    if: always() && github.event_name == 'pull_request'
+    needs: [content-quality, typecheck, build, lighthouse, e2e, vercel-status]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+      actions: read
+    steps:
+      - name: Post failure summary on pull request
+        if: contains(join(needs.*.result, ','), 'failure') || contains(join(needs.*.result, ','), 'cancelled')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const needs = ${{ toJSON(needs) }};
+            const failed = Object.entries(needs)
+              .filter(([, job]) => ['failure', 'cancelled'].includes(job.result))
+              .map(([name, job]) => `| ${name} | ${job.result} |`);
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const marker = '<!-- ci-failure-summary -->';
+            const body = [
+              marker,
+              '## CI failure summary',
+              '',
+              '| Job | Result |',
+              '| --- | --- |',
+              ...failed,
+              '',
+              `Run: ${runUrl}`,
+              '',
+              'Open the failed job summary for the exact command and suggested local reproduction step.'
+            ].join('\n');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker)
+            );
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+      - name: Clear stale failure summary
+        if: ${{ !contains(join(needs.*.result, ','), 'failure') && !contains(join(needs.*.result, ','), 'cancelled') }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- ci-failure-summary -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker)
+            );
+            if (previous) {
+              await github.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: previous.id
+              });
             }

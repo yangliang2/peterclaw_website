@@ -87,11 +87,7 @@ const platforms = [
             copyBtn.classList.remove('copied');
           }, 2000);
           
-          // @ts-ignore
-          if (window.trackEvent) {
-            // @ts-ignore
-            window.trackEvent('social_share', { platform: 'Copy Link', url });
-          }
+          window.trackEvent?.('social_share', { platform: 'Copy Link', url });
         } catch (err) {
           console.error('Failed to copy: ', err);
         }
