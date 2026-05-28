@@ -15,6 +15,10 @@ Run the content quality gate before publishing content changes:
 npm run quality:content
 ```
 
+## Accessibility
+
+Baseline guidelines and CI checks live in [`docs/a11y-baseline.md`](docs/a11y-baseline.md). After building, run `npm run a11y` for axe-core checks on the homepage and a sample blog post.
+
 ## Content Architecture
 
 Content is stored in Astro Content Collections:
