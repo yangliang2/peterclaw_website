@@ -10,6 +10,7 @@ tags:
   - 网站策略
 series: "AI 小队组建日记"
 seriesNumber: 1
+seriesOrder: 1
 draft: false
 faq:
   - question: "PeterClaw AI 小队是什么？"

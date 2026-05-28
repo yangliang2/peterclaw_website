@@ -53,7 +53,8 @@ const blog = defineCollection({
     faq: z.array(z.object({
       question: z.string().min(1),
       answer: z.string().min(1)
-    })).optional()
+    })).optional(),
+    seriesOrder: z.number().int().positive().optional()
   })
 });
 
