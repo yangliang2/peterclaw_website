@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import { localeFromId } from '@/lib/i18n';
+import { buildBlogSeries, seriesPath } from '@/lib/series';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const zhSeries = buildBlogSeries(posts.filter((post) => localeFromId(post.id) === 'zh'));
+
+  return zhSeries.map((series) => ({
+    params: {
+      slug: series.slug,
+    },
+    props: {
+      target: seriesPath('zh', series.slug),
+      title: series.title,
+    },
+  }));
+}
+
+const { target, title } = Astro.props;
+---
+
+<meta http-equiv="refresh" content={`0; url=${target}`} />
+<a href={target}>{title}</a>

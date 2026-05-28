@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { isLocale, localeFromId, ui } from '@/lib/i18n';
+import { blogPostPath, buildBlogSeries, seriesPath } from '@/lib/series';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  return ['zh', 'en'].flatMap((lang) => {
+    const seriesList = buildBlogSeries(posts.filter((post) => localeFromId(post.id) === lang));
+
+    return seriesList.map((series) => ({
+      params: {
+        lang,
+        slug: series.slug,
+      },
+      props: {
+        series,
+      },
+    }));
+  });
+}
+
+const { lang, slug } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/');
+}
+
+const { series } = Astro.props;
+const copy = ui[lang];
+const canonicalPath = seriesPath(lang, slug);
+const description =
+  lang === 'zh'
+    ? `${series.title} 系列共 ${series.posts.length} 篇文章，按发布顺序整理 PeterClaw 的公开构建记录。`
+    : `${series.title} collects ${series.posts.length} posts from the PeterClaw public build.`;
+---
+
+<BaseLayout locale={lang} title={series.title} description={description} canonicalPath={canonicalPath}>
+  <section class="hero">
+    <p class="meta">{copy.series}</p>
+    <h1>{series.title}</h1>
+    <p class="lede">{description}</p>
+  </section>
+
+  <ol class="content-list series-posts">
+    {
+      series.posts.map((post, index) => (
+        <li>
+          <a class="content-item" href={blogPostPath(post)}>
+            <span class="meta">
+              {String(post.data.seriesOrder ?? index + 1).padStart(2, '0')} ·{' '}
+              {post.data.publishedAt.toISOString().slice(0, 10)}
+            </span>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</BaseLayout>
+
+<style>
+  .series-posts {
+    padding: 0;
+    list-style: none;
+  }
+</style>
