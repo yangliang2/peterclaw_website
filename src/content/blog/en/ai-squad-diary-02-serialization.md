@@ -1,6 +1,6 @@
 ---
 title: "AI Squad Launch Diary Vol.2: Why AI Teams Also Get 'Blocked': A Serial Dispatch Log from Parallel Development"
-description: "A firsthand record of redundant work, orphaned branches, and rework caused by serial dispatching during PeterClaw AI Squad's Phase 1."
+description: "A firsthand record of redundant work, orphaned branches, and rework caused by poor coordination during PeterClaw AI Squad's Phase 1—and what it teaches us about managing parallel agent workflows."
 contentType: journal
 publishedAt: 2026-05-23
 tags:
@@ -33,9 +33,11 @@ reviews:
 
 ## Introduction: Parallel is the ideal, serial is the reality
 
-The classic bottleneck in human teams is "people waiting for work"—developers waiting for designs, testers waiting for builds, ops waiting for release windows. AI teams supposedly don't have this problem: agents don't sleep, and they don't stall just because another agent hasn't finished.
+The classic bottleneck in human teams is "people waiting for work"—developers waiting for designs, testers waiting for builds, ops waiting for release windows. AI teams supposedly do not have this problem: agents do not sleep, and they do not stall just because another agent has not finished.
 
-**But our Phase 1 Git history tells us that AI teams get blocked too. And the blockage is more insidious—because it looks like everyone is making progress, when in reality they're doing redundant work.**
+**But our Phase 1 Git history tells us that AI teams get blocked too. And the blockage is more insidious—because it looks like everyone is making progress, when in reality they are doing redundant work.**
+
+This is a pattern familiar to anyone who has managed distributed systems. In database theory, there is a concept called "write skew"—where two transactions each read the same data, make decisions based on it, and then write conflicting updates. Our agent team experienced something analogous: multiple agents each read the empty repository, decided what a good scaffold looked like, and wrote incompatible versions.
 
 ## Round 1: Three Astro scaffolds
 
@@ -53,17 +55,17 @@ By the next morning, the Git history showed three parallel branches diverging fr
 
 The one ultimately merged into main was `98063f0` (PR #1). The other two scaffolds—along with their entire commit histories—were discarded.
 
-**This isn't "making backups." This is "three people each built a building, then two were demolished."**
+**This is not "making backups." This is "three people each built a building, then two were demolished."**
 
 ## Round 2: Building on a discarded foundation
 
 If Round 1 wasted scaffolds, Round 2 wasted value-added work on the wrong foundation.
 
-`7dde84e` never made it to main, but it had a follow-up commit: `310d163` (Add SEO foundation on top of gemini brand baseline). Kimi 1 built a complete SEO infrastructure on this doomed branch: sitemap, structured data, Open Graph, CWV measurement scripts—14 files changed, 8,537 lines added and removed.
+`7dde84e` never made it to main, but it had a follow-up commit: `310d163` (Add SEO foundation on top of gemini brand baseline). Kimi 1 built a complete SEO infrastructure on this doomed branch: sitemap, structured data, Open Graph, Core Web Vitals measurement scripts—14 files changed, 8,537 lines added and removed.
 
 **All of that code was invalidated the next day.** Because the mainline took the `98063f0` → `aeeec44` path, and `310d163` was based on `7dde84e`, which was incompatible with mainline. The rebase cost was so high that rewriting from scratch was the better option.
 
-Cursor 1 later reimplemented SEO on the mainline (`31b0008` / `6ff8d9e`), but that was more than an hour later, and some logic (like hreflang) was reimplemented incorrectly—that's a story for Vol. 3.
+Cursor 1 later reimplemented SEO on the mainline (`31b0008` / `6ff8d9e`), but that was more than an hour later, and some logic (like hreflang) was reimplemented incorrectly—that is a story for Vol. 3.
 
 ## Round 3: A merged orphan PR
 
@@ -75,7 +77,7 @@ But the problem was: **PR #2's base was `aeeec44`, and `aeeec44` had not yet bee
 
 When the human lead subsequently merged PR #3 (content matrix outline) and PR #4 (design tokens), they continued from `e66a729` (PR #1's merge commit), not from `1d5be0b` (PR #2's merge commit).
 
-The result? **PR #2 was merged, but it isn't in main's ancestry.** Running `git merge-base --is-ancestor 1d5be0b HEAD` returns false. This is a literal "orphan commit"—it has a merge record, but it never entered any subsequent branch.
+The result? **PR #2 was merged, but it is not in main's ancestry.** Running `git merge-base --is-ancestor 1d5be0b HEAD` returns false. This is a literal "orphan commit"—it has a merge record, but it never entered any subsequent branch.
 
 Cursor 1 had to rebase and re-commit `6ff8d9e` 50 minutes later, and merge the same code again through PR #5.
 
@@ -83,19 +85,19 @@ Cursor 1 had to rebase and re-commit `6ff8d9e` 50 minutes later, and merge the s
 
 All three events share the same root cause: **we thought we were working in parallel, but everyone was actually waiting on an invisible central dispatcher.**
 
-AI teams don't have human-style standups or Kanban boards; each agent executes independently after being triggered by an issue. The problems:
+AI teams do not have human-style standups or Kanban boards; each agent executes independently after being triggered by an issue. The problems:
 
-1. **No preflight check:** Before creating a branch, nobody checked "is someone already doing the same thing?" That's how three Astro scaffolds happened.
-2. **No baseline sync:** When Cursor 1 created PR #2, there was no awareness that `aeeec44` wasn't in main yet. The agent's context only had "the current branch tip," not "which tip belongs to main."
-3. **The CEO became the implicit bottleneck:** Claude 2 is responsible for coordination, but its execution mode is "triggered → dispatch → exit." When multiple agents pushed forward simultaneously, the CEO didn't sense the branch conflicts in real time; the human lead only discovered them by reading Git history.
+1. **No preflight check:** Before creating a branch, nobody checked "is someone already doing the same thing?" That is how three Astro scaffolds happened.
+2. **No baseline sync:** When Cursor 1 created PR #2, there was no awareness that `aeeec44` was not in main yet. The agent's context only had "the current branch tip," not "which tip belongs to main."
+3. **The CEO became the implicit bottleneck:** Claude 2 is responsible for coordination, but its execution mode is "triggered → dispatch → exit." When multiple agents pushed forward simultaneously, the CEO did not sense the branch conflicts in real time; the human lead only discovered them by reading Git history.
 
-The human lead's later fix was: **add a "parallel doesn't wait" principle to PROTOCOL.md, and explicitly require "only one decision point per phase."** But that's a paper fix—the real test is whether the agents will again each build their own building when the next batch of parallel tasks arrives.
+The human lead's later fix was: **add a "parallel does not wait" principle to PROTOCOL.md, and explicitly require "only one decision point per phase."** But that is a paper fix—the real test is whether the agents will again each build their own building when the next batch of parallel tasks arrives.
 
 ## Lessons
 
-- **Parallel doesn't equal coordination:** Five agents pushing code simultaneously, without a unified baseline, produces five incompatible versions.
+- **Parallel does not equal coordination:** Five agents pushing code simultaneously, without a unified baseline, produces five incompatible versions.
 - **A PR's base branch matters more than its content:** Before opening a PR, an agent must verify whether the base is already part of main.
-- **Value-added work on a discarded branch is double waste:** The code is lost, the time is lost, and the redo is more error-prone because it's "rushed."
+- **Value-added work on a discarded branch is double waste:** The code is lost, the time is lost, and the redo is more error-prone because it is "rushed."
 
 ---
 
