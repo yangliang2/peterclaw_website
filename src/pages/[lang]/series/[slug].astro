@@ -1,14 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { isLocale, localeFromId, ui } from '@/lib/i18n';
+import { isLocale, localeFromId, ui, type Locale } from '@/lib/i18n';
 import { blogPostPath, buildBlogSeries, seriesPath } from '@/lib/series';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const seriesByLocale: Record<string, ReturnType<typeof buildBlogSeries>> = {
+    zh: buildBlogSeries(posts.filter((post) => localeFromId(post.id) === 'zh')),
+    en: buildBlogSeries(posts.filter((post) => localeFromId(post.id) === 'en')),
+  };
 
   return ['zh', 'en'].flatMap((lang) => {
-    const seriesList = buildBlogSeries(posts.filter((post) => localeFromId(post.id) === lang));
+    const altLang = lang === 'zh' ? 'en' : 'zh';
+    const seriesList = seriesByLocale[lang];
 
     return seriesList.map((series) => ({
       params: {
@@ -17,6 +22,7 @@ export async function getStaticPaths() {
       },
       props: {
         series,
+        hasAltLang: seriesByLocale[altLang].some((s) => s.slug === series.slug),
       },
     }));
   });
@@ -27,16 +33,21 @@ if (!isLocale(lang)) {
   return Astro.redirect('/zh/');
 }
 
-const { series } = Astro.props;
+const { series, hasAltLang } = Astro.props;
 const copy = ui[lang];
 const canonicalPath = seriesPath(lang, slug);
+const altLang = lang === 'zh' ? 'en' : 'zh';
+const alternateLocales = [
+  { locale: lang as Locale, path: canonicalPath },
+  ...(hasAltLang ? [{ locale: altLang as Locale, path: seriesPath(altLang, slug) }] : []),
+];
 const description =
   lang === 'zh'
     ? `${series.title} 系列共 ${series.posts.length} 篇文章，按发布顺序整理 PeterClaw 的公开构建记录。`
     : `${series.title} collects ${series.posts.length} posts from the PeterClaw public build.`;
 ---
 
-<BaseLayout locale={lang} title={series.title} description={description} canonicalPath={canonicalPath}>
+<BaseLayout locale={lang} title={series.title} description={description} canonicalPath={canonicalPath} alternateLocales={alternateLocales}>
   <section class="hero">
     <p class="meta">{copy.series}</p>
     <h1>{series.title}</h1>

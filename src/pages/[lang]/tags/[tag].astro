@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+import { collectionPath, isLocale, localeFromId, ui, type Locale } from '@/lib/i18n';
 
 export async function getStaticPaths() {
   const allEntries = [
@@ -21,13 +21,14 @@ export async function getStaticPaths() {
     }
   }
 
-  const paths: { params: { lang: string; tag: string }; props: { tag: string } }[] = [];
+  const paths: { params: { lang: string; tag: string }; props: { tag: string; hasAltLang: boolean } }[] = [];
 
   for (const [lang, tags] of langTagSet) {
+    const altLang = lang === 'zh' ? 'en' : 'zh';
     for (const tag of tags) {
       paths.push({
         params: { lang, tag },
-        props: { tag }
+        props: { tag, hasAltLang: langTagSet.get(altLang)?.has(tag) ?? false }
       });
     }
   }
@@ -36,7 +37,7 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const { tag } = Astro.props;
+const { tag, hasAltLang } = Astro.props;
 
 if (!isLocale(lang)) {
   return Astro.redirect(`/zh/tags/${encodeURIComponent(tag)}/`);
@@ -50,9 +51,15 @@ const knowledgeArticles = await getCollection('knowledge', (entry) => localeFrom
 const allPosts = [...blogPosts, ...knowledgeArticles].sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 
 const pageTitle = `${tag} | ${copy.tagPageTitle}`;
+const tagPath = (l: Locale) => `/${l}/tags/${encodeURIComponent(tag)}/`;
+const altLang = (lang === 'zh' ? 'en' : 'zh') as Locale;
+const alternateLocales = [
+  { locale: lang as Locale, path: tagPath(lang as Locale) },
+  ...(hasAltLang ? [{ locale: altLang, path: tagPath(altLang) }] : []),
+];
 ---
 
-<BaseLayout locale={lang} title={pageTitle} canonicalPath={`/${lang}/tags/${encodeURIComponent(tag)}/`}>
+<BaseLayout locale={lang} title={pageTitle} canonicalPath={tagPath(lang as Locale)} alternateLocales={alternateLocales}>
   <p class="meta"><a href={`/${lang}/tags/`}>{copy.tagPageTitle}</a> / {tag}</p>
   <h1>{tag}</h1>
 
