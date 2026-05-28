@@ -5,7 +5,7 @@ import EmailSignup from '@/components/EmailSignup.astro';
 import GitHubActivity from '@/components/GitHubActivity.astro';
 import PopularArticles from '@/components/PopularArticles.astro';
 import CTA from '@/components/CTA.astro';
-import { buildOrganizationSchema, buildPersonSchema, buildWebSiteSchema } from '@/utils/seo';
+import { buildOrganizationSchema, buildPersonSchema } from '@/utils/seo';
 import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
 
 export function getStaticPaths() {
@@ -45,7 +45,7 @@ const heroCopy = {
   locale={lang}
   canonicalPath={`/${lang}/`}
   keywords={['AI协作', 'Astro SEO 优化', 'AI工具评测', '独立开发工具链', 'AI Agent', 'PeterClaw']}
-  structuredData={[buildWebSiteSchema(lang, copy.tagline), buildOrganizationSchema(), buildPersonSchema()]}
+  structuredData={[buildOrganizationSchema(), buildPersonSchema()]}
 >
   <section class="hero home-hero">
     <div class="hero-grid" aria-hidden="true"></div>

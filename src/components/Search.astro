@@ -51,6 +51,7 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
 <div
   class:list={['search-root', { 'search-root--compact': compact }]}
   data-locale={locale}
+  data-initial-query={initialQuery}
   data-initial-type={initialType}
   data-initial-tag={initialTag}
 >
@@ -191,6 +192,29 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
     syncUrlParams(root);
   }
 
+  function getInitialQuery(root: HTMLElement): string {
+    const urlQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+    return (urlQuery || root.dataset.initialQuery || '').trim();
+  }
+
+  function applyInitialQuery(root: HTMLElement) {
+    const query = getInitialQuery(root);
+    if (!query || root.dataset.initialQueryApplied === 'true') return;
+
+    const manager = getInstanceManager();
+    const instance = manager.getInstance(INSTANCE_NAME);
+    const input = root.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+    if (input) {
+      input.value = query;
+    }
+
+    root.dataset.initialQueryApplied = 'true';
+    instance.triggerSearchWithFilters(
+      query,
+      buildCombinedFilters(getActiveFilterType(root), getActiveTag(root))
+    );
+  }
+
   function initSearchFilters() {
     const root = getSearchRoot();
     if (!root || root.dataset.filtersReady === 'true') return;
@@ -226,6 +250,7 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
       if (initialTag) {
         applyTag(root, initialTag);
       }
+      applyInitialQuery(root);
     }, 0);
   }
 
@@ -314,7 +339,10 @@ const pagefindResultTemplate = `<script is:inline type="text/pagefind-template" 
   maybeAutoFocus();
   document.addEventListener('astro:page-load', () => {
     const root = getSearchRoot();
-    if (root) root.dataset.filtersReady = 'false';
+    if (root) {
+      root.dataset.filtersReady = 'false';
+      root.dataset.initialQueryApplied = 'false';
+    }
     initSearchFilters();
     initSearchTracking();
     initEmptyStateObserver();

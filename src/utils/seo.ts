@@ -117,7 +117,7 @@ export function buildWebSiteSchema(locale: Locale, description: string) {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: absoluteUrl(`/${locale}/search/?q={search_term_string}`),
+        urlTemplate: absoluteUrl('/search?q={search_term_string}'),
       },
       'query-input': 'required name=search_term_string',
     },
