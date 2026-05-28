@@ -8,7 +8,7 @@ tags:
   - AI 技巧
   - LLM
   - 大模型
-area: tutorial
+area: content
 draft: false
 reviews:
   - reviewer: "gemini-1"
