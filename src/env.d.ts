@@ -1,3 +1,5 @@
+/// <reference types="astro/client" />
+
 type ThemePreference = 'light' | 'dark' | 'system';
 
 interface PeterclawThemeApi {
@@ -12,7 +14,7 @@ interface Window {
     track: (name: string, props?: Record<string, unknown>) => void;
   };
   plausible?: (name: string, options?: { props?: Record<string, unknown> }) => void;
-  trackEvent: (name: string, props?: Record<string, unknown>) => void;
+  trackEvent?: (name: string, props?: Record<string, unknown>) => void;
 }
 
 interface DocumentEventMap {
