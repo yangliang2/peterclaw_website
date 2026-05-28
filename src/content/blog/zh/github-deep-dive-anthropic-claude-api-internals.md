@@ -18,7 +18,7 @@ prerequisites:
   - 了解 SSE（Server-Sent Events）的基本原理
 techStack:
   - TypeScript
-  - @anthropic-ai/sdk
+  - "@anthropic-ai/sdk"
   - Node.js
 useCases:
   - 构建基于 Claude 的 AI Agent 应用
