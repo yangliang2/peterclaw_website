@@ -20,6 +20,13 @@ faq:
     answer: "FAQ Schema 和 llms.txt 通常 1-2 周就能被搜索引擎和 AI 索引；内容格式优化和引用密度的提升则需要持续产出 4-8 周才能形成稳定的 AI 引用习惯。"
   - question: "小流量技术博客做 GEO 有意义吗？"
     answer: "非常有意义。AI 引用不看重域名权重，而是看重内容的相关性和可引用性。一篇深度技术文章即使流量不大，只要被 AI 判定为高质量信源，就能获得远超 SEO 的曝光回报。"
+howTo:
+  - name: "部署 llms.txt"
+    text: "将站点核心摘要保存为 /llms.txt 放在网站根目录，方便 AI 快速理解站点结构。"
+  - name: "配置 FAQ Schema"
+    text: "在文章中使用 JSON-LD 标记 FAQ 内容，增加被 AI 搜索直接引用的概率。"
+  - name: "允许 AI 爬虫抓取"
+    text: "更新 robots.txt 文件，确保 GPTBot、ClaudeBot 等主流 AI 爬虫可以正常访问你的内容。"
 ---
 
 > **一个正在发生的真相**：当用户问 ChatGPT「如何配置 Astro 的 SSR」时，AI 不再给出一串蓝色链接，而是直接给出答案——并在脚注里标注来源。如果你的内容没被引用，你就等于不存在。

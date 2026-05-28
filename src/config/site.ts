@@ -13,7 +13,8 @@ export const siteConfig = {
     url: 'https://github.com/yangliang2',
     social: {
       github: 'https://github.com/yangliang2',
-      twitter: 'https://twitter.com/peterclaw',
+      twitter: 'https://x.com/peterclaw',
+      linkedin: 'https://www.linkedin.com/in/peterclaw',
     },
   },
   ogLocale: {

@@ -29,6 +29,19 @@ toolchain:
   - Vercel
   - Pagefind
 draft: false
+howTo:
+  - name: "配置 TypeScript 严格模式"
+    text: "在 tsconfig.json 中继承 astro/tsconfigs/strict，确保代码类型安全。"
+  - name: "构建 CSS Variables 设计系统"
+    text: "在 :root 中定义颜色、间距和排版 Token，实现深色模式和品牌一致性。"
+  - name: "配置 Content Layer"
+    text: "使用 defineCollection 定义内容 Schema，并配合 glob loader 自动加载本地 Markdown/MDX 文件。"
+  - name: "集成 View Transitions"
+    text: "在 BaseLayout 中添加 <ClientRouter />，实现页面间的平滑无刷新切换。"
+  - name: "优化图片加载"
+    text: "通过 Rehype 插件自动为 Markdown 图片注入 loading='lazy' 和 decoding='async' 属性。"
+  - name: "Vercel 自动化部署"
+    text: "配置 vercel.json 处理哈希缓存和重定向，实现高效的内容交付。"
 faq:
   - question: "Astro 适合做什么类型的项目？"
     answer: "Astro 最适合内容密集型网站：博客、文档站、营销页、作品集。如果你的站点 80% 以上内容是静态的，Astro 几乎总是最优选择。对于重度交互的 SPA 应用，Astro 也能做（通过 Islands），但 React/Vue 的原生体验可能更好。"

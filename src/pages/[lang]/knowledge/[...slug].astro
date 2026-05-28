@@ -153,6 +153,41 @@ const structuredData = [
         )
       }
       <Content />
+      {
+        article.data.howTo && article.data.howTo.length > 0 && (
+          <section class="how-to" aria-labelledby="how-to-title">
+            <h2 id="how-to-title">{lang === 'zh' ? '操作步骤' : 'How to'}</h2>
+            <ol>
+              {article.data.howTo.map((step) => (
+                <li>
+                  <h3>{step.name}</h3>
+                  <p>{step.text}</p>
+                  {step.url && (
+                    <a href={step.url} target="_blank" rel="noopener noreferrer" class="step-link">
+                      {lang === 'zh' ? '查看更多' : 'Learn more'}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )
+      }
+      {
+        article.data.faq && article.data.faq.length > 0 && (
+          <section class="faq" aria-labelledby="faq-title">
+            <h2 id="faq-title">{lang === 'zh' ? '常见问题' : 'Frequently asked questions'}</h2>
+            <dl>
+              {article.data.faq.map((item) => (
+                <div>
+                  <dt>{item.question}</dt>
+                  <dd>{item.answer}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )
+      }
       <RelatedPosts locale={lang} posts={relatedPosts} collection="knowledge" />
       <SocialShare title={article.data.title} url={Astro.url.href} />
       <ArticleFooter locale={lang} />
@@ -193,5 +228,89 @@ const structuredData = [
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.9rem;
+  }
+
+  .faq dl {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .faq dl div {
+    padding: 1.1rem 1.25rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+  }
+
+  .faq dt {
+    margin-bottom: 0.55rem;
+    color: var(--color-heading);
+    font-weight: 700;
+  }
+
+  .faq dd {
+    color: var(--color-article);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .how-to ol {
+    display: grid;
+    gap: 2rem;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: step;
+    margin-top: 1.5rem;
+  }
+
+  .how-to li {
+    position: relative;
+    padding: 1.5rem;
+    padding-left: 4rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+    margin: 0;
+  }
+
+  .how-to li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 1.25rem;
+    top: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .how-to h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  .how-to p {
+    margin: 0;
+    color: var(--color-article);
+  }
+
+  .step-link {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .step-link:hover {
+    text-decoration: underline;
   }
 </style>
