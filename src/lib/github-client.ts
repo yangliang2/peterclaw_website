@@ -17,6 +17,7 @@ export const githubRepositorySchema = z.object({
   fork: z.boolean(),
   archived: z.boolean(),
   private: z.boolean().optional(),
+  pushed_at: z.string().nullable().optional(),
   updated_at: z.string(),
 });
 
