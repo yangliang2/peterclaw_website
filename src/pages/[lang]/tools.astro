@@ -22,6 +22,10 @@ const updatedAt = new Date(toolsLastUpdated).toLocaleDateString(
   { year: 'numeric', month: 'long', day: 'numeric' }
 );
 
+function ratingValue(rating: string): number {
+  return Number.parseFloat(rating);
+}
+
 const toolsListSchema = buildItemListSchema({
   name: copy.heroTitle,
   description: copy.metaDescription,
@@ -70,9 +74,9 @@ const structuredData: JsonLdSchema[] = [
                     {tool.name}
                   </a>
                 </h3>
-                <div class="tool-rating" title={`${siteCopy.ratingLabel}: ${tool.rating}/5.0`}>
-                  <span class="rating-value">{tool.rating.toFixed(1)}</span>
-                  <span class="rating-stars">{"★".repeat(Math.floor(tool.rating)) + (tool.rating % 1 >= 0.5 ? "½" : "")}</span>
+                <div class="tool-rating" title={`${copy.ratingLabel}: ${tool.rating}`}>
+                  <span class="rating-value">{ratingValue(tool.rating).toFixed(1)}</span>
+                  <span class="rating-stars">{"★".repeat(Math.floor(ratingValue(tool.rating))) + (ratingValue(tool.rating) % 1 >= 0.5 ? "½" : "")}</span>
                 </div>
               </div>
               <p class="tool-rating">
