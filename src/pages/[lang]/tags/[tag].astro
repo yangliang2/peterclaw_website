@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collectionPath, isLocale, localeFromId, ui } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const allEntries = [
+    ...(await getCollection('blog', ({ data }) => !data.draft)),
+    ...(await getCollection('knowledge', ({ data }) => !data.draft))
+  ];
+
+  const langTagSet = new Map<string, Set<string>>();
+
+  for (const entry of allEntries) {
+    const lang = localeFromId(entry.id);
+    if (!langTagSet.has(lang)) {
+      langTagSet.set(lang, new Set());
+    }
+    for (const tag of entry.data.tags) {
+      langTagSet.get(lang)!.add(tag);
+    }
+  }
+
+  const paths: { params: { lang: string; tag: string }; props: { tag: string } }[] = [];
+
+  for (const [lang, tags] of langTagSet) {
+    for (const tag of tags) {
+      paths.push({
+        params: { lang, tag },
+        props: { tag }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { lang } = Astro.params;
+const { tag } = Astro.props;
+
+if (!isLocale(lang)) {
+  return Astro.redirect(`/zh/tags/${encodeURIComponent(tag)}/`);
+}
+
+const copy = ui[lang];
+
+const blogPosts = await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft && entry.data.tags.includes(tag));
+const knowledgeArticles = await getCollection('knowledge', (entry) => localeFromId(entry.id) === lang && !entry.data.draft && entry.data.tags.includes(tag));
+
+const allPosts = [...blogPosts, ...knowledgeArticles].sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+const pageTitle = `${tag} | ${copy.tagPageTitle}`;
+---
+
+<BaseLayout locale={lang} title={pageTitle} canonicalPath={`/${lang}/tags/${encodeURIComponent(tag)}/`}>
+  <p class="meta"><a href={`/${lang}/tags/`}>{copy.tagPageTitle}</a> / {tag}</p>
+  <h1>{tag}</h1>
+
+  {
+    allPosts.length === 0 ? (
+      <p class="meta">{copy.tagNoPosts}</p>
+    ) : (
+      <div class="content-list">
+        {
+          allPosts.map((post) => {
+            const collection = post.collection === 'blog' ? 'blog' : 'knowledge';
+            return (
+              <a class="content-item" href={collectionPath(lang, collection, post.id)}>
+                <span class="meta">
+                  {post.data.publishedAt.toISOString().slice(0, 10)} · {collection === 'blog' ? copy.blog : copy.knowledge}
+                </span>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+              </a>
+            );
+          })
+        }
+      </div>
+    )
+  }
+</BaseLayout>

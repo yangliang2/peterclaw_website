@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { isLocale, localeFromId, ui } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return ['zh', 'en'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+if (!isLocale(lang)) {
+  return Astro.redirect('/zh/tags/');
+}
+
+const copy = ui[lang];
+
+const blogPosts = await getCollection('blog', (entry) => localeFromId(entry.id) === lang && !entry.data.draft);
+const knowledgeArticles = await getCollection('knowledge', (entry) => localeFromId(entry.id) === lang && !entry.data.draft);
+
+const allEntries = [...blogPosts, ...knowledgeArticles];
+
+const tagCounts = new Map<string, number>();
+for (const entry of allEntries) {
+  for (const tag of entry.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout locale={lang} title={copy.tagPageTitle} canonicalPath={`/${lang}/tags/`}>
+  <h1>{copy.tagPageTitle}</h1>
+  <p class="lede">{copy.tagPageDescription}</p>
+
+  {
+    sortedTags.length === 0 ? (
+      <p class="meta">{copy.tagNoPosts}</p>
+    ) : (
+      <div class="tag-grid">
+        {
+          sortedTags.map(([tag, count]) => (
+            <a class="tag-card" href={`/${lang}/tags/${encodeURIComponent(tag)}/`}>
+              <span class="tag-name">{tag}</span>
+              <span class="tag-count">
+                {count} {copy.tagCount}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .tag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .tag-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.25rem 1.5rem;
+    color: inherit;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--gradient-glass);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tag-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tag-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+
+  .tag-count {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 480px) {
+    .tag-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

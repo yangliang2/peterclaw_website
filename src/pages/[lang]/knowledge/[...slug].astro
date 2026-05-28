@@ -140,6 +140,17 @@ const structuredData = [
       <h1>{article.data.title}</h1>
       <p class="reading-time">{readingTimeLabel}</p>
       <p class="lede">{article.data.description}</p>
+      {
+        article.data.tags.length > 0 && (
+          <div class="tag-list">
+            {article.data.tags.map((tag) => (
+              <a class="tag-link" href={`/${lang}/tags/${encodeURIComponent(tag)}/`}>
+                {tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
       <Content />
       <RelatedPosts locale={lang} posts={relatedPosts} />
       <SocialShare title={article.data.title} url={Astro.url.href} />
