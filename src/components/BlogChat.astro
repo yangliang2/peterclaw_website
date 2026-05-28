@@ -7,6 +7,20 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = ui[locale];
+const blogChatConfig = JSON.stringify({
+  locale,
+  msgs: {
+    submit: copy.blogChatSubmit,
+    submitting: copy.blogChatSubmitting,
+    invalid: copy.blogChatErrorInvalid,
+    rateLimit: copy.blogChatErrorRateLimit,
+    quota: copy.blogChatErrorQuota,
+    timeout: copy.blogChatErrorTimeout,
+    generic: copy.blogChatErrorGeneric,
+    notReady: copy.blogChatErrorNotReady,
+    sources: copy.blogChatSources,
+  },
+});
 ---
 
 <section class="blog-chat glass-card" aria-label={copy.blogChatTitle} data-pagefind-ignore>
@@ -39,203 +53,38 @@ const copy = ui[locale];
       </div>
     </form>
   </div>
+  <script type="application/json" data-blog-chat-config set:html={blogChatConfig}></script>
 </section>
 
-<script is:inline define:vars={{ locale, msgs: {
-  submit: copy.blogChatSubmit,
-  submitting: copy.blogChatSubmitting,
-  invalid: copy.blogChatErrorInvalid,
-  rateLimit: copy.blogChatErrorRateLimit,
-  quota: copy.blogChatErrorQuota,
-  timeout: copy.blogChatErrorTimeout,
-  generic: copy.blogChatErrorGeneric,
-  notReady: copy.blogChatErrorNotReady,
-  sources: copy.blogChatSources,
-} }}>
-  document.querySelectorAll('[data-bc-form]').forEach((element) => {
-    if (!(element instanceof HTMLFormElement) || element.dataset.ready === 'true') return;
-    element.dataset.ready = 'true';
-
-    const form = element;
-    const chatBody = form.closest('.blog-chat-body');
-    const submitBtn = form.querySelector('[data-bc-submit]');
-    const clearBtn = form.querySelector('[data-bc-clear]');
-    const resultEl = chatBody && chatBody.querySelector('[data-bc-result]');
-    const sourcesEl = chatBody && chatBody.querySelector('[data-bc-sources]');
-    const statusEl = chatBody && chatBody.querySelector('[data-bc-status]');
-    const presetsEl = chatBody && chatBody.querySelector('[data-bc-presets]');
-
-    if (!(submitBtn instanceof HTMLButtonElement) || !(clearBtn instanceof HTMLButtonElement)) return;
-
-    if (presetsEl) {
-      presetsEl.querySelectorAll('.chat-preset-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const ta = form.querySelector('textarea[name="question"]');
-          if (ta instanceof HTMLTextAreaElement) {
-            ta.value = (btn.textContent || '').trim();
-            ta.focus();
-          }
-        });
-      });
+<script is:inline>
+  (function () {
+    function loadBlogChat() {
+      if (document.querySelector('script[data-blog-chat-loader]')) return;
+      const script = document.createElement('script');
+      script.src = '/blog-chat.js';
+      script.async = true;
+      script.dataset.blogChatLoader = 'true';
+      document.body.appendChild(script);
     }
 
-    function setStatus(text, isError) {
-      if (!(statusEl instanceof HTMLElement)) return;
-      statusEl.textContent = text;
-      statusEl.className = 'chat-status' + (isError ? ' is-error' : '');
-      statusEl.hidden = !text;
-    }
-
-    function trackAiChat(status, props) {
-      if (typeof window.trackEvent === 'function') {
-        window.trackEvent('ai_chat_usage', {
-          surface: 'blog_chat',
-          locale,
-          status,
-          ...props,
-        });
-      }
-    }
-
-    async function readErrorCode(response) {
-      try {
-        const payload = await response.clone().json();
-        return typeof payload.error === 'string' ? payload.error : '';
-      } catch {
-        return '';
-      }
-    }
-
-    function messageForError(code, fallback) {
-      if (code === 'quota_exhausted') return msgs.quota;
-      if (code === 'timeout') return msgs.timeout;
-      return fallback;
-    }
-
-    function reset() {
-      if (resultEl instanceof HTMLElement) { resultEl.textContent = ''; resultEl.hidden = true; resultEl.classList.remove('is-streaming'); }
-      if (sourcesEl instanceof HTMLElement) { sourcesEl.innerHTML = ''; sourcesEl.hidden = true; }
-      clearBtn.hidden = true;
-      setStatus('', false);
-    }
-
-    clearBtn.addEventListener('click', () => { reset(); form.reset(); });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      setStatus('', false);
-
-      const ta = form.querySelector('textarea[name="question"]');
-      if (!(ta instanceof HTMLTextAreaElement) || !ta.value.trim()) {
-        setStatus(msgs.invalid, true);
-        return;
-      }
-
-      const question = ta.value.trim();
-      trackAiChat('submit', { question_length: question.length });
-
-      // Show streaming state
-      if (resultEl instanceof HTMLElement) {
-        resultEl.textContent = '';
-        resultEl.hidden = false;
-        resultEl.classList.add('is-streaming');
-      }
-      if (sourcesEl instanceof HTMLElement) { sourcesEl.innerHTML = ''; sourcesEl.hidden = true; }
-      clearBtn.hidden = true;
-      submitBtn.disabled = true;
-      submitBtn.textContent = msgs.submitting;
-      form.reset();
-
-      try {
-        const response = await fetch('/api/blog-chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question, locale }),
-        });
-
-        if (response.status === 429) {
-          setStatus(msgs.rateLimit, true);
-          trackAiChat('rate_limited', { http_status: response.status });
-          if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
-          return;
-        }
-        if (response.status === 503) {
-          setStatus(msgs.notReady, true);
-          trackAiChat('error', { http_status: response.status, error: 'not_ready' });
-          if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
-          return;
-        }
-        if (!response.ok || !response.body) {
-          const code = await readErrorCode(response);
-          setStatus(messageForError(code, msgs.generic), true);
-          trackAiChat('error', { http_status: response.status, error: code || 'upstream' });
-          if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
-          return;
-        }
-
-        const reader = response.body.getReader();
-        const dec = new TextDecoder();
-        let full = '';
-        const MARKER = '__SOURCES__';
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          full += dec.decode(value, { stream: true });
-          if (resultEl instanceof HTMLElement) {
-            const mi = full.indexOf(MARKER);
-            resultEl.textContent = mi >= 0 ? full.slice(0, mi).trim() : full;
-          }
-        }
-        const tail = dec.decode();
-        if (tail) full += tail;
-
-        const mi = full.indexOf(MARKER);
-        const answerText = (mi >= 0 ? full.slice(0, mi) : full).trim();
-        const sourcesRaw = mi >= 0 ? full.slice(mi + MARKER.length) : '';
-
-        if (resultEl instanceof HTMLElement) {
-          resultEl.textContent = answerText;
-          resultEl.classList.remove('is-streaming');
-        }
-
-        if (sourcesRaw && sourcesEl instanceof HTMLElement) {
-          try {
-            const sources = JSON.parse(sourcesRaw);
-            if (Array.isArray(sources) && sources.length > 0) {
-              const label = document.createElement('p');
-              label.className = 'chat-sources-label';
-              label.textContent = msgs.sources;
-              const ul = document.createElement('ul');
-              ul.className = 'chat-sources-list';
-              for (const s of sources) {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = s.url;
-                a.textContent = s.title;
-                a.className = 'chat-source-link';
-                li.appendChild(a);
-                ul.appendChild(li);
-              }
-              sourcesEl.appendChild(label);
-              sourcesEl.appendChild(ul);
-              sourcesEl.hidden = false;
-            }
-          } catch { /* ignore */ }
-        }
-
-        clearBtn.hidden = false;
-        trackAiChat('success', { answer_length: answerText.length, source_count: sourcesEl instanceof HTMLElement ? sourcesEl.querySelectorAll('a').length : 0 });
-      } catch {
-        setStatus(msgs.generic, true);
-        trackAiChat('error', { error: 'network' });
-        if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = msgs.submit;
-      }
+    document.querySelectorAll('.blog-chat').forEach((section) => {
+      if (!(section instanceof HTMLElement)) return;
+      section.addEventListener(
+        'focusin',
+        () => {
+          loadBlogChat();
+        },
+        { once: true },
+      );
+      section.addEventListener(
+        'pointerdown',
+        () => {
+          loadBlogChat();
+        },
+        { once: true },
+      );
     });
-  });
+  })();
 </script>
 
 <style>

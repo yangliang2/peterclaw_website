@@ -49,121 +49,34 @@ const copy = ui[locale];
   </div>
 </div>
 
-<script>
-  const root = document.getElementById('ask-ai-root')!;
-  const trigger = document.getElementById('ask-ai-trigger')!;
-  const panel = document.getElementById('ask-ai-panel')!;
-  const closeBtn = document.getElementById('ask-ai-close')!;
-  const form = document.getElementById('ask-ai-form') as HTMLFormElement;
-  const input = document.getElementById('ask-ai-input') as HTMLInputElement;
-  const submitBtn = document.getElementById('ask-ai-submit') as HTMLButtonElement;
-  const messages = document.getElementById('ask-ai-messages')!;
-  const locale = root.dataset.locale ?? 'zh';
+<script is:inline>
+  (function () {
+    const root = document.getElementById('ask-ai-root');
+    const trigger = document.getElementById('ask-ai-trigger');
+    if (!root || !trigger) return;
 
-  function openPanel() {
-    panel.hidden = false;
-    panel.setAttribute('aria-hidden', 'false');
-    input.focus();
-  }
+    let loading = false;
 
-  function closePanel() {
-    panel.hidden = true;
-    panel.setAttribute('aria-hidden', 'true');
-    trigger.focus();
-  }
-
-  trigger.addEventListener('click', openPanel);
-  closeBtn.addEventListener('click', closePanel);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !panel.hidden) closePanel();
-  });
-
-  function appendMessage(role: 'user' | 'assistant', text: string): HTMLElement {
-    const bubble = document.createElement('div');
-    bubble.className = `ask-ai-bubble ask-ai-bubble--${role}`;
-    bubble.textContent = text;
-    // Remove hint on first message
-    const hint = messages.querySelector('.ask-ai-hint');
-    if (hint) hint.remove();
-    messages.appendChild(bubble);
-    bubble.scrollIntoView({ block: 'end', behavior: 'smooth' });
-    return bubble;
-  }
-
-  function setLoading(loading: boolean) {
-    submitBtn.disabled = loading;
-    input.disabled = loading;
-    submitBtn.setAttribute('aria-busy', String(loading));
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const question = input.value.trim();
-    if (!question) return;
-
-    input.value = '';
-    appendMessage('user', question);
-    setLoading(true);
-
-    const answerBubble = appendMessage('assistant', '…');
-
-    try {
-      const res = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question, locale }),
-      });
-
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => ({}));
-        const code = (errJson as { error?: string }).error ?? 'unknown';
-        answerBubble.textContent =
-          locale === 'en'
-            ? `Error: ${code}. Please try again.`
-            : `出错了（${code}），请稍后重试。`;
-        return;
-      }
-
-      const reader = res.body!.getReader();
-      const decoder = new TextDecoder();
-      let answer = '';
-      answerBubble.textContent = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const data = line.slice(6).trim();
-          if (data === '[DONE]') break;
-          try {
-            const parsed = JSON.parse(data) as {
-              choices: { delta: { content?: string } }[];
-            };
-            const token = parsed.choices[0]?.delta?.content ?? '';
-            answer += token;
-            answerBubble.textContent = answer;
-            answerBubble.scrollIntoView({ block: 'end', behavior: 'smooth' });
-          } catch {
-            // skip malformed SSE lines
-          }
-        }
-      }
-    } catch {
-      answerBubble.textContent =
-        locale === 'en'
-          ? 'Network error. Please try again.'
-          : '网络错误，请稍后重试。';
-    } finally {
-      setLoading(false);
-      input.focus();
+    function loadAskAI(openAfterLoad) {
+      if (loading || root.dataset.ready === 'true') return;
+      loading = true;
+      if (openAfterLoad) window.__askAiPendingOpen = true;
+      const script = document.createElement('script');
+      script.src = '/ask-ai.js';
+      script.async = true;
+      document.body.appendChild(script);
     }
-  });
+
+    trigger.addEventListener(
+      'click',
+      (event) => {
+        if (root.dataset.ready === 'true') return;
+        event.preventDefault();
+        loadAskAI(true);
+      },
+      { capture: true },
+    );
+  })();
 </script>
 
 <style>
@@ -185,6 +98,7 @@ const copy = ui[locale];
     cursor: pointer;
     box-shadow: 0 4px 24px color-mix(in srgb, var(--color-primary) 35%, transparent);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    contain: layout style;
   }
 
   .ask-ai-trigger:hover {
@@ -207,6 +121,7 @@ const copy = ui[locale];
     backdrop-filter: blur(16px);
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
     overflow: hidden;
+    contain: layout style;
   }
 
   .ask-ai-header {
