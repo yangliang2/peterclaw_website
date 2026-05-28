@@ -46,15 +46,27 @@ async function runCheck(check) {
   const start = Date.now();
 
   try {
-    const response = await fetch(url, {
+    const fetchOpts = {
       redirect: "follow",
       signal: controller.signal,
       headers: {
         "user-agent": "peterclaw-production-smoke/1.0",
       },
-    });
-    const body = await response.text();
+    };
+    let response = await fetch(url, fetchOpts);
+    let body = await response.text();
     const durationMs = Date.now() - start;
+
+    // Follow HTML meta-refresh redirects (e.g. "/" → "/zh/" via meta refresh)
+    if (response.ok && check.expects === "html") {
+      const metaTarget = extractMetaRefresh(body, url);
+      if (metaTarget) {
+        const metaResponse = await fetch(metaTarget, fetchOpts);
+        body = await metaResponse.text();
+        response = metaResponse;
+      }
+    }
+
     const contentType = response.headers.get("content-type") ?? "";
     const contentOk = contentMatches(check.expects, body, contentType);
     const ok = response.ok && contentOk;
@@ -127,6 +139,20 @@ function normalizeBaseUrl(value) {
   url.search = "";
   url.hash = "";
   return url.toString();
+}
+
+function extractMetaRefresh(body, currentUrl) {
+  const match = body.match(
+    /<meta[^>]+http-equiv=["']?refresh["']?[^>]+content=["']?\d+;\s*url=([^"'\s>]+)/i,
+  ) ?? body.match(
+    /<meta[^>]+content=["']?\d+;\s*url=([^"'\s>]+)[^>]*http-equiv=["']?refresh["']?/i,
+  );
+  if (!match) return null;
+  try {
+    return new URL(match[1], currentUrl).toString();
+  } catch {
+    return null;
+  }
 }
 
 function networkErrorMessage(error) {
