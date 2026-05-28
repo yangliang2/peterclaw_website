@@ -34,6 +34,10 @@ const AUTO_OG_PLACEHOLDERS = new Set(['/og-default.png', '/og-default.svg']);
 const errors = [];
 const warnings = [];
 const externalChecks = [];
+const metadataOccurrences = {
+  title: new Map(),
+  description: new Map(),
+};
 
 const markdownFiles = collections.flatMap((collection) => {
   const collectionRoot = path.join(contentRoot, collection);
@@ -48,6 +52,7 @@ for (const entry of markdownFiles) {
   validateEntry(entry);
 }
 
+validateDuplicateMetadata();
 await Promise.all(externalChecks);
 
 if (warnings.length > 0) {
@@ -79,10 +84,16 @@ function validateEntry({ collection, file }) {
 
   if (typeof data.title !== 'string' || data.title.trim().length === 0) {
     errors.push(`${relativePath}: "title" must be a non-empty string.`);
+  } else {
+    validateMetaLength('title', data.title, 30, 60, relativePath);
+    trackMetadataOccurrence('title', data.title, relativePath);
   }
 
   if (typeof data.description !== 'string' || data.description.trim().length === 0) {
     errors.push(`${relativePath}: "description" must be a non-empty string.`);
+  } else {
+    validateMetaLength('description', data.description, 80, 160, relativePath);
+    trackMetadataOccurrence('description', data.description, relativePath);
   }
 
   if (!isValidDate(data.publishedAt)) {
@@ -101,6 +112,8 @@ function validateEntry({ collection, file }) {
   validateOgImage(data.ogImage, isDraft, relativePath);
   validateCover(data.cover, relativePath);
   validateLinks(body, file, relativePath);
+  validateImages(body, file, relativePath);
+  validateBodyQuality(body, relativePath);
 
   if (!isDraft) {
     const reviews = data.reviews || [];
@@ -114,6 +127,30 @@ function validateEntry({ collection, file }) {
       errors.push(
         `${relativePath}: published content (draft: false) must be approved by both "gemini-1" and "kimi-1" in the "reviews" frontmatter field.`
       );
+    }
+  }
+}
+
+function validateMetaLength(field, value, min, max, relativePath) {
+  const length = Array.from(value.trim()).length;
+
+  if (length < min || length > max) {
+    errors.push(`${relativePath}: "${field}" must be ${min}-${max} characters; found ${length}.`);
+  }
+}
+
+function trackMetadataOccurrence(field, value, relativePath) {
+  const normalized = normalizeMetadata(value);
+  const occurrences = metadataOccurrences[field].get(normalized) ?? [];
+  occurrences.push(relativePath);
+  metadataOccurrences[field].set(normalized, occurrences);
+}
+
+function validateDuplicateMetadata() {
+  for (const [field, occurrencesByValue] of Object.entries(metadataOccurrences)) {
+    for (const files of occurrencesByValue.values()) {
+      if (files.length <= 1) continue;
+      errors.push(`duplicate "${field}" metadata across content files: ${files.join(', ')}.`);
     }
   }
 }
@@ -202,6 +239,7 @@ function validateOgImage(ogImage, isDraft, relativePath) {
 
 function validateLinks(body, file, relativePath) {
   const links = extractMarkdownLinks(body);
+  let internalLinkCount = 0;
 
   for (const link of links) {
     const normalized = link.trim();
@@ -220,7 +258,105 @@ function validateLinks(body, file, relativePath) {
       continue;
     }
 
+    internalLinkCount += 1;
     validateInternalLink(normalized, file, relativePath);
+  }
+
+  for (const link of extractHtmlAnchorLinks(body)) {
+    const normalized = link.trim();
+
+    if (
+      normalized === '' ||
+      normalized.startsWith('#') ||
+      normalized.startsWith('mailto:') ||
+      normalized.startsWith('tel:')
+    ) {
+      continue;
+    }
+
+    if (/^https?:\/\//i.test(normalized)) continue;
+
+    internalLinkCount += 1;
+    validateInternalLink(normalized, file, relativePath);
+  }
+
+  if (internalLinkCount < 1) {
+    errors.push(`${relativePath}: article body must include at least one internal link.`);
+  }
+}
+
+function validateImages(body, file, relativePath) {
+  for (const image of extractMarkdownImages(body)) {
+    if (image.alt.trim() === '') {
+      errors.push(`${relativePath}: Markdown image must include non-empty alt text: ${image.raw}.`);
+    }
+
+    validateContentImageSource(image.src, file, relativePath, image.raw);
+  }
+
+  for (const raw of extractMalformedMarkdownImages(body)) {
+    errors.push(`${relativePath}: malformed Markdown image is missing a target URL: ${raw}.`);
+  }
+
+  for (const image of extractHtmlImages(body)) {
+    if (image.alt.trim() === '') {
+      errors.push(`${relativePath}: <${image.tagName}> image must include non-empty alt text: ${image.raw}.`);
+    }
+
+    if (image.tagName === 'img') {
+      errors.push(`${relativePath}: raw <img> is not allowed in content; use Markdown images backed by src/assets or Astro's <Image> component.`);
+    }
+
+    if (image.src) {
+      validateContentImageSource(image.src, file, relativePath, image.raw);
+    }
+  }
+}
+
+function validateContentImageSource(src, file, relativePath, raw) {
+  const normalized = src.trim();
+
+  if (
+    normalized === '' ||
+    normalized.startsWith('#') ||
+    normalized.startsWith('data:') ||
+    /^https?:\/\//i.test(normalized)
+  ) {
+    errors.push(`${relativePath}: content image must use a local src/assets image through astro:assets-compatible paths: ${raw}.`);
+    return;
+  }
+
+  if (normalized.startsWith('/')) {
+    errors.push(`${relativePath}: content image must not use public-root paths; place the asset under src/assets and reference it relatively: ${raw}.`);
+    return;
+  }
+
+  const withoutHash = normalized.split('#')[0];
+  const withoutQuery = withoutHash.split('?')[0];
+  const target = path.resolve(path.dirname(file), withoutQuery);
+  const assetsRoot = path.join(repoRoot, 'src', 'assets');
+
+  if (!existsSync(target)) {
+    errors.push(`${relativePath}: content image points to a missing asset: ${normalized}.`);
+    return;
+  }
+
+  if (!isPathInside(target, assetsRoot)) {
+    errors.push(`${relativePath}: content image must resolve under src/assets for astro:assets processing: ${normalized}.`);
+  }
+}
+
+function validateBodyQuality(body, relativePath) {
+  const h1Headings = extractMarkdownH1Headings(body);
+
+  if (h1Headings.length > 0) {
+    errors.push(`${relativePath}: rendered articles use frontmatter title as the H1; remove body-level H1 heading(s): ${h1Headings.join(', ')}.`);
+  }
+
+  const wordCount = countReadableWords(body);
+
+  if (wordCount < 300) {
+    errors.push(`${relativePath}: article body must contain at least 300 readable words/characters; found ${wordCount}.`);
   }
 }
 
@@ -427,12 +563,116 @@ function extractMarkdownLinks(body) {
   return links;
 }
 
+function extractHtmlAnchorLinks(body) {
+  const links = [];
+  const anchorPattern = /<a\b[^>]*\bhref=(["'])(.*?)\1[^>]*>/gi;
+  let match;
+
+  while ((match = anchorPattern.exec(body)) !== null) {
+    links.push(match[2]);
+  }
+
+  return links;
+}
+
+function extractMarkdownImages(body) {
+  const images = [];
+  const imagePattern = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
+  let match;
+
+  while ((match = imagePattern.exec(body)) !== null) {
+    images.push({ alt: match[1], src: match[2], raw: match[0] });
+  }
+
+  return images;
+}
+
+function extractMalformedMarkdownImages(body) {
+  const malformed = [];
+  const malformedPattern = /!\[[^\]]*\](?!\()/g;
+  let match;
+
+  while ((match = malformedPattern.exec(body)) !== null) {
+    malformed.push(match[0]);
+  }
+
+  return malformed;
+}
+
+function extractHtmlImages(body) {
+  const images = [];
+  const imageTagPattern = /<(img|Image)\b[^>]*>/g;
+  let match;
+
+  while ((match = imageTagPattern.exec(body)) !== null) {
+    const raw = match[0];
+    images.push({
+      tagName: match[1],
+      raw,
+      alt: getHtmlAttribute(raw, 'alt') ?? '',
+      src: getHtmlAttribute(raw, 'src'),
+    });
+  }
+
+  return images;
+}
+
+function getHtmlAttribute(tag, attribute) {
+  const pattern = new RegExp(`\\b${attribute}=([\"'])(.*?)\\1`, 'i');
+  const match = tag.match(pattern);
+  return match?.[2];
+}
+
+function extractMarkdownH1Headings(body) {
+  const withoutCode = stripCodeBlocks(body);
+  const headings = [];
+  const h1Pattern = /^#\s+(.+)$/gm;
+  let match;
+
+  while ((match = h1Pattern.exec(withoutCode)) !== null) {
+    headings.push(match[1].trim());
+  }
+
+  return headings;
+}
+
+function countReadableWords(body) {
+  const text = stripCodeBlocks(body)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, ' $1 ')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, ' $1 ')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, ' ')
+    .replace(/[`*_~>|-]/g, ' ');
+
+  const cjkCharacters = text.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu) ?? [];
+  const latinWords = text
+    .replace(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu, ' ')
+    .match(/[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*/g) ?? [];
+
+  return cjkCharacters.length + latinWords.length;
+}
+
+function stripCodeBlocks(value) {
+  return value
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/~~~[\s\S]*?~~~/g, ' ');
+}
+
 function isValidDate(value) {
   return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(new Date(`${value}T00:00:00Z`).valueOf());
 }
 
 function stripLeadingSlash(value) {
   return value.replace(/^\/+/, '');
+}
+
+function normalizeMetadata(value) {
+  return value.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function isPathInside(target, directory) {
+  const relative = path.relative(directory, target);
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
 }
 
 function walk(directory) {
