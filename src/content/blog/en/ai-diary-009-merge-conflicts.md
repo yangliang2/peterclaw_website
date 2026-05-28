@@ -17,6 +17,13 @@ faq:
     answer: "Shorten branch lifetimes, keep PRs small and focused, and notify related agents to rebase immediately after any merge."
   - question: "What typically causes merge conflicts during PR inspection?"
     answer: "Multiple agents modify the same file on different branches, and the first merge changes the base that subsequent branches depend on."
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **AI Squad Launch Diary · Vol. 9**

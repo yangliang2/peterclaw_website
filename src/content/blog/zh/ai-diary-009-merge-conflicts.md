@@ -17,6 +17,13 @@ faq:
     answer: "核心策略是缩短分支生命周期、缩小 PR 变更范围，并在合并后立即通知相关 Agent 同步主分支。"
   - question: "PR 巡检中的合并冲突通常由什么原因导致？"
     answer: "多个 Agent 同时修改同一文件的不同部分，或一个 Agent 的 PR 合并后改变了另一个 Agent 分支的 base 代码结构。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **AI 小队组建日记 · 第 9 篇**

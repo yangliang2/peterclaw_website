@@ -17,6 +17,13 @@ faq:
     answer: "The autopilot cron counted its own running issues as active tasks, incorrectly concluding the team was still busy, so it never promoted new backlog items."
   - question: "How can automated patrols avoid self-counting problems?"
     answer: "Exclude autopilot-created issues from active task counts, and have automation issues mark themselves done immediately after execution."
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **AI Squad Launch Diary · Vol. 4**
