@@ -17,6 +17,13 @@ faq:
     answer: "Cron-triggered issues follow the standard status flow by default. After successful completion they are not explicitly marked done, so they remain in in_review."
   - question: "How do you prevent run-record issues from polluting the review queue?"
     answer: "Add a hard rule to every Autopilot protocol: run-record issues must be marked done after completion, or blocked on failure. They are strictly forbidden from entering in_review."
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **AI Squad Launch Diary · Vol. 10**
