@@ -541,3 +541,38 @@
 - **后果**：assignee（Kimi 1号）收到「需修复构建错误」的错误指令，若按其排查，会浪费运行实例在无关问题上；同时 PR 的真实阻塞因素（labels 缺失）被延迟处理。
 - **修正**：05:13 后续 PR巡检 纠正了诊断，但已造成一小时的误判窗口。
 - **教训**：**Build 失败的根因排查必须遵循「先环境、后代码」的顺序。** CI 网络超时、外部链接 403、预存测试失败等环境因素，应优先于 PR 代码审查被排除。
+
+#### 坑 52：Agent 本地完成但从未推送到远程
+- **Issue**：PET-528（Kimi 1号）、PET-420（cursor 1号）
+- **Agent**：Kimi 1号、cursor 1号
+- **现象**：
+  - Kimi 1号 在 PET-528 评论中报告「Commit: 4ad02ea on branch agent/kimi-1/c8d72a64」，声称已完成知识库英文版补充并通过构建验证。
+  - cursor 1号 在 PET-420 评论中报告「已完成 GEO 基础配置并通过本地构建验证」，列出了 llms.txt、robots.txt、FAQ Schema 等改动。
+  - 但 PR巡检 在 17:13 UTC 检查发现：Kimi 1号 的分支「不存在于 GitHub 远程仓库，commit 4ad02ea 也未推送到 origin」；cursor 1号 的「所有 cursor-1 分支均不含这些文件」。
+- **根因**：Agent 在本地完成工作、运行构建验证后，将「本地 commit」等同于「已交付」，忽略了 `git push` 步骤。Agent 的报告输出中包含了 branch 名和 commit hash，进一步强化了「已推送」的假象。
+- **后果**：工作成果完全滞留在本地，无法进入 review 流程；PR巡检 需要额外一轮检查才能发现问题，浪费运行实例；issue 表面上「已完成」实际上「未交付」。
+- **修正**：PR巡检 发现并通知后，需重新推送。
+- **教训**：**本地 commit ≠ 远程推送 ≠ PR 创建。** 完工 checklist 必须显式包含：push → 创建 PR → 更新 issue 状态三步，缺一不可。
+
+#### 坑 53：Agent 完全失效（持续 API Error）但任务仍持续路由给它
+- **Issue**：PET-489、PET-457、PET-439、PET-396、PET-515、PET-533、PET-530、PET-543、PET-544 等
+- **Agent**：gemini 1号
+- **现象**：gemini 1号 在多个 issue 中每次被 @mention 触发后，均只返回 `[API Error: An unknown error occurred.]`，无法执行任何任务。但 Squad Status Scan 和 PR巡检 仍在持续 @mention 它，形成长达数小时的无效触发循环（从 2026-05-27 18:37 到 23:54 持续发生，同一 issue 被重复 nudge 5 次以上）。
+- **根因**：没有机制检测某个 Agent 是否已完全失效。平台的 API Error 被当作普通评论处理，触发系统未将其识别为「Agent 不可用」信号，nudge 策略继续按「停滞 → 触发」逻辑执行。
+- **后果**：数十次无效触发浪费运行实例；任务被错误地路由到无法执行的 Agent，导致 issue 长期停滞；其他 Agent 被迫代劳（如 Kimi 1号 替 gemini 1号 做 PR 初审、rebase 和合并）。
+- **修正**：尚无（需人工将 gemini 1号的任务重新分配给其他 Agent）。
+- **教训**：**当 Agent 连续多次返回 API Error 时，应将其标记为不可用并自动重新路由任务，而不是继续 nudge。** 无效触发不是「推进」，是浪费。
+
+#### 坑 54：Agent 因平台用量配额耗尽触发后立即退出
+- **Issue**：PET-530、PET-543
+- **Agent**：codex 1号
+- **现象**：codex 1号 在 PET-530 和 PET-543 中被 @mention 触发后，立即返回「You've hit your usage limit. Upgrade to Pro...」并退出。任务仍分配给 codex 1号，后续 nudge 继续触发同一结果。
+- **根因**：codex 1号 的平台用量配额已耗尽，但任务分配和 nudge 机制未检查 Agent 的可用性状态，将其与正常 Agent 同等对待。
+- **后果**：Kimi 1号 被迫代劳处理原本分配给 codex 1号的任务（PET-530 的 rebase、PET-543 的重新实现和终审）；issue 的 assignee 与实际执行者不一致，责任追溯困难。
+- **修正**：Kimi 1号 代劳完成了任务。
+- **教训**：**Agent 平台配额耗尽与 API Error 同样致命，任务分配前应考虑 Agent 的可用性状态。** 当 Agent 明确报告用量限制时，应立即停止对其触发并重新分配任务。
+
+---
+
+*更新日期：2026-05-28*
+*更新说明：新增 Kimi 1号 / cursor 1号 / gemini 1号 / codex 1号（坑 52~54）—— Agent 本地完成但未推送远程、Agent 完全失效仍被持续触发、Agent 平台配额耗尽触发后立即退出*
