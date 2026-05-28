@@ -1,0 +1,137 @@
+/* Code block enhancements: toolbar, line numbers, collapse/expand */
+
+.code-block-wrapper {
+  position: relative;
+  margin: 1.5rem 0;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Remove default pre margin since wrapper handles it */
+.code-block-wrapper > pre.astro-code {
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Toolbar */
+.code-block-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.75rem;
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.code-block-lang {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  user-select: none;
+}
+
+.code-block-copy {
+  margin-left: auto;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.code-block-copy:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.code-block-copy.is-copied {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+/* Line numbers */
+.code-block-wrapper pre.astro-code code {
+  counter-reset: code-line;
+  display: block;
+}
+
+.code-block-wrapper pre.astro-code .line {
+  counter-increment: code-line;
+  display: inline-block;
+  width: 100%;
+  padding-left: 3.25em;
+  position: relative;
+}
+
+.code-block-wrapper pre.astro-code .line::before {
+  content: counter(code-line);
+  position: absolute;
+  left: 0;
+  width: 2.25em;
+  text-align: right;
+  padding-right: 0.75em;
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.85em;
+  user-select: none;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* Light theme: adjust line number color */
+[data-theme='light'] .code-block-wrapper pre.astro-code .line::before,
+:root:not([data-theme='dark']) .code-block-wrapper pre.astro-code .line::before {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+/* Collapse / expand */
+.code-block-wrapper.is-collapsible > pre.astro-code {
+  max-height: 352px;
+  overflow: hidden;
+}
+
+.code-block-wrapper.is-collapsible.is-expanded > pre.astro-code {
+  max-height: none;
+}
+
+.code-block-wrapper.is-collapsible:not(.is-expanded) > pre.astro-code::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  background: linear-gradient(to bottom, transparent, rgba(17, 24, 39, 0.85));
+  pointer-events: none;
+}
+
+.code-expand-btn {
+  display: block;
+  width: 100%;
+  padding: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  text-align: center;
+}
+
+.code-expand-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+}

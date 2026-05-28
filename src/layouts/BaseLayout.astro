@@ -11,6 +11,7 @@ import { ClientRouter } from 'astro:transitions';
 import { fade } from 'astro:transitions';
 import '@/styles/theme.css';
 import '@/styles/view-transitions.css';
+import '@/styles/code-blocks.css';
 
 interface Props {
   title?: string;
@@ -86,6 +87,7 @@ const pageDescription = description ?? copy.tagline;
     </main>
     <Footer locale={locale} />
     <AskAI locale={locale} />
+    <script is:inline defer src="/code-blocks.js"></script>
   </body>
 </html>
 
