@@ -46,6 +46,8 @@ const copy = ui[locale];
   submitting: copy.blogChatSubmitting,
   invalid: copy.blogChatErrorInvalid,
   rateLimit: copy.blogChatErrorRateLimit,
+  quota: copy.blogChatErrorQuota,
+  timeout: copy.blogChatErrorTimeout,
   generic: copy.blogChatErrorGeneric,
   notReady: copy.blogChatErrorNotReady,
   sources: copy.blogChatSources,
@@ -84,6 +86,32 @@ const copy = ui[locale];
       statusEl.hidden = !text;
     }
 
+    function trackAiChat(status, props) {
+      if (typeof window.trackEvent === 'function') {
+        window.trackEvent('ai_chat_usage', {
+          surface: 'blog_chat',
+          locale,
+          status,
+          ...props,
+        });
+      }
+    }
+
+    async function readErrorCode(response) {
+      try {
+        const payload = await response.clone().json();
+        return typeof payload.error === 'string' ? payload.error : '';
+      } catch {
+        return '';
+      }
+    }
+
+    function messageForError(code, fallback) {
+      if (code === 'quota_exhausted') return msgs.quota;
+      if (code === 'timeout') return msgs.timeout;
+      return fallback;
+    }
+
     function reset() {
       if (resultEl instanceof HTMLElement) { resultEl.textContent = ''; resultEl.hidden = true; resultEl.classList.remove('is-streaming'); }
       if (sourcesEl instanceof HTMLElement) { sourcesEl.innerHTML = ''; sourcesEl.hidden = true; }
@@ -104,6 +132,7 @@ const copy = ui[locale];
       }
 
       const question = ta.value.trim();
+      trackAiChat('submit', { question_length: question.length });
 
       // Show streaming state
       if (resultEl instanceof HTMLElement) {
@@ -126,16 +155,20 @@ const copy = ui[locale];
 
         if (response.status === 429) {
           setStatus(msgs.rateLimit, true);
+          trackAiChat('rate_limited', { http_status: response.status });
           if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
           return;
         }
         if (response.status === 503) {
           setStatus(msgs.notReady, true);
+          trackAiChat('error', { http_status: response.status, error: 'not_ready' });
           if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
           return;
         }
         if (!response.ok || !response.body) {
-          setStatus(msgs.generic, true);
+          const code = await readErrorCode(response);
+          setStatus(messageForError(code, msgs.generic), true);
+          trackAiChat('error', { http_status: response.status, error: code || 'upstream' });
           if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
           return;
         }
@@ -192,8 +225,10 @@ const copy = ui[locale];
         }
 
         clearBtn.hidden = false;
+        trackAiChat('success', { answer_length: answerText.length, source_count: sourcesEl instanceof HTMLElement ? sourcesEl.querySelectorAll('a').length : 0 });
       } catch {
         setStatus(msgs.generic, true);
+        trackAiChat('error', { error: 'network' });
         if (resultEl instanceof HTMLElement) { resultEl.hidden = true; }
       } finally {
         submitBtn.disabled = false;

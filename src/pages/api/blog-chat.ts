@@ -1,5 +1,14 @@
 import type { APIRoute } from 'astro';
 import rawEmbeddings from '../../data/blog-embeddings.json';
+import {
+  checkAiRateLimit,
+  classifyProviderStatus,
+  fetchWithTimeout,
+  getClientIp,
+  jsonError,
+  ProviderError,
+  userFacingStreamError,
+} from '@/lib/ai-guardrails';
 
 export const prerender = false;
 
@@ -16,32 +25,6 @@ type Entry = {
 
 const entries = rawEmbeddings as Entry[];
 
-// In-memory rate limiter: 20 requests per IP per calendar day (resets at midnight UTC)
-const bucket = new Map<string, { count: number; resetAt: number }>();
-
-function checkRate(ip: string): boolean {
-  const now = Date.now();
-  const tomorrow = new Date(now);
-  tomorrow.setUTCHours(24, 0, 0, 0);
-  const resetAt = tomorrow.getTime();
-
-  const rec = bucket.get(ip);
-  if (!rec || now >= rec.resetAt) {
-    bucket.set(ip, { count: 1, resetAt });
-    return true;
-  }
-  if (rec.count >= 20) return false;
-  rec.count++;
-  return true;
-}
-
-function jsonErr(payload: object, status: number) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
-
 // OpenAI embeddings are unit-normalised, so dot product == cosine similarity
 function dot(a: number[], b: number[]): number {
   let s = 0;
@@ -50,12 +33,12 @@ function dot(a: number[], b: number[]): number {
 }
 
 async function embedQuery(text: string, apiKey: string): Promise<number[]> {
-  const res = await fetch('https://api.openai.com/v1/embeddings', {
+  const res = await fetchWithTimeout('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({ model: 'text-embedding-3-small', input: text.slice(0, 1000) }),
   });
-  if (!res.ok) throw new Error(`OpenAI ${res.status}`);
+  if (!res.ok) throw classifyProviderStatus(res.status);
   const data = await res.json();
   return data.data[0].embedding as number[];
 }
@@ -64,34 +47,42 @@ export const POST: APIRoute = async ({ request }) => {
   const openaiKey = import.meta.env.OPENAI_API_KEY;
   const deepseekKey = import.meta.env.DEEPSEEK_API_KEY;
 
-  if (!openaiKey || !deepseekKey) return jsonErr({ error: 'server_config' }, 503);
-  if (entries.length === 0) return jsonErr({ error: 'not_ready' }, 503);
+  if (!openaiKey || !deepseekKey) return jsonError({ error: 'server_config' }, 503);
+  if (entries.length === 0) return jsonError({ error: 'not_ready' }, 503);
 
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    'unknown';
+  const ip = getClientIp(request);
+  const rate = checkAiRateLimit(ip);
 
-  if (!checkRate(ip)) return jsonErr({ error: 'rate_limited' }, 429);
+  if (!rate.allowed) {
+    return jsonError(
+      { error: 'rate_limited', scope: rate.scope },
+      429,
+      { 'Retry-After': String(Math.max(1, Math.ceil((rate.resetAt - Date.now()) / 1000))) },
+    );
+  }
 
   let body: { question?: string; locale?: string };
   try {
     body = await request.json();
   } catch {
-    return jsonErr({ error: 'invalid_json' }, 400);
+    return jsonError({ error: 'invalid_json' }, 400);
   }
 
   const question = (body.question ?? '').trim().slice(0, 500);
   const locale = body.locale === 'en' ? 'en' : 'zh';
 
-  if (!question) return jsonErr({ error: 'invalid_request' }, 400);
+  if (!question) return jsonError({ error: 'invalid_request' }, 400);
 
   let qVec: number[];
   try {
     qVec = await embedQuery(question, openaiKey);
-  } catch (err) {
-    console.error('Embedding error:', err);
-    return jsonErr({ error: 'embedding_failed' }, 502);
+  } catch (error) {
+    const kind = error instanceof ProviderError ? error.kind : 'upstream';
+    console.error('Embedding error:', error);
+    return jsonError(
+      { error: kind === 'quota' ? 'quota_exhausted' : kind === 'timeout' ? 'timeout' : 'embedding_failed' },
+      kind === 'timeout' ? 504 : 502,
+    );
   }
 
   const localeEntries = entries.filter(e => e.locale === locale);
@@ -115,7 +106,7 @@ export const POST: APIRoute = async ({ request }) => {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const res = await fetch('https://api.deepseek.com/chat/completions', {
+        const res = await fetchWithTimeout('https://api.deepseek.com/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -133,9 +124,7 @@ export const POST: APIRoute = async ({ request }) => {
         });
 
         if (!res.ok || !res.body) {
-          controller.enqueue(encoder.encode('[Error generating response]'));
-          controller.close();
-          return;
+          throw classifyProviderStatus(res.status);
         }
 
         const reader = res.body.getReader();
@@ -165,9 +154,10 @@ export const POST: APIRoute = async ({ request }) => {
         if (sources.length > 0) {
           controller.enqueue(encoder.encode(`\n\n__SOURCES__${JSON.stringify(sources)}`));
         }
-      } catch (err) {
-        console.error('Blog chat stream error:', err);
-        controller.enqueue(encoder.encode('[Error generating response]'));
+      } catch (error) {
+        const kind = error instanceof ProviderError ? error.kind : 'generic';
+        console.error('Blog chat stream error:', error);
+        controller.enqueue(encoder.encode(userFacingStreamError(locale, kind)));
       } finally {
         controller.close();
       }
