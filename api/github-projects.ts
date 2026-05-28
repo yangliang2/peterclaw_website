@@ -70,7 +70,7 @@ export default async function handler(request: Request) {
         stars: repo.stargazers_count,
         forks: repo.forks_count,
         language: repo.language,
-        updatedAt: repo.pushed_at ?? repo.updated_at,
+        updatedAt: repo.updated_at,
         url: repo.html_url,
       };
     });

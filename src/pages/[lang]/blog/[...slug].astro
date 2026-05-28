@@ -64,7 +64,7 @@ export async function getStaticPaths() {
       .sort(({ candidate: left, score: leftScore }, { candidate: right, score: rightScore }) =>
         rightScore - leftScore || right.data.publishedAt.valueOf() - left.data.publishedAt.valueOf()
       )
-      .slice(0, 3)
+      .slice(0, 5)
       .map(({ candidate }) => candidate);
 
     return {
