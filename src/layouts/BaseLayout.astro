@@ -1,4 +1,5 @@
 ---
+import AskAI from '@/components/AskAI.astro';
 import BaseAnalytics from '@/components/BaseAnalytics.astro';
 import BaseHead from '@/components/BaseHead.astro';
 import Fonts from '@/components/Fonts.astro';
@@ -84,6 +85,7 @@ const pageDescription = description ?? copy.tagline;
       <slot />
     </main>
     <Footer locale={locale} />
+    <AskAI locale={locale} />
   </body>
 </html>
 

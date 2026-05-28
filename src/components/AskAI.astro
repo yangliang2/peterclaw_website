@@ -1,0 +1,356 @@
+---
+import { ui, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = ui[locale];
+---
+
+<div id="ask-ai-root" data-locale={locale} data-pagefind-ignore="all">
+  <button id="ask-ai-trigger" class="ask-ai-trigger" aria-label={copy.askAiLabel} title={copy.askAiLabel}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="ask-ai-label">{copy.askAiLabel}</span>
+  </button>
+
+  <div id="ask-ai-panel" class="ask-ai-panel" role="dialog" aria-modal="true" aria-label={copy.askAiLabel} hidden>
+    <div class="ask-ai-header">
+      <span class="ask-ai-title">{copy.askAiTitle}</span>
+      <button class="ask-ai-close" id="ask-ai-close" aria-label={copy.askAiClose}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="ask-ai-messages" id="ask-ai-messages" aria-live="polite" aria-atomic="false">
+      <p class="ask-ai-hint">{copy.askAiHint}</p>
+    </div>
+
+    <form class="ask-ai-form" id="ask-ai-form" autocomplete="off">
+      <input
+        type="text"
+        id="ask-ai-input"
+        class="ask-ai-input"
+        placeholder={copy.askAiPlaceholder}
+        maxlength="500"
+        autocomplete="off"
+      />
+      <button type="submit" class="ask-ai-submit" id="ask-ai-submit" aria-label={copy.askAiSubmit}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('ask-ai-root')!;
+  const trigger = document.getElementById('ask-ai-trigger')!;
+  const panel = document.getElementById('ask-ai-panel')!;
+  const closeBtn = document.getElementById('ask-ai-close')!;
+  const form = document.getElementById('ask-ai-form') as HTMLFormElement;
+  const input = document.getElementById('ask-ai-input') as HTMLInputElement;
+  const submitBtn = document.getElementById('ask-ai-submit') as HTMLButtonElement;
+  const messages = document.getElementById('ask-ai-messages')!;
+  const locale = root.dataset.locale ?? 'zh';
+
+  function openPanel() {
+    panel.hidden = false;
+    panel.setAttribute('aria-hidden', 'false');
+    input.focus();
+  }
+
+  function closePanel() {
+    panel.hidden = true;
+    panel.setAttribute('aria-hidden', 'true');
+    trigger.focus();
+  }
+
+  trigger.addEventListener('click', openPanel);
+  closeBtn.addEventListener('click', closePanel);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel.hidden) closePanel();
+  });
+
+  function appendMessage(role: 'user' | 'assistant', text: string): HTMLElement {
+    const bubble = document.createElement('div');
+    bubble.className = `ask-ai-bubble ask-ai-bubble--${role}`;
+    bubble.textContent = text;
+    // Remove hint on first message
+    const hint = messages.querySelector('.ask-ai-hint');
+    if (hint) hint.remove();
+    messages.appendChild(bubble);
+    bubble.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    return bubble;
+  }
+
+  function setLoading(loading: boolean) {
+    submitBtn.disabled = loading;
+    input.disabled = loading;
+    submitBtn.setAttribute('aria-busy', String(loading));
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+
+    input.value = '';
+    appendMessage('user', question);
+    setLoading(true);
+
+    const answerBubble = appendMessage('assistant', '…');
+
+    try {
+      const res = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, locale }),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        const code = (errJson as { error?: string }).error ?? 'unknown';
+        answerBubble.textContent =
+          locale === 'en'
+            ? `Error: ${code}. Please try again.`
+            : `出错了（${code}），请稍后重试。`;
+        return;
+      }
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let answer = '';
+      answerBubble.textContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(data) as {
+              choices: { delta: { content?: string } }[];
+            };
+            const token = parsed.choices[0]?.delta?.content ?? '';
+            answer += token;
+            answerBubble.textContent = answer;
+            answerBubble.scrollIntoView({ block: 'end', behavior: 'smooth' });
+          } catch {
+            // skip malformed SSE lines
+          }
+        }
+      }
+    } catch {
+      answerBubble.textContent =
+        locale === 'en'
+          ? 'Network error. Please try again.'
+          : '网络错误，请稍后重试。';
+    } finally {
+      setLoading(false);
+      input.focus();
+    }
+  });
+</script>
+
+<style>
+  .ask-ai-trigger {
+    position: fixed;
+    bottom: 1.75rem;
+    right: 1.75rem;
+    z-index: 200;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    border: var(--border-glass);
+    border-radius: 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 24px color-mix(in srgb, var(--color-primary) 35%, transparent);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .ask-ai-trigger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+
+  .ask-ai-panel {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 1.75rem;
+    z-index: 200;
+    width: min(420px, calc(100vw - 2rem));
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-navbar-bg);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .ask-ai-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    border-bottom: var(--border-glass);
+  }
+
+  .ask-ai-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--color-heading);
+  }
+
+  .ask-ai-close {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .ask-ai-close:hover {
+    color: var(--color-text);
+    background: var(--color-soft-bg);
+  }
+
+  .ask-ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ask-ai-hint {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 0;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  .ask-ai-bubble {
+    max-width: 88%;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ask-ai-bubble--user {
+    align-self: flex-end;
+    background: var(--color-primary);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .ask-ai-bubble--assistant {
+    align-self: flex-start;
+    background: var(--color-soft-bg);
+    color: var(--color-text);
+    border-bottom-left-radius: 4px;
+    border: var(--border-glass);
+  }
+
+  .ask-ai-form {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: var(--border-glass);
+  }
+
+  .ask-ai-input {
+    flex: 1;
+    padding: 0.55rem 0.8rem;
+    border: var(--border-glass);
+    border-radius: var(--radius-md);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .ask-ai-input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .ask-ai-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .ask-ai-submit {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .ask-ai-submit:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: scale(1.05);
+  }
+
+  .ask-ai-submit:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 480px) {
+    .ask-ai-trigger {
+      bottom: 1.25rem;
+      right: 1.25rem;
+    }
+
+    .ask-ai-panel {
+      bottom: 5rem;
+      right: 1.25rem;
+      width: calc(100vw - 2.5rem);
+      max-height: 65vh;
+    }
+
+    .ask-ai-label {
+      display: none;
+    }
+  }
+</style>

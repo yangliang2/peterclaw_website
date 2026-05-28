@@ -18,7 +18,8 @@
     "astro": "astro",
     "validate-schema": "tsx scripts/validate-schema.ts",
     "test:performance": "lhci autorun",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "rag:generate": "tsx scripts/generate-embeddings.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

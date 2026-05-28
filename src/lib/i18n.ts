@@ -187,6 +187,12 @@ export const ui = {
     seriesNext: '下一篇',
     seriesIndex: '系列目录',
     backToBlog: '返回博客',
+    askAiLabel: 'AI 问答',
+    askAiTitle: '问问站点 AI',
+    askAiHint: '你可以问我：「有哪些关于 MCP 的文章？」或「Peter 最近在做什么？」',
+    askAiPlaceholder: '输入问题…',
+    askAiSubmit: '发送',
+    askAiClose: '关闭',
   },
   en: {
     siteTitle: 'PeterClaw',
@@ -311,5 +317,11 @@ export const ui = {
     seriesNext: 'Next',
     seriesIndex: 'Series index',
     backToBlog: 'Back to blog',
+    askAiLabel: 'Ask AI',
+    askAiTitle: 'Ask the site AI',
+    askAiHint: 'Try asking: "What articles did Peter write about MCP?" or "What is Peter working on now?"',
+    askAiPlaceholder: 'Ask a question…',
+    askAiSubmit: 'Send',
+    askAiClose: 'Close',
   }
 } satisfies Record<Locale, Record<string, string>>;
