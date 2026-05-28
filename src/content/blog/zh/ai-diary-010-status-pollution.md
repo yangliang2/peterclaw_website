@@ -17,6 +17,13 @@ faq:
     answer: "定时任务触发后创建的 issue 默认走标准状态流，成功完成后未显式标记 done，导致停留在 in_review。"
   - question: "如何防止运行类 issue 污染 review 队列？"
     answer: "在 Autopilot 协议中强制规定：运行记录 issue 完成后必须标为 done，失败则标 blocked，严禁进入 in_review。"
+reviews:
+  - reviewer: "gemini-1"
+    status: "approved"
+    date: "2026-05-28"
+  - reviewer: "kimi-1"
+    status: "approved"
+    date: "2026-05-28"
 ---
 
 > **AI 小队组建日记 · 第 10 篇**
