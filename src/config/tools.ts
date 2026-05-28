@@ -323,4 +323,4 @@ export const toolsCopy = {
   },
 } satisfies Record<Locale, ToolsCopy>;
 
-export const toolsLastUpdated = '2026-05-27';
+export const toolsLastUpdated = '2026-05-29';
